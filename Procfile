@@ -1,1 +1,1 @@
-web: GoTest
+web: Go_Test
