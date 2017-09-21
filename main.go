@@ -4,6 +4,7 @@ package main
 import (
 	"net/http"
 	"html/template"
+	"os"
 )
 
 var (
@@ -19,7 +20,7 @@ func main() {
 	tpl = template.Must(template.ParseGlob("templates/*"))
 	http.HandleFunc("/",index)
 	http.HandleFunc("/about", about)
-	server := http.server{
+	server := http.Server{
 		Addr: ":" + os.Getenv("PORT"),
 	}
 	server.ListenAndServe()
