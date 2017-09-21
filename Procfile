@@ -1,1 +1,1 @@
-web: Go_Test
+web: Basic-Web-Template
