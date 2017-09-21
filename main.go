@@ -19,7 +19,11 @@ func main() {
 	tpl = template.Must(template.ParseGlob("templates/*"))
 	http.HandleFunc("/",index)
 	http.HandleFunc("/about", about)
-	http.ListenAndServe(":8080", nil)
+	server := http.server{
+		Addr: ":" + os.Getenv("PORT"),
+	}
+	server.ListenAndServe()
+	//http.ListenAndServe(os.Getenv("PORT"), nil)
 }
 
 
