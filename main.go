@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"html/template"
 	"os"
+	"github.com/gorilla/mux"
+	"strconv"
 )
 
 var (
@@ -17,14 +19,18 @@ type Person struct {
 }
 
 func main() {
+	routes := mux.NewRouter()
 	tpl = template.Must(template.ParseGlob("templates/*"))
-	http.HandleFunc("/",index)
-	http.HandleFunc("/about", about)
+	routes.HandleFunc("/",index)
+	routes.HandleFunc("/about/{number}", about)
+	/*
 	server := http.Server{
 		Addr: ":" + os.Getenv("PORT"),
 	}
 	server.ListenAndServe()
+	*/
 	//http.ListenAndServe(os.Getenv("PORT"), nil)
+	http.ListenAndServe(":" + os.Getenv("PORT"), routes)
 }
 
 
@@ -35,8 +41,15 @@ func index(w http.ResponseWriter, r *http.Request){
 }
 
 func about(w http.ResponseWriter, r *http.Request){
+	vars := mux.Vars(r) //returns a mapping responses
+	personId := vars["number"] //get map with key id number
 
-	p := Person{"Bob",4}
-	tpl.ExecuteTemplate(w, "index.html", p)
+	if num, _ := strconv.Atoi(personId); num > 3 {
+		p := Person{"Bob", 4}
+		tpl.ExecuteTemplate(w, "index.html", p)
 
+	}else {
+		p := Person{"Steve", 2}
+		tpl.ExecuteTemplate(w, "index.html", p)
+	}
 }
