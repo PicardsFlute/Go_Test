@@ -21,6 +21,9 @@ type Person struct {
 func main() {
 	routes := mux.NewRouter()
 	tpl = template.Must(template.ParseGlob("templates/*"))
+	routes.PathPrefix("/style").Handler(http.StripPrefix("/style/",http.FileServer(http.Dir("style"))))
+	routes.PathPrefix("/public").Handler(http.StripPrefix("/public", http.FileServer(http.Dir("./public"))))
+
 	routes.HandleFunc("/",index)
 	routes.HandleFunc("/about/{number}", about)
 	/*
