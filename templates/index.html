@@ -1,12 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Hello Star Fleet Students</title>
-</head>
-<body>
-    <h1>Hello, World</h1>
-    <h3>First user: {{.Name}}</h3>
-    <h3>Age: {{.Age}}</h3>
-</body>
-</html>
+{{define "welcome"}}
+        <h1>Welcome to StarFleet Academy</h1>
+
+
+        <form action="/loginPage" method="GET">
+            <input type="submit" value="Go To Login Page" id="submit" class="btn btn-primary pull-right">
+        </form>
+
+{{end}}
