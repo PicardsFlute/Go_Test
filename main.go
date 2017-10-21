@@ -4,7 +4,7 @@ package main
 import (
 	"net/http"
 	"html/template"
-	"os"
+	//"os"
 	"github.com/gorilla/mux"
 	//"strconv"
 	"fmt"
@@ -28,14 +28,14 @@ func main() {
 	routes.HandleFunc("/",index)
 	//routes.HandleFunc("/about/{number}", about)
 	routes.HandleFunc("/loginPage", loginPage)
-	routes.HandleFunc("/login", loginUser)
+	routes.HandleFunc("/login/{number}", loginUser)
 
 
 	// USED FOR HEROKU
-	http.ListenAndServe(":" + os.Getenv("PORT"), routes)
+	//http.ListenAndServe(":" + os.Getenv("PORT"), routes)
 
 	//USED FOR LOCAL, only use one
-	//http.ListenAndServe(":8080", routes)
+	http.ListenAndServe(":8080", routes)
 }
 
 
@@ -51,8 +51,12 @@ func loginPage(w http.ResponseWriter, r *http.Request){
 
 func loginUser(w http.ResponseWriter, r *http.Request){
 
+	vars := mux.Vars(r)
+	fmt.Println(vars)
+
 	userEmail := r.FormValue("email")
 	userPassword :=	r.FormValue("password")
+
 	p := Person{userEmail,userPassword}
 	fmt.Println("Email: ", userEmail)
 	fmt.Println("Password: ", userPassword)
