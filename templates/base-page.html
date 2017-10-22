@@ -1,4 +1,4 @@
-{{define "Base"}}
+{{define "head"}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,12 +14,16 @@
             crossorigin="anonymous"></script>
 </head>
 <body>
+
+{{end}}
+
 <div class="container">
 
         {{template "welcome" . }}
 
 </div>
 
+{{define "end"}}
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>

@@ -4,7 +4,7 @@ package main
 import (
 	"net/http"
 	"html/template"
-	"os"
+	//"os"
 	"github.com/gorilla/mux"
 	//"strconv"
 	"fmt"
@@ -32,7 +32,7 @@ func main() {
 
 
 	// USED FOR HEROKU
-	http.ListenAndServe(":" + os.Getenv("PORT"), routes)
+	//http.ListenAndServe(":" + os.Getenv("PORT"), routes)
 
 	//USED FOR LOCAL, only use one
 	http.ListenAndServe(":8080", routes)
@@ -41,7 +41,7 @@ func main() {
 
 func index(w http.ResponseWriter, r *http.Request){
 
-	tpl.ExecuteTemplate(w, "Base", nil)
+	tpl.ExecuteTemplate(w, "index", nil)
 
 }
 
