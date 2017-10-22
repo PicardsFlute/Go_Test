@@ -27,8 +27,8 @@ func main() {
 
 	routes.HandleFunc("/",index)
 	//routes.HandleFunc("/about/{number}", about)
-	routes.HandleFunc("/loginPage", loginPage)
-	routes.HandleFunc("/login/{number}", loginUser)
+	routes.HandleFunc("/login", loginPage)
+	routes.HandleFunc("/login/{num}", loginUser)
 
 
 	// USED FOR HEROKU
