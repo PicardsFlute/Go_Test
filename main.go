@@ -9,6 +9,8 @@ import (
 	"fmt"
 	"github.com/gorilla/handlers"
 	"os"
+	"github.com/jinzhu/gorm"
+	 _ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 var (
@@ -21,6 +23,30 @@ type Person struct {
 }
 
 func main() {
+
+	db, err := gorm.Open("postgres", "host=127.0.0.1 dbname=Starfleet sslmode=disable password=gd62885")
+	if err != nil {
+		fmt.Println("Cannot connect to database...")
+		fmt.Println("DB Error: ", err)
+	}
+
+	type User struct {
+		UserID uint `gnorm:"primary_key"`
+		UserEmail string `gnorm:"type:varchar(20);unique"`
+		UserPassword string `gnorm:"type:varchar(300)"`
+		FirstName string `gnorm:"type:varchar(50)"`
+		LastName string `gnorm:"type:varchar(50)"`
+		UserType int
+	}
+
+	type Student struct {
+		StudentID uint `gnorm:"primary_key"`
+		User  User `gorm:"ForeignKey:UserRefer"`
+		UserRefer uint
+	}
+	
+	db.AutoMigrate(&User{}, &Student{})
+
 	routes := mux.NewRouter()
 	tpl = template.Must(template.ParseGlob("templates/*"))
 	routes.PathPrefix("/style").Handler(http.StripPrefix("/style/",http.FileServer(http.Dir("style"))))
@@ -37,6 +63,8 @@ func main() {
 
 	//USED FOR LOCAL, only use one
 	http.ListenAndServe(":8080", handlers.LoggingHandler(os.Stdout,routes))
+
+	defer db.Close()
 }
 
 
