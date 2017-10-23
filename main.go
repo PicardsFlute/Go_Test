@@ -10,14 +10,17 @@ import (
 	"github.com/gorilla/handlers"
 	"os"
 	"github.com/jinzhu/gorm"
-	 _ "github.com/jinzhu/gorm/dialects/postgres"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"sync"
 	"io"
 	"net/url"
+	"crypto/rand"
+	"encoding/base64"
 )
 
 var (
 	tpl *template.Template
+	globalSessions *Manager
 )
 
 type Person struct {
@@ -26,9 +29,15 @@ type Person struct {
 }
 
 
+
 var provides = make(map[string]Provider)
 
-var globalSessions *session.Manager
+
+// Then, initialize the session manager
+func init() {
+	globalSessions,_ = NewManager("memory","gosessionid",3600)
+}
+
 
 
 
@@ -82,6 +91,7 @@ func main() {
 	defer db.Close()
 }
 
+
 type Manager struct {
 	cookieName  string     //private cookiename
 	lock        sync.Mutex // protects session
@@ -89,20 +99,7 @@ type Manager struct {
 	maxlifetime int64
 }
 
-func NewManager(provideName, cookieName string, maxlifetime int64) (*Manager, error) {
-	provider, ok := provides[provideName]
-	if !ok {
-		return nil, fmt.Errorf("session: unknown provide %q (forgotten import?)", provideName)
-	}
-	return &Manager{provider: provider, cookieName: cookieName, maxlifetime: maxlifetime}, nil
-}
-
-
-// Then, initialize the session manager
-func init() {
-	globalSessions = NewManager("memory","gosessionid",3600)
-}
-
+//controls sessions features
 type Provider interface {
 	SessionInit(sid string) (Session, error)
 	SessionRead(sid string) (Session, error)
@@ -116,6 +113,18 @@ type Session interface {
 	Delete(key interface{}) error     //delete session value
 	SessionID() string                //back current sessionID
 }
+
+
+func NewManager(provideName, cookieName string, maxlifetime int64) (*Manager, error) {
+	provider, ok := provides[provideName]
+	if !ok {
+		return nil, fmt.Errorf("session: unknown provide %q (forgotten import?)", provideName)
+	}
+	return &Manager{provider: provider, cookieName: cookieName, maxlifetime: maxlifetime}, nil
+}
+
+
+
 
 
 // Register makes a session provider available by the provided name.
@@ -157,6 +166,7 @@ func (manager *Manager) SessionStart(w http.ResponseWriter, r *http.Request) (se
 	return
 }
 
+
 func login(w http.ResponseWriter, r *http.Request) {
 	sess := globalSessions.SessionStart(w, r)
 	r.ParseForm()
@@ -165,10 +175,15 @@ func login(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
 		t.Execute(w, sess.Get("username"))
 	} else {
-		sess.Set("username", r.Form["username"])
+		sess.Set("username", r.Form["username"]) //is a POST
 		http.Redirect(w, r, "/", 302)
 	}
 }
+
+
+
+
+// routes for site
 
 func index(w http.ResponseWriter, r *http.Request){
 
@@ -199,24 +214,19 @@ func loginUser(w http.ResponseWriter, r *http.Request){
 func about(w http.ResponseWriter, r *http.Request){
 	vars := mux.Vars(r) //returns a mapping responses
 	personId := vars["number"] //get map with key id number
-
 	if num, _ := strconv.Atoi(personId); num > 3 {
 		p := Person{"Bob", 4}
 		tpl.ExecuteTemplate(w, "index.html", p)
-
 	}else {
 		p := Person{"Steve", 2}
 		tpl.ExecuteTemplate(w, "index.html", p)
 	}
 }
-
 func generateHTML(writer http.ResponseWriter, data interface{}, filenames ...string) {
 	var files []string
 	for _, file := range filenames {
 		files = append(files, fmt.Sprintf("templates/%s.public", file))
 	}
-
 	templates := template.Must(template.ParseFiles(files...))
 	templates.ExecuteTemplate(writer, "layout", data)
 }
-*/
