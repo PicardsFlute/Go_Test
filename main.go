@@ -4,10 +4,11 @@ package main
 import (
 	"net/http"
 	"html/template"
-	//"os"
 	"github.com/gorilla/mux"
 	//"strconv"
 	"fmt"
+	"github.com/gorilla/handlers"
+	"os"
 )
 
 var (
@@ -35,7 +36,7 @@ func main() {
 	//http.ListenAndServe(":" + os.Getenv("PORT"), routes)
 
 	//USED FOR LOCAL, only use one
-	http.ListenAndServe(":8080", routes)
+	http.ListenAndServe(":8080", handlers.LoggingHandler(os.Stdout,routes))
 }
 
 
