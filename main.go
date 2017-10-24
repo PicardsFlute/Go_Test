@@ -162,6 +162,7 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 			if formPassword == user.UserPassword {
 				fmt.Println("User found in DB with email:", formEmail, " and password: ", dbPassword)
 				sess.Set("username", r.Form["username"])
+				sess.Set("UserID", user.UserID)
 				tpl.ExecuteTemplate(w,"user",user)
 			} else {
 				tpl.ExecuteTemplate(w,"login",nil)
@@ -174,6 +175,16 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 		}
 
 	}
+}
+
+func checkLogin(w http.ResponseWriter, r *http.Request)(bool){
+	sess := globalSessions.SessionStart(w, r)
+	sess_uid := sess.Get("UserID")
+	sess_username := sess.Get("username")
+
+
+
+
 }
 
 
