@@ -4,15 +4,15 @@ import (
 	"sync"
 	"crypto/rand"
 	"net/http"
-	"html/template"
 	"net/url"
 	"io"
 	"fmt"
 	"encoding/base64"
+	"time"
 )
 
 var provides = make(map[string]Provider)
-var globalSessions *Manager
+
 type Manager struct {
 	cookieName  string     //private cookiename
 	lock        sync.Mutex // protects session
@@ -86,20 +86,13 @@ func (manager *Manager) SessionStart(w http.ResponseWriter, r *http.Request) (se
 	return
 }
 
-
-func login(w http.ResponseWriter, r *http.Request) {
-	sess := globalSessions.SessionStart(w, r)
-	r.ParseForm()
-	if r.Method == "GET" {
-		t, _ := template.ParseFiles("login.gtpl")
-		w.Header().Set("Content-Type", "text/html")
-		t.Execute(w, sess.Get("username"))
-	} else {
-		sess.Set("username", r.Form["username"]) //is a POST
-		http.Redirect(w, r, "/", 302)
-	}
+func (manager *Manager) GC() {
+	manager.lock.Lock()
+	defer manager.lock.Unlock()
+	manager.provider.SessionGC(manager.maxlifetime)
+	time.AfterFunc(time.Duration(manager.maxlifetime), func() { manager.GC() })
 }
 
-func init() {
-	globalSessions,_ = NewManager("memory","gosessionid",3600)
-}
+//func init() {
+//	globalSessions,_ = NewManager("memory","gosessionid",3600)
+//}

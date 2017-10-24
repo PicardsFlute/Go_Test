@@ -10,13 +10,18 @@ import (
 	"os"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"GoTest/session"
+	_"GoTest/memory"
 
+	//"os/user"
 )
 
 var (
 	tpl *template.Template
-
+	db *gorm.DB
 )
+
+var globalSessions *session.Manager
 
 type Person struct {
 	Email string
@@ -27,9 +32,25 @@ type Person struct {
 
 
 
+type User struct {
+	UserID uint `gorm:"primary_key"`
+	UserEmail string `gorm:"type:varchar(20);unique"`
+	UserPassword string `gorm:"type:varchar(300)"`
+	FirstName string `gorm:"type:varchar(50)"`
+	LastName string `gorm:"type:varchar(50)"`
+	UserType int
+}
+
+type Student struct {
+	StudentID uint `gorm:"primary_key"`
+	User  User `gorm:"ForeignKey:UserRefer"`
+	UserRefer uint
+}
+
 // Then, initialize the session manager
 func init() {
-
+	globalSessions, _ = session.NewManager("memory", "gosessionid", 3600)
+	go globalSessions.GC()
 }
 
 
@@ -44,20 +65,6 @@ func main() {
 		fmt.Println("DB Error: ", err)
 	}
 
-	type User struct {
-		UserID uint `gnorm:"primary_key"`
-		UserEmail string `gnorm:"type:varchar(20);unique"`
-		UserPassword string `gnorm:"type:varchar(300)"`
-		FirstName string `gnorm:"type:varchar(50)"`
-		LastName string `gnorm:"type:varchar(50)"`
-		UserType int
-	}
-
-	type Student struct {
-		StudentID uint `gnorm:"primary_key"`
-		User  User `gorm:"ForeignKey:UserRefer"`
-		UserRefer uint
-	}
 
 	db.AutoMigrate(&User{}, &Student{})
 
@@ -106,21 +113,47 @@ func index(w http.ResponseWriter, r *http.Request){
 func loginPage(w http.ResponseWriter, r *http.Request){
 	tpl.ExecuteTemplate(w,"login",nil)
 }
+//
+//func loginUser(w http.ResponseWriter, r *http.Request){
+//
+//	vars := mux.Vars(r)
+//	fmt.Println(vars)
+//
+//	userEmail := r.FormValue("email")
+//	userPassword :=	r.FormValue("password")
+//
+//	p := Person{userEmail,userPassword}
+//	fmt.Println("Email: ", userEmail)
+//	fmt.Println("Password: ", userPassword)
+//	tpl.ExecuteTemplate(w,"login",p)
+//}
 
-func loginUser(w http.ResponseWriter, r *http.Request){
 
-	vars := mux.Vars(r)
-	fmt.Println(vars)
+func loginUser(w http.ResponseWriter, r *http.Request) {
+	sess := globalSessions.SessionStart(w, r)
+	r.ParseForm()
+	if r.Method == "GET" {
+		t, _ := template.ParseFiles("login.gtpl")
+		w.Header().Set("Content-Type", "text/html")
+		t.Execute(w, sess.Get("username"))
+	} else {
+		//is a POST
+		formEmail := r.FormValue("email")
+		//formPassword :=	r.FormValue("password")
+		// Try to find user in DB
+		user := User{}
 
-	userEmail := r.FormValue("email")
-	userPassword :=	r.FormValue("password")
+		readUser := db.Where(&User{UserEmail: formEmail}).First(&user)
 
-	p := Person{userEmail,userPassword}
-	fmt.Println("Email: ", userEmail)
-	fmt.Println("Password: ", userPassword)
-	tpl.ExecuteTemplate(w,"login",p)
+
+		if (readUser != nil){
+			dbPassword := user.UserPassword
+			fmt.Println("User found in DB with email:", formEmail, " and password: ", dbPassword)
+		}
+		sess.Set("username", r.Form["username"])
+		http.Redirect(w, r, "/", 302)
+	}
 }
-
 
 /*
 func about(w http.ResponseWriter, r *http.Request){
@@ -142,3 +175,4 @@ func generateHTML(writer http.ResponseWriter, data interface{}, filenames ...str
 	templates := template.Must(template.ParseFiles(files...))
 	templates.ExecuteTemplate(writer, "layout", data)
 }
+*/

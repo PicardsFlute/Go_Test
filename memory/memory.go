@@ -7,7 +7,7 @@ import (
 	"container/list"
 	"sync"
 	"time"
-	"Basic-Web-Template/session"
+	"GoTest/session"
 )
 
 var pder = &Provider{list: list.New()}
