@@ -10,14 +10,10 @@ import (
 	"os"
  	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-<<<<<<< HEAD
 	"Starfleet/session"
 	_"Starfleet/memory"
-=======
-	"Startfleet/session"
-	_"Startfleet/memory"
 	//"os/user"
->>>>>>> 84358709928d9f8fcc92d9e5902e6abca573ada1
+
 )
 
 var (
@@ -178,13 +174,9 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-<<<<<<< HEAD
-/*
 
-func checkLogin(w http.ResponseWriter, r *http.Request)(bool){
-=======
 func checkLoginUser(w http.ResponseWriter, r *http.Request)(bool, User){
->>>>>>> 84358709928d9f8fcc92d9e5902e6abca573ada1
+
 	sess := globalSessions.SessionStart(w, r)
 	sess_uid := sess.Get("UserID")
 	//sess_username := sess.Get("username")
@@ -201,12 +193,6 @@ func checkLoginUser(w http.ResponseWriter, r *http.Request)(bool, User){
 }
 
 
-<<<<<<< HEAD
-}
-*/
-=======
-
->>>>>>> 84358709928d9f8fcc92d9e5902e6abca573ada1
 
 func displayUser(w http.ResponseWriter, r *http.Request){
 	tpl.ExecuteTemplate(w, "user", nil)
