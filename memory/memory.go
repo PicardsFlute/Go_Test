@@ -7,7 +7,11 @@ import (
 	"container/list"
 	"sync"
 	"time"
+<<<<<<< HEAD
 	"Starfleet/session"
+=======
+	"Startfleet/session"
+>>>>>>> 84358709928d9f8fcc92d9e5902e6abca573ada1
 )
 
 var pder = &Provider{list: list.New()}
