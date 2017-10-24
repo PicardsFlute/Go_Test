@@ -11,11 +11,13 @@ import (
  	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 
+	//"os/user"
 )
 
 var (
 	tpl *template.Template
 	db *gorm.DB
+	err error
 )
 
 type Person struct {
@@ -29,7 +31,16 @@ type Person struct {
 
 // Then, initialize the session manager
 func init() {
+	dbPassword := os.Getenv("PG_DATABASE_PW")
+	db, err = gorm.Open("postgres", "host=127.0.0.1 dbname=Starfleet sslmode=disable password="+dbPassword)
+	if err != nil {
+		fmt.Println("Cannot connect to database...")
+		fmt.Println("DB Error: ", err)
+	}
 
+
+
+	db.AutoMigrate(&User{}, &Student{})
 }
 
 
@@ -52,16 +63,7 @@ type Student struct {
 
 func main() {
 
-	dbPassword := os.Getenv("PG_DATABASE_PW")
-	db, err := gorm.Open("postgres", "host=127.0.0.1 dbname=Starfleet sslmode=disable password="+dbPassword)
-	if err != nil {
-		fmt.Println("Cannot connect to database...")
-		fmt.Println("DB Error: ", err)
-	}
 
-
-
-	db.AutoMigrate(&User{}, &Student{})
 
 
 
@@ -107,21 +109,28 @@ func loginUser(w http.ResponseWriter, r *http.Request){
 	vars := mux.Vars(r)
 	fmt.Println(vars)
 
-	userEmail := r.FormValue("email")
-	userPassword :=	r.FormValue("password")
+	formEmail := r.FormValue("email")
+	formPassword :=	r.FormValue("password")
 
 	// Handle db checks here, if they are valid, render the user template and pass in some data,
 	// otherwise,
 	// render the login template with an error message
 
-	p := Person{userEmail,userPassword}
+	p := Person{}
 
-	fmt.Println("Email: ", userEmail)
-	fmt.Println("Password: ", userPassword)
+	fmt.Println("Email: ", formEmail)
+	fmt.Println("Password: ", formPassword)
 
-	user := User{}
-	db.Where(&User{UserEmail: userEmail}).First(&user)
-	
+	u := User{}
+	db.First(&u)
+	if u.UserEmail != "" {
+		displayUser(w,r)
+	} else {
+		p.Email = "Not Found"
+		p.Password = "Not found"
+	}
+
+
 
 	tpl.ExecuteTemplate(w,"user",p)
 }
