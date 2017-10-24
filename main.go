@@ -19,6 +19,7 @@ import (
 var (
 	tpl *template.Template
 	db *gorm.DB
+	err error
 )
 
 var globalSessions *session.Manager
@@ -51,6 +52,8 @@ type Student struct {
 func init() {
 	globalSessions, _ = session.NewManager("memory", "gosessionid", 3600)
 	go globalSessions.GC()
+
+
 }
 
 
@@ -59,7 +62,7 @@ func init() {
 func main() {
 
 	dbPassword := os.Getenv("PG_DATABASE_PW")
-	db, err := gorm.Open("postgres", "host=127.0.0.1 dbname=Starfleet sslmode=disable password="+dbPassword)
+	db, err = gorm.Open("postgres", "host=127.0.0.1 dbname=Starfleet sslmode=disable password="+dbPassword)
 	if err != nil {
 		fmt.Println("Cannot connect to database...")
 		fmt.Println("DB Error: ", err)
@@ -139,20 +142,30 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 	} else {
 		//is a POST
 		formEmail := r.FormValue("email")
-		//formPassword :=	r.FormValue("password")
+		formPassword :=	r.FormValue("password")
 		// Try to find user in DB
 		user := User{}
 
-		readUser := db.Where(&User{UserEmail: formEmail}).First(&user)
+		db.Where(&User{UserEmail: formEmail}).First(&user)
 
 
-		if (readUser != nil){
+		if user.UserEmail != "" {
 			dbPassword := user.UserPassword
-			fmt.Println("User found in DB with email:", formEmail, " and password: ", dbPassword)
+			if formPassword == user.UserPassword {
+				fmt.Println("User found in DB with email:", formEmail, " and password: ", dbPassword)
+			}
+
+		} else {
+			fmt.Println("User not found")
+
 		}
 		sess.Set("username", r.Form["username"])
-		http.Redirect(w, r, "/", 302)
+		displayUser(w, r)
 	}
+}
+
+func displayUser(w http.ResponseWriter, r *http.Request){
+	tpl.ExecuteTemplate(w, "user", nil)
 }
 
 /*
