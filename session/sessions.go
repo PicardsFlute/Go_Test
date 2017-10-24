@@ -9,6 +9,7 @@ import (
 	"io"
 	"fmt"
 	"encoding/base64"
+	"time"
 )
 
 var provides = make(map[string]Provider)
@@ -100,6 +101,13 @@ func login(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func init() {
-	globalSessions,_ = NewManager("memory","gosessionid",3600)
+func (manager *Manager) GC() {
+	manager.lock.Lock()
+	defer manager.lock.Unlock()
+	manager.provider.SessionGC(manager.maxlifetime)
+	time.AfterFunc(time.Duration(manager.maxlifetime), func() { manager.GC() })
 }
+
+//func init() {
+//	globalSessions,_ = NewManager("memory","gosessionid",3600)
+//}

@@ -7,7 +7,7 @@ import (
 	"container/list"
 	"sync"
 	"time"
-	"Basic-Web-Template/session"
+	"GoTest/session"
 )
 
 var pder = &Provider{list: list.New()}
@@ -107,6 +107,8 @@ func (pder *Provider) SessionUpdate(sid string) error {
 	}
 	return nil
 }
+
+
 
 func init() {
 	pder.sessions = make(map[string]*list.Element, 0)

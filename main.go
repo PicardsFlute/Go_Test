@@ -10,7 +10,8 @@ import (
 	"os"
  	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-
+	"GoTest/session"
+	_"GoTest/memory"
 	//"os/user"
 )
 
@@ -18,6 +19,7 @@ var (
 	tpl *template.Template
 	db *gorm.DB
 	err error
+	globalSessions *session.Manager
 )
 
 type Person struct {
@@ -31,6 +33,9 @@ type Person struct {
 
 // Then, initialize the session manager
 func init() {
+	globalSessions, _ = session.NewManager("memory", "gosessionid", 3600)
+	go globalSessions.GC()
+
 	dbPassword := os.Getenv("PG_DATABASE_PW")
 	db, err = gorm.Open("postgres", "host=127.0.0.1 dbname=Starfleet sslmode=disable password="+dbPassword)
 	if err != nil {
@@ -104,36 +109,73 @@ func loginPage(w http.ResponseWriter, r *http.Request){
 	tpl.ExecuteTemplate(w,"login",nil)
 }
 
-func loginUser(w http.ResponseWriter, r *http.Request){
+//func loginUser(w http.ResponseWriter, r *http.Request){
+//
+//	vars := mux.Vars(r)
+//	fmt.Println(vars)
+//
+//	formEmail := r.FormValue("email")
+//	formPassword :=	r.FormValue("password")
+//
+//	// Handle db checks here, if they are valid, render the user template and pass in some data,
+//	// otherwise,
+//	// render the login template with an error message
+//
+//	p := Person{}
+//
+//	fmt.Println("Email: ", formEmail)
+//	fmt.Println("Password: ", formPassword)
+//
+//	u := User{}
+//	db.First(&u)
+//	if u.UserEmail != "" {
+//		displayUser(w,r)
+//	} else {
+//		p.Email = "Not Found"
+//		p.Password = "Not found"
+//	}
+//
+//
+//
+//	tpl.ExecuteTemplate(w,"user",p)
+//}
 
-	vars := mux.Vars(r)
-	fmt.Println(vars)
-
-	formEmail := r.FormValue("email")
-	formPassword :=	r.FormValue("password")
-
-	// Handle db checks here, if they are valid, render the user template and pass in some data,
-	// otherwise,
-	// render the login template with an error message
-
-	p := Person{}
-
-	fmt.Println("Email: ", formEmail)
-	fmt.Println("Password: ", formPassword)
-
-	u := User{}
-	db.First(&u)
-	if u.UserEmail != "" {
-		displayUser(w,r)
+func loginUser(w http.ResponseWriter, r *http.Request) {
+	sess := globalSessions.SessionStart(w, r)
+	r.ParseForm()
+	if r.Method == "GET" {
+		t, _ := template.ParseFiles("login.gtpl")
+		w.Header().Set("Content-Type", "text/html")
+		t.Execute(w, sess.Get("username"))
 	} else {
-		p.Email = "Not Found"
-		p.Password = "Not found"
+		//is a POST
+		formEmail := r.FormValue("email")
+		formPassword :=	r.FormValue("password")
+		// Try to find user in DB
+		user := User{}
+
+		db.Where(&User{UserEmail: formEmail}).First(&user)
+
+
+		if user.UserEmail != "" {
+			dbPassword := user.UserPassword
+			if formPassword == user.UserPassword {
+				fmt.Println("User found in DB with email:", formEmail, " and password: ", dbPassword)
+				sess.Set("username", r.Form["username"])
+				tpl.ExecuteTemplate(w,"user",user)
+			} else {
+				tpl.ExecuteTemplate(w,"login",nil)
+			}
+
+
+		} else {
+			fmt.Println("User not found")
+			tpl.ExecuteTemplate(w,"login",nil)
+		}
+
 	}
-
-
-
-	tpl.ExecuteTemplate(w,"user",p)
 }
+
 
 func displayUser(w http.ResponseWriter, r *http.Request){
 	tpl.ExecuteTemplate(w, "user", nil)
