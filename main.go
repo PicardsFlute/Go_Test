@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"github.com/gorilla/handlers"
 	"os"
-	"github.com/jinzhu/gorm"
+ 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 
 )
@@ -72,8 +72,10 @@ func main() {
 
 	routes.HandleFunc("/",index)
 	//routes.HandleFunc("/about/{number}", about)
-	routes.HandleFunc("/login", loginPage)
-	routes.HandleFunc("/login/{num}", loginUser)
+	routes.HandleFunc("/login", loginPage).Methods("GET")
+	routes.HandleFunc("/login/{num}", loginUser).Methods("POST")
+	routes.HandleFunc("/user/{id:[0-9]+}", user).Methods("GET")
+
 
 
 	// USED FOR HEROKU
@@ -82,17 +84,8 @@ func main() {
 	//USED FOR LOCAL, only use one
 	http.ListenAndServe(":8080", handlers.LoggingHandler(os.Stdout,routes))
 
-	defer db.Close()
+	//defer db.Close(), want to keep db connection open
 }
-
-
-
-
-
-
-
-
-
 
 
 // routes for site
@@ -115,10 +108,18 @@ func loginUser(w http.ResponseWriter, r *http.Request){
 	userEmail := r.FormValue("email")
 	userPassword :=	r.FormValue("password")
 
+	// Handle db checks here, if they are valid, render the user template and pass in some data,
+	// otherwise,
+	// render the login template with an error message
+
 	p := Person{userEmail,userPassword}
 	fmt.Println("Email: ", userEmail)
 	fmt.Println("Password: ", userPassword)
-	tpl.ExecuteTemplate(w,"login",p)
+	tpl.ExecuteTemplate(w,"user",p)
+}
+
+func user(w http.ResponseWriter, r *http.Request){
+	tpl.ExecuteTemplate(w, "user", nil)
 }
 
 
@@ -142,3 +143,4 @@ func generateHTML(writer http.ResponseWriter, data interface{}, filenames ...str
 	templates := template.Must(template.ParseFiles(files...))
 	templates.ExecuteTemplate(writer, "layout", data)
 }
+*/
