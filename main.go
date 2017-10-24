@@ -10,9 +10,8 @@ import (
 	"os"
  	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"GoTest/session"
-	_"GoTest/memory"
-	//"os/user"
+	"Starfleet/session"
+	_"Starfleet/memory"
 )
 
 var (
@@ -67,10 +66,6 @@ type Student struct {
 
 
 func main() {
-
-
-
-
 
 
 
@@ -171,11 +166,13 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 
 		} else {
 			fmt.Println("User not found")
-			tpl.ExecuteTemplate(w,"login",nil)
+			tpl.ExecuteTemplate(w,"login","Error, username or password does not match.")
 		}
 
 	}
 }
+
+/*
 
 func checkLogin(w http.ResponseWriter, r *http.Request)(bool){
 	sess := globalSessions.SessionStart(w, r)
@@ -186,7 +183,7 @@ func checkLogin(w http.ResponseWriter, r *http.Request)(bool){
 
 
 }
-
+*/
 
 func displayUser(w http.ResponseWriter, r *http.Request){
 	tpl.ExecuteTemplate(w, "user", nil)

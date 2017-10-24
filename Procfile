@@ -1,1 +1,1 @@
-web: Basic-Web-Template
+web: Starfleet
