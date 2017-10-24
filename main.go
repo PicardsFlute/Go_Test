@@ -15,7 +15,7 @@ import (
 
 var (
 	tpl *template.Template
-
+	db *gorm.DB
 )
 
 type Person struct {
@@ -34,6 +34,21 @@ func init() {
 
 
 
+type User struct {
+	UserID uint `gorm:"primary_key"`
+	UserEmail string `gorm:"type:varchar(20);unique"`
+	UserPassword string `gorm:"type:varchar(300)"`
+	FirstName string `gorm:"type:varchar(50)"`
+	LastName string `gorm:"type:varchar(50)"`
+	UserType int
+}
+
+type Student struct {
+	StudentID uint `gorm:"primary_key"`
+	User  User `gorm:"ForeignKey:UserRefer"`
+	UserRefer uint
+}
+
 
 func main() {
 
@@ -44,20 +59,7 @@ func main() {
 		fmt.Println("DB Error: ", err)
 	}
 
-	type User struct {
-		UserID uint `gnorm:"primary_key"`
-		UserEmail string `gnorm:"type:varchar(20);unique"`
-		UserPassword string `gnorm:"type:varchar(300)"`
-		FirstName string `gnorm:"type:varchar(50)"`
-		LastName string `gnorm:"type:varchar(50)"`
-		UserType int
-	}
 
-	type Student struct {
-		StudentID uint `gnorm:"primary_key"`
-		User  User `gorm:"ForeignKey:UserRefer"`
-		UserRefer uint
-	}
 
 	db.AutoMigrate(&User{}, &Student{})
 
@@ -74,7 +76,7 @@ func main() {
 	//routes.HandleFunc("/about/{number}", about)
 	routes.HandleFunc("/login", loginPage).Methods("GET")
 	routes.HandleFunc("/login/{num}", loginUser).Methods("POST")
-	routes.HandleFunc("/user/{id:[0-9]+}", user).Methods("GET")
+	routes.HandleFunc("/user/{id:[0-9]+}", displayUser).Methods("GET")
 
 
 
@@ -113,12 +115,18 @@ func loginUser(w http.ResponseWriter, r *http.Request){
 	// render the login template with an error message
 
 	p := Person{userEmail,userPassword}
+
 	fmt.Println("Email: ", userEmail)
 	fmt.Println("Password: ", userPassword)
+
+	user := User{}
+	db.Where(&User{UserEmail: userEmail}).First(&user)
+	
+
 	tpl.ExecuteTemplate(w,"user",p)
 }
 
-func user(w http.ResponseWriter, r *http.Request){
+func displayUser(w http.ResponseWriter, r *http.Request){
 	tpl.ExecuteTemplate(w, "user", nil)
 }
 
