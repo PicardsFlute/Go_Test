@@ -4,7 +4,6 @@ import (
 	"sync"
 	"crypto/rand"
 	"net/http"
-	"html/template"
 	"net/url"
 	"io"
 	"fmt"
@@ -87,19 +86,19 @@ func (manager *Manager) SessionStart(w http.ResponseWriter, r *http.Request) (se
 	return
 }
 
-
-func login(w http.ResponseWriter, r *http.Request) {
-	sess := globalSessions.SessionStart(w, r)
-	r.ParseForm()
-	if r.Method == "GET" {
-		t, _ := template.ParseFiles("login.gtpl")
-		w.Header().Set("Content-Type", "text/html")
-		t.Execute(w, sess.Get("username"))
-	} else {
-		sess.Set("username", r.Form["username"]) //is a POST
-		http.Redirect(w, r, "/", 302)
-	}
-}
+//
+//func login(w http.ResponseWriter, r *http.Request) {
+//	sess := globalSessions.SessionStart(w, r)
+//	r.ParseForm()
+//	if r.Method == "GET" {
+//		t, _ := template.ParseFiles("login.gtpl")
+//		w.Header().Set("Content-Type", "text/html")
+//		t.Execute(w, sess.Get("username"))
+//	} else {
+//		sess.Set("username", r.Form["username"]) //is a POST
+//		http.Redirect(w, r, "/", 302)
+//	}
+//}
 
 func (manager *Manager) GC() {
 	manager.lock.Lock()

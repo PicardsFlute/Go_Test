@@ -82,6 +82,9 @@ func main() {
 	routes.HandleFunc("/login/{num}", loginUser).Methods("POST")
 	routes.HandleFunc("/user/{id:[0-9]+}", displayUser).Methods("GET")
 
+	routes.HandleFunc("/logout", logout)
+	//routes.HandleFunc("/student", AuthHandler(displayUser))
+
 
 
 	// USED FOR HEROKU
@@ -220,3 +223,25 @@ func generateHTML(writer http.ResponseWriter, data interface{}, filenames ...str
 	templates.ExecuteTemplate(writer, "layout", data)
 }
 */
+
+//func AuthHandler(w http.ResponseWriter, r *http.Request) http.Handler {
+//	http.Handler* h
+//	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+//		loggedIn, _ := checkLoginUser(w,r)
+//		if !loggedIn {
+//			http.Redirect(w,r,"/login", 200)
+//		} else {
+//
+//			h.ServeHTTP(w, r)
+//		}
+//	})
+//}
+
+func logout(w http.ResponseWriter, r *http.Request){
+	sess := globalSessions.SessionStart(w, r)
+	//sid := sess.SessionID()
+	sess.Delete("UserID")
+	sess.Delete("username")
+	http.Redirect(w,r,"/login", 200)
+	loginPage(w,r)
+}
