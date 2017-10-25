@@ -12,6 +12,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"Starfleet/session"
 	_"Starfleet/memory"
+	"Starfleet/model"
 	//"os/user"
 
 )
@@ -46,11 +47,18 @@ func init() {
 
 
 
-	db.AutoMigrate(&User{}, &Student{})
+	db.AutoMigrate(
+		&model.User{},
+		&model.Student{},
+		&model.PartTimeStudent{},
+		&model.FullTimeStudent{},
+		&model.Department{},
+		&model.Faculty{},
+	)
 }
 
 
-
+/*
 type User struct {
 	UserID uint `gorm:"primary_key"`
 	UserEmail string `gorm:"type:varchar(20);unique"`
@@ -65,7 +73,7 @@ type Student struct {
 	User  User `gorm:"ForeignKey:UserRefer"`
 	UserRefer uint
 }
-
+*/
 
 func main() {
 
@@ -109,36 +117,7 @@ func loginPage(w http.ResponseWriter, r *http.Request){
 	tpl.ExecuteTemplate(w,"login",nil)
 }
 
-//func loginUser(w http.ResponseWriter, r *http.Request){
-//
-//	vars := mux.Vars(r)
-//	fmt.Println(vars)
-//
-//	formEmail := r.FormValue("email")
-//	formPassword :=	r.FormValue("password")
-//
-//	// Handle db checks here, if they are valid, render the user template and pass in some data,
-//	// otherwise,
-//	// render the login template with an error message
-//
-//	p := Person{}
-//
-//	fmt.Println("Email: ", formEmail)
-//	fmt.Println("Password: ", formPassword)
-//
-//	u := User{}
-//	db.First(&u)
-//	if u.UserEmail != "" {
-//		displayUser(w,r)
-//	} else {
-//		p.Email = "Not Found"
-//		p.Password = "Not found"
-//	}
-//
-//
-//
-//	tpl.ExecuteTemplate(w,"user",p)
-//}
+
 
 func loginUser(w http.ResponseWriter, r *http.Request) {
 	sess := globalSessions.SessionStart(w, r)
@@ -152,9 +131,9 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 		formEmail := r.FormValue("email")
 		formPassword :=	r.FormValue("password")
 		// Try to find user in DB
-		user := User{}
+		user := model.User{}
 
-		db.Where(&User{UserEmail: formEmail}).First(&user)
+		db.Where(&model.User{UserEmail: formEmail}).First(&user)
 
 
 		if user.UserEmail != "" {
@@ -178,12 +157,12 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 }
 
 
-func checkLoginUser(w http.ResponseWriter, r *http.Request)(bool, User){
+func checkLoginUser(w http.ResponseWriter, r *http.Request)(bool, model.User){
 
 	sess := globalSessions.SessionStart(w, r)
 	sess_uid := sess.Get("UserID")
 	//sess_username := sess.Get("username")
-	u := User{}
+	u := model.User{}
 	if sess_uid == nil {
 		fmt.Println("No loggin in user")
 		return false, u
@@ -242,6 +221,6 @@ func logout(w http.ResponseWriter, r *http.Request){
 	//sid := sess.SessionID()
 	sess.Delete("UserID")
 	sess.Delete("username")
-	http.Redirect(w,r,"/login", 200)
+	http.Redirect(w,r,"/login", http.StatusSeeOther)
 	loginPage(w,r)
 }
