@@ -18,11 +18,12 @@ func main(){
 		fmt.Println("DB Error: ", err)
 	}
 	db.SingularTable(true)
-	//db.DropTable(&model.Student{})
+	db.DropTable(&model.Student{})
 	db.DropTable(&model.FullTimeStudent{})
 	db.DropTable(&model.PartTimeStudent{})
-	//db.DropTable(&model.MainUser{})
-	//db.DropTable(&model.Faculty{})
+	db.DropTable(&model.Faculty{})
+	db.DropTable(&model.MainUser{})
+
 	db.DropTable(&model.Department{})
 
 
@@ -34,7 +35,7 @@ func main(){
 		&model.Department{},
 		&model.Faculty{},
 	)
-	db.Model(&model.Student{}).AddForeignKey("student_id", "main_user(user_id)", "RESTRICT", "RESTRICT")
+	db.Model(&model.Student{}).AddForeignKey("student_id", "main_user(user_id)", "CASCADE", "CASCADE")
 
 	db.Model(&model.Faculty{}).AddForeignKey("faculty_id", "main_user(user_id)", "RESTRICT", "RESTRICT")
 	db.Model(&model.Faculty{}).AddForeignKey("department_id", "department(department_id)", "RESTRICT", "RESTRICT")
@@ -50,18 +51,23 @@ func main(){
 
 	//dbUser := model.User{}
 	//db.Where(&model.User{UserEmail: user1.UserEmail}).First(&dbUser)
-	student1 := model.Student{MainUser: user1}
-	db.Create(&student1)
+
 	////
 	//////db.Where(&model.User{UserEmail: user2.UserEmail}).First(&dbUser)
-	student2 := model.Student{MainUser: user3}
+	student2 := model.Student{StudentID: user3.UserID}
 	db.Create(&student2)
 
+	//student1 := model.Student{MainUser: user1}
+	//db.Create(&student1)
 	//var user model.User
 	//db.Model(&user).Association("Students")
 	//db.Model(&).Related().Find(&student1)
-	fmt.Println("For the student1, the user email is: ", student1.MainUser.UserEmail)
+	u := model.MainUser{}
+	db.Model(&student2).Association("MainUser").Find(&u)
+	fmt.Println("For the student12, the user email is: ", u.UserEmail)
 
+	//dep1 := model.Department{DepartmentName:"Math", DepartmentChair:"Mr. Math"}
+	//db.Create(&dep1)
 }
 
 

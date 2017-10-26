@@ -70,15 +70,15 @@ type Department struct {
 	DepartmentBuilding string `gorm:"type:varchar(30);not null"`
 	DepartmentPhoneNumber  string `gorm:"type:varchar(15);not null"`
 	departmentRoomNumber string `gorm:"type:varchar(10);not null"`
-	
+	Faculty []Faculty
 }
 
 
 type Faculty struct {
-	FacultyID uint `gorm:"primary_key"`
+	FacultyID uint
 	FacultyType int `gorm:"not null"`
 	MainUser  MainUser `gorm:"ForeignKey:UserID; AssociationForeignKey:FacultyID"`
 	DepartmentID uint `gorm:"not null"`
-	Department Department `gorm:"ForeignKey:DepartmentID ; AssociationForeignKey:DepartmentID"`
+	Department Department `gorm:"ForeignKey:DepartmentID"`
 
 }
