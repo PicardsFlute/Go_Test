@@ -47,6 +47,7 @@ func init() {
 	}
 
 
+	db.SingularTable(true)
 
 	db.AutoMigrate(
 		&model.MainUser{},
