@@ -70,8 +70,6 @@ type Student struct {
 
 func main() {
 
-
-
 	routes := mux.NewRouter()
 	tpl = template.Must(template.ParseGlob("templates/*"))
 	routes.PathPrefix("/style").Handler(http.StripPrefix("/style/",http.FileServer(http.Dir("style"))))
@@ -81,7 +79,7 @@ func main() {
 	//routes.HandleFunc("/about/{number}", about)
 	routes.HandleFunc("/login", loginPage).Methods("GET")
 	routes.HandleFunc("/login", loginUser).Methods("POST")
-	routes.HandleFunc("/user/{num}", displayUser).Methods("GET")
+	routes.Handle("/user/{num}",  checkSessionWrapper(displayUser)).Methods("GET")
 
 	routes.HandleFunc("/logout", logout)
 	//routes.HandleFunc("/student", AuthHandler(displayUser))
@@ -101,7 +99,7 @@ func main() {
 // routes for site
 
 func index(w http.ResponseWriter, r *http.Request){
-	checkLoginUser(w,r)
+	//checkLoginUser(w,r)
 	tpl.ExecuteTemplate(w, "index", nil)
 
 }
@@ -184,6 +182,7 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 
 func checkLoginUser(w http.ResponseWriter, r *http.Request)(bool, User){
 
+
 	sess := globalSessions.SessionStart(w, r)
 	sess_uid := sess.Get("UserID")
 	//sess_username := sess.Get("username")
@@ -199,6 +198,41 @@ func checkLoginUser(w http.ResponseWriter, r *http.Request)(bool, User){
 	}
 }
 
+func checkUser(w http.ResponseWriter, r *http.Request) bool{
+	sess := globalSessions.SessionStart(w,r)
+	sess_uid := sess.Get("UserID")
+	u := User{}
+	if sess_uid == nil {
+		//http.Redirect(w,r, "/", http.StatusForbidden)
+		//tpl.ExecuteTemplate(w,"index", "You can't access this page")
+		return false
+	} else {
+		uID := sess_uid
+		db.First(&u, uID)
+		fmt.Println("Logged in User, ", uID)
+		//tpl.ExecuteTemplate(w, "user", nil)
+		return true
+	}
+}
+/*
+In this snippet we're placing our handler logic (a simple w.Write) in an anonymous function
+ and closing-over the message variable to form a closure.
+ We're then converting this closure to a handler by using the http.HandlerFunc adapter and returning it.
+ */
+func checkSessionWrapper(handle http.HandlerFunc) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("Executing middlewware")
+
+		if checkUser(w,r) { //if check user is true, execute the handle that's inside
+			handle.ServeHTTP(w,r)
+		} else{ //otherwise deny request
+			http.Redirect(w,r, "/", http.StatusNotFound)
+			tpl.ExecuteTemplate(w,"index", "You can't access that page")
+			return
+		}
+
+	})
+}
 
 
 func displayUser(w http.ResponseWriter, r *http.Request){
