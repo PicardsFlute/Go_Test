@@ -75,7 +75,7 @@ type Department struct {
 
 
 type Faculty struct {
-	FacultyID uint
+	FacultyID uint `gorm:"primary_key" `
 	FacultyType int `gorm:"not null"`
 	MainUser  MainUser `gorm:"ForeignKey:UserID; AssociationForeignKey:FacultyID"`
 	DepartmentID uint `gorm:"not null"`

@@ -15,7 +15,7 @@ import (
 	"Starfleet/model"
 	//"os/user"
 
-	"strconv"
+	//"strconv"
 )
 
 var (
@@ -88,7 +88,7 @@ func main() {
 	//routes.HandleFunc("/about/{number}", about)
 	routes.HandleFunc("/login", loginPage).Methods("GET")
 	routes.HandleFunc("/login", loginUser).Methods("POST")
-	routes.Handle("/user/{num}",  checkSessionWrapper(displayUser)).Methods("GET")
+	routes.Handle("/user",  checkSessionWrapper(displayUser)).Methods("GET")
 
 	routes.HandleFunc("/logout", logout)
 	//routes.HandleFunc("/student", AuthHandler(displayUser))
@@ -143,7 +143,9 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 				fmt.Println("User found in DB with email:", formEmail, " and password: ", dbPassword)
 				sess.Set("username", r.Form["username"])
 				sess.Set("UserID", user.UserID)
-				http.Redirect(w,r,"/user/" + strconv.Itoa(int(user.UserID)), http.StatusFound)
+				//http.Redirect(w,r,"/user/" + strconv.Itoa(int(user.UserID)), http.StatusFound)
+				http.Redirect(w,r,"/user", http.StatusFound)
+
 				tpl.ExecuteTemplate(w,"user",user)
 			} else {
 
@@ -162,7 +164,7 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 
 }
 
-
+/*
 func checkLoginUser(w http.ResponseWriter, r *http.Request)(bool, model.MainUser){
 
 
@@ -181,7 +183,9 @@ func checkLoginUser(w http.ResponseWriter, r *http.Request)(bool, model.MainUser
 	}
 }
 
-func checkUser(w http.ResponseWriter, r *http.Request) bool{
+*/
+
+func checkLoginStatus(w http.ResponseWriter, r *http.Request) bool{
 	sess := globalSessions.SessionStart(w,r)
 	sess_uid := sess.Get("UserID")
 	u := model.MainUser{}
@@ -206,7 +210,7 @@ func checkSessionWrapper(handle http.HandlerFunc) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Executing middlewware")
 
-		if checkUser(w,r) { //if check user is true, execute the handle that's inside
+		if checkLoginStatus(w,r) { //if check user is true, execute the handle that's inside
 			handle.ServeHTTP(w,r)
 		} else{ //otherwise deny request
 			http.Redirect(w,r, "/", http.StatusNotFound)
