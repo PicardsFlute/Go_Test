@@ -12,6 +12,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"Starfleet/session"
 	_"Starfleet/memory"
+	"Starfleet/model"
 	//"os/user"
 
 	"strconv"
@@ -47,11 +48,18 @@ func init() {
 
 
 
-	db.AutoMigrate(&User{}, &Student{})
+	db.AutoMigrate(
+		&model.MainUser{},
+		&model.Student{},
+		&model.PartTimeStudent{},
+		&model.FullTimeStudent{},
+		&model.Department{},
+		&model.Faculty{},
+	)
 }
 
 
-
+/*
 type User struct {
 	UserID int `gorm:"primary_key"`
 	UserEmail string `gorm:"type:varchar(20);unique"`
@@ -66,7 +74,7 @@ type Student struct {
 	User  User `gorm:"ForeignKey:UserRefer"`
 	UserRefer uint
 }
-
+*/
 
 func main() {
 
@@ -108,36 +116,7 @@ func loginPage(w http.ResponseWriter, r *http.Request){
 	tpl.ExecuteTemplate(w,"login",nil)
 }
 
-//func loginUser(w http.ResponseWriter, r *http.Request){
-//
-//	vars := mux.Vars(r)
-//	fmt.Println(vars)
-//
-//	formEmail := r.FormValue("email")
-//	formPassword :=	r.FormValue("password")
-//
-//	// Handle db checks here, if they are valid, render the user template and pass in some data,
-//	// otherwise,
-//	// render the login template with an error message
-//
-//	p := Person{}
-//
-//	fmt.Println("Email: ", formEmail)
-//	fmt.Println("Password: ", formPassword)
-//
-//	u := User{}
-//	db.First(&u)
-//	if u.UserEmail != "" {
-//		displayUser(w,r)
-//	} else {
-//		p.Email = "Not Found"
-//		p.Password = "Not found"
-//	}
-//
-//
-//
-//	tpl.ExecuteTemplate(w,"user",p)
-//}
+
 
 func loginUser(w http.ResponseWriter, r *http.Request) {
 	sess := globalSessions.SessionStart(w, r)
@@ -151,27 +130,30 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 		formEmail := r.FormValue("email")
 		formPassword :=	r.FormValue("password")
 		// Try to find user in DB
-		user := User{}
+		user := model.MainUser{}
+		db.Where(&model.MainUser{UserEmail: formEmail}).First(&user)
 
-		db.Where(&User{UserEmail: formEmail}).First(&user)
 
 
 		if user.UserEmail != "" {
 			dbPassword := user.UserPassword
-			if formPassword == user.UserPassword {
+
+			if user.CheckPasswordMatch(formPassword) {
 				fmt.Println("User found in DB with email:", formEmail, " and password: ", dbPassword)
 				sess.Set("username", r.Form["username"])
 				sess.Set("UserID", user.UserID)
 				http.Redirect(w,r,"/user/" + strconv.Itoa(user.UserID), http.StatusFound)
 				tpl.ExecuteTemplate(w,"user",user)
 			} else {
-				tpl.ExecuteTemplate(w,"login", "Error, username or password does not match.")
+
+				tpl.ExecuteTemplate(w,"login","Error, username or password does not match.")
+
 			}
 
 
 		} else {
-			fmt.Println("User not found")
-			tpl.ExecuteTemplate(w,"login","Error, username or password does not match.")
+			fmt.Println()
+			tpl.ExecuteTemplate(w,"login","User not found")
 		}
 
 	}
@@ -180,13 +162,13 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 }
 
 
-func checkLoginUser(w http.ResponseWriter, r *http.Request)(bool, User){
+func checkLoginUser(w http.ResponseWriter, r *http.Request)(bool, model.MainUser){
 
 
 	sess := globalSessions.SessionStart(w, r)
 	sess_uid := sess.Get("UserID")
 	//sess_username := sess.Get("username")
-	u := User{}
+	u := model.MainUser{}
 	if sess_uid == nil {
 		fmt.Println("No loggin in user")
 		return false, u
