@@ -142,7 +142,7 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 				fmt.Println("User found in DB with email:", formEmail, " and password: ", dbPassword)
 				sess.Set("username", r.Form["username"])
 				sess.Set("UserID", user.UserID)
-				http.Redirect(w,r,"/user/" + strconv.Itoa(user.UserID), http.StatusFound)
+				http.Redirect(w,r,"/user/" + strconv.Itoa(int(user.UserID)), http.StatusFound)
 				tpl.ExecuteTemplate(w,"user",user)
 			} else {
 
@@ -183,7 +183,7 @@ func checkLoginUser(w http.ResponseWriter, r *http.Request)(bool, model.MainUser
 func checkUser(w http.ResponseWriter, r *http.Request) bool{
 	sess := globalSessions.SessionStart(w,r)
 	sess_uid := sess.Get("UserID")
-	u := User{}
+	u := model.MainUser{}
 	if sess_uid == nil {
 		//http.Redirect(w,r, "/", http.StatusForbidden)
 		//tpl.ExecuteTemplate(w,"index", "You can't access this page")
