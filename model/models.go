@@ -4,10 +4,12 @@ package model
 import (
 	_ "github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"golang.org/x/crypto/bcrypt"
 
+	"fmt"
 )
 
-type User struct {
+type MainUser struct {
 	UserID uint `gorm:"primary_key"`
 	UserEmail string `gorm:"type:varchar(20);unique"`
 	UserPassword string `gorm:"type:varchar(300)"`
@@ -16,55 +18,67 @@ type User struct {
 	UserType int `gorm:"not null"`
 }
 
-func (u *User)BeforeCreate(){
+func (u *MainUser)BeforeCreate(){
 	// hash the password text, and save it as the password
 	println("User object created: ", u.UserEmail )
+	hashedPW, err := bcrypt.GenerateFromPassword( []byte(u.UserPassword), 10)
+	if (err != nil){
+		fmt.Println("Problem hashing...", err)
+	}
+	u.UserPassword = string(hashedPW)
 }
 
-func (u *User)CheckPasswordMatch(plainTextPassword string)(bool){
+func (u *MainUser)CheckPasswordMatch(plainTextPassword string)(bool){
 	// returns true is hashed plainTest matches hashed PW in database
-	return false
+	dbPassword := u.UserPassword
+	check := bcrypt.CompareHashAndPassword([]byte(dbPassword), []byte(plainTextPassword))
+	if check != nil {
+		fmt.Println("Error comparing passwords: ", check)
+		return false
+	} else {
+		return true
+	}
+
 }
 
 
 type Student struct {
 	StudentID uint `gorm:"primary_key"`
-	User  User `gorm:"ForeignKey:UserRefer"`
-	UserRefer uint `gorm:"not null"`
+	MainUser  MainUser `gorm:"ForeignKey:UserID;AssociationForeignKey:StudentID"`
 	StudentType int `gorm:"not null"`
 }
 
 type PartTimeStudent struct {
-	PartTimeStudentID uint `gnorm:"primary_key"`
-	Student  Student `gorm:"ForeignKey:UserRefer"`
+	PartTimeStudentID uint `gorm:"primary_key"`
+	Student  Student `gorm:"ForeignKey:StudentID"`
 	StudentRefer uint `gorm:"not null"`
 	NumCredits int `gorm:"not null"`
 }
 
 type FullTimeStudent struct {
-	PartTimeStudentID uint `gnorm:"primary_key"`
-	Student  Student `gorm:"ForeignKey:StudentRefer"`
+	PartTimeStudentID uint `gorm:"primary_key"`
+	Student  Student `gorm:"ForeignKey:StudentID"`
 	StudentRefer uint `gorm:"not null"`
 	NumCredits int `gorm:"not null"`
 }
 
 
 type Department struct {
-	DepartmentID uint
+	DepartmentID uint `gorm:"primary_key" `
 	DepartmentName string `gorm:"type:varchar(30);not null"`
 	DepartmentChair string `gorm:"type:varchar(30);not null"`
 	DepartmentBuilding string `gorm:"type:varchar(30);not null"`
 	DepartmentPhoneNumber  string `gorm:"type:varchar(15);not null"`
 	departmentRoomNumber string `gorm:"type:varchar(10);not null"`
-
+	
 }
 
 
 type Faculty struct {
-	FacultyID uint `gnorm:"primary_key"`
+	FacultyID uint `gorm:"primary_key"`
 	FacultyType int `gorm:"not null"`
-	User  User `gorm:"ForeignKey:UserRefer"`
-	UserRefer uint `gorm:"not null"`
-	Department Department `gorm:"ForeignKey:DepartmentRefer"`
-	DepartmentRefer uint `gorm:"not null"`
+	MainUser  MainUser `gorm:"ForeignKey:UserID; AssociationForeignKey:FacultyID"`
+	DepartmentID uint `gorm:"not null"`
+	Department Department `gorm:"ForeignKey:DepartmentID ; AssociationForeignKey:DepartmentID"`
+
 }

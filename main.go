@@ -131,38 +131,39 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 		formEmail := r.FormValue("email")
 		formPassword :=	r.FormValue("password")
 		// Try to find user in DB
-		user := model.User{}
+		user := model.MainUser{}
+		db.Where(&model.MainUser{UserEmail: formEmail}).First(&user)
 
-		db.Where(&model.User{UserEmail: formEmail}).First(&user)
 
 
 		if user.UserEmail != "" {
 			dbPassword := user.UserPassword
-			if formPassword == user.UserPassword {
+
+			if user.CheckPasswordMatch(formPassword) {
 				fmt.Println("User found in DB with email:", formEmail, " and password: ", dbPassword)
 				sess.Set("username", r.Form["username"])
 				sess.Set("UserID", user.UserID)
 				tpl.ExecuteTemplate(w,"user",user)
 			} else {
-				tpl.ExecuteTemplate(w,"login",nil)
+				tpl.ExecuteTemplate(w,"login","Error, username or password does not match.")
 			}
 
 
 		} else {
-			fmt.Println("User not found")
-			tpl.ExecuteTemplate(w,"login","Error, username or password does not match.")
+			fmt.Println()
+			tpl.ExecuteTemplate(w,"login","User not found")
 		}
 
 	}
 }
 
 
-func checkLoginUser(w http.ResponseWriter, r *http.Request)(bool, model.User){
+func checkLoginUser(w http.ResponseWriter, r *http.Request)(bool, model.MainUser){
 
 	sess := globalSessions.SessionStart(w, r)
 	sess_uid := sess.Get("UserID")
 	//sess_username := sess.Get("username")
-	u := model.User{}
+	u := model.MainUser{}
 	if sess_uid == nil {
 		fmt.Println("No loggin in user")
 		return false, u
