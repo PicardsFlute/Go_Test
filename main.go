@@ -15,6 +15,7 @@ import (
 	"Starfleet/model"
 	//"os/user"
 
+	"strconv"
 )
 
 var (
@@ -48,7 +49,7 @@ func init() {
 
 
 	db.AutoMigrate(
-		&model.User{},
+		&model.MainUser{},
 		&model.Student{},
 		&model.PartTimeStudent{},
 		&model.FullTimeStudent{},
@@ -60,7 +61,7 @@ func init() {
 
 /*
 type User struct {
-	UserID uint `gorm:"primary_key"`
+	UserID int `gorm:"primary_key"`
 	UserEmail string `gorm:"type:varchar(20);unique"`
 	UserPassword string `gorm:"type:varchar(300)"`
 	FirstName string `gorm:"type:varchar(50)"`
@@ -87,8 +88,8 @@ func main() {
 	routes.HandleFunc("/",index)
 	//routes.HandleFunc("/about/{number}", about)
 	routes.HandleFunc("/login", loginPage).Methods("GET")
-	routes.HandleFunc("/login/{num}", loginUser).Methods("POST")
-	routes.HandleFunc("/user/{id:[0-9]+}", displayUser).Methods("GET")
+	routes.HandleFunc("/login", loginUser).Methods("POST")
+	routes.HandleFunc("/user/{num}", displayUser).Methods("GET")
 
 	routes.HandleFunc("/logout", logout)
 	//routes.HandleFunc("/student", AuthHandler(displayUser))
@@ -143,9 +144,12 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 				fmt.Println("User found in DB with email:", formEmail, " and password: ", dbPassword)
 				sess.Set("username", r.Form["username"])
 				sess.Set("UserID", user.UserID)
+				http.Redirect(w,r,"/user/" + strconv.Itoa(user.UserID), http.StatusFound)
 				tpl.ExecuteTemplate(w,"user",user)
 			} else {
+
 				tpl.ExecuteTemplate(w,"login","Error, username or password does not match.")
+
 			}
 
 
@@ -155,6 +159,8 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 		}
 
 	}
+
+
 }
 
 
