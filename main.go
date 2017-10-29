@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/mux"
 	"fmt"
 	"github.com/gorilla/handlers"
+	"github.com/gorilla/context"
 	"os"
  	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -31,6 +32,12 @@ type Person struct {
 }
 
 
+/*TODO:
+1. user visits /student
+2. app handles route, checks session, if valid, renders page for user id in session
+2b. if not valid, redirects (302) to /login
+
+*/
 
 
 
@@ -56,6 +63,7 @@ func init() {
 		&model.FullTimeStudent{},
 		&model.Department{},
 		&model.Faculty{},
+		&model.Admin{},
 	)
 }
 
@@ -88,7 +96,11 @@ func main() {
 	//routes.HandleFunc("/about/{number}", about)
 	routes.HandleFunc("/login", loginPage).Methods("GET")
 	routes.HandleFunc("/login", loginUser).Methods("POST")
-	routes.Handle("/user",  checkSessionWrapper(displayUser)).Methods("GET")
+	//routes.Handle("/user",  checkSessionWrapper(displayStudent)).Methods("GET")
+	routes.Handle("/student",  checkSessionWrapper(displayStudent)).Methods("GET")
+	routes.Handle("/admin",  checkSessionWrapper(displayAdmin)).Methods("GET")
+	routes.Handle("/faculty",  checkSessionWrapper(displayFacultyt)).Methods("GET")
+
 
 	routes.HandleFunc("/logout", logout)
 	//routes.HandleFunc("/student", AuthHandler(displayUser))
@@ -144,9 +156,11 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 				sess.Set("username", r.Form["username"])
 				sess.Set("UserID", user.UserID)
 				//http.Redirect(w,r,"/user/" + strconv.Itoa(int(user.UserID)), http.StatusFound)
-				http.Redirect(w,r,"/user", http.StatusFound)
+				//http.Redirect(w,r,"/user", http.StatusFound)
+				//tpl.ExecuteTemplate(w,"user",user)
+				context.Set(r, "user", user.FirstName)
+				checkUserType(user, w, r)
 
-				tpl.ExecuteTemplate(w,"user",user)
 			} else {
 
 				tpl.ExecuteTemplate(w,"login","Error, username or password does not match.")
@@ -163,6 +177,48 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 
 
 }
+
+func checkUserType(user model.MainUser, w http.ResponseWriter, r *http.Request){
+	//cont := context.Get(r,"user")
+
+	//TODO: 1. user visits /login (GET)
+	//2. user submits login form (POST)
+	//3. app validates request, logs in, if happy, redirects (302) to /student
+	//4. user is redirected to /student, app gets the data it needs, passes to template and renders the student template
+	switch user.UserType {
+
+	case 1:
+		fmt.Println("You're a student")
+		http.Redirect(w,r,"/student", http.StatusFound)
+
+		// The data is lost after redirect because it's a new request,
+		// now I need to get the student data and render the template, which is a different request
+		//since http is stateless, you lose the data structure after the first request.
+		tpl.ExecuteTemplate(w,"student", user)
+
+	case 2:
+		fmt.Println("Youre a faculty")
+		http.Redirect(w,r,"/faculty", http.StatusFound)
+		tpl.ExecuteTemplate(w,"faculty", "You're a faculty")
+
+	case 3:
+		fmt.Println("Youre an admin")
+		http.Redirect(w,r,"/admin", http.StatusFound)
+		tpl.ExecuteTemplate(w,"admin", "administrative user!")
+
+	default:
+		fmt.Println("Not sure your type")
+		http.Redirect(w,r,"/", http.StatusFound)
+		tpl.ExecuteTemplate(w,"index",nil)
+
+	}
+
+	if r.Method == "POST"{
+
+	}
+
+}
+
 
 /*
 func checkLoginUser(w http.ResponseWriter, r *http.Request)(bool, model.MainUser){
@@ -185,45 +241,77 @@ func checkLoginUser(w http.ResponseWriter, r *http.Request)(bool, model.MainUser
 
 */
 
-func checkLoginStatus(w http.ResponseWriter, r *http.Request) bool{
+
+
+
+func checkLoginStatus(w http.ResponseWriter, r *http.Request) (bool,model.MainUser){
 	sess := globalSessions.SessionStart(w,r)
 	sess_uid := sess.Get("UserID")
 	u := model.MainUser{}
 	if sess_uid == nil {
 		//http.Redirect(w,r, "/", http.StatusForbidden)
 		//tpl.ExecuteTemplate(w,"index", "You can't access this page")
-		return false
+		return false, u
 	} else {
 		uID := sess_uid
 		db.First(&u, uID)
 		fmt.Println("Logged in User, ", uID)
 		//tpl.ExecuteTemplate(w, "user", nil)
-		return true
+		return true, u
 	}
 }
 /*
-In this snippet we're placing our handler logic (a simple w.Write) in an anonymous function
+In this snippet we're placing our handler logic in an anonymous function
  and closing-over the message variable to form a closure.
  We're then converting this closure to a handler by using the http.HandlerFunc adapter and returning it.
  */
 func checkSessionWrapper(handle http.HandlerFunc) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Executing middlewware")
-
-		if checkLoginStatus(w,r) { //if check user is true, execute the handle that's inside
+		isLogged, _ := checkLoginStatus(w, r)
+		if isLogged { //if check user is true, execute the handle that's inside
 			handle.ServeHTTP(w,r)
 		} else{ //otherwise deny request
-			http.Redirect(w,r, "/", http.StatusNotFound)
+			//http.Redirect(w,r, "/", http.StatusUnauthorized)
+			w.WriteHeader(http.StatusUnauthorized)
 			tpl.ExecuteTemplate(w,"index", "You can't access that page")
-			return
+			http.Redirect(w, r, "/", http.StatusForbidden)
 		}
 
 	})
 }
 
+/*
+func getUserType(handle http.HandlerFunc) http.Handler {
+	return http.HandlerFunc(func(user model.MainUser){
 
-func displayUser(w http.ResponseWriter, r *http.Request){
-	tpl.ExecuteTemplate(w, "user", nil)
+
+	})
+}
+
+*/
+
+
+func displayStudent(w http.ResponseWriter, r *http.Request){
+	//TODO: Check only user can access correct roles
+
+	_, user := checkLoginStatus(w, r)
+	if user.UserType == 1 {
+		tpl.ExecuteTemplate(w, "student", nil)
+	}else {
+		http.Redirect(w,r,"/", 1)
+		tpl.ExecuteTemplate(w, "index", "Unauthorized")
+	}
+}
+
+
+func displayAdmin(w http.ResponseWriter, r *http.Request){
+	tpl.ExecuteTemplate(w, "admin", nil)
+}
+
+
+func displayFacultyt(w http.ResponseWriter, r *http.Request){
+	tpl.ExecuteTemplate(w, "faculty", nil)
 }
 
 

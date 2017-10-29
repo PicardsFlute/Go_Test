@@ -94,7 +94,8 @@ type FullTimeFaculty struct {
 }
 
 
-
-
-
+type Admin struct {
+	AdminID uint `gorm:"primary_key"`
+	MainUser MainUser `gorm:"ForeignKey:UserID;AssociationForeignKey:StudentID"`
+}
 
