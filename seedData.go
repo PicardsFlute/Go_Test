@@ -48,26 +48,31 @@ func main(){
 	db.Create(&user2)
 	db.Create(&user3)
 	db.Create(&user4)
-
-	//dbUser := model.User{}
-	//db.Where(&model.User{UserEmail: user1.UserEmail}).First(&dbUser)
-
-	////
-	//////db.Where(&model.User{UserEmail: user2.UserEmail}).First(&dbUser)
-	student2 := model.Student{StudentID: user3.UserID}
+	
+	student2 := model.Student{StudentID: user3.UserID, StudentType:2}
 	db.Create(&student2)
 
-	//student1 := model.Student{MainUser: user1}
-	//db.Create(&student1)
-	//var user model.User
-	//db.Model(&user).Association("Students")
-	//db.Model(&).Related().Find(&student1)
+	student1 := model.Student{StudentID: user1.UserID, StudentType:1}
+	db.Create(&student1)
+
+	// example of finding related models
 	u := model.MainUser{}
 	db.Model(&student2).Association("MainUser").Find(&u)
-	fmt.Println("For the student12, the user email is: ", u.UserEmail)
+	fmt.Println("For the student2, the user email is: ", u.UserEmail)
 
-	//dep1 := model.Department{DepartmentName:"Math", DepartmentChair:"Mr. Math"}
-	//db.Create(&dep1)
+
+
+	department1 := model.Department{DepartmentName:"Math", DepartmentBuilding:"MathBuilding", DepartmentRoomNumber:"302", DepartmentChair:"Mr Math", DepartmentPhoneNumber:"111-222-3333"}
+	department2 := model.Department{DepartmentName:"Computer Science", DepartmentBuilding:"CSBuilding", DepartmentRoomNumber:"100", DepartmentChair:"Mr Computer", DepartmentPhoneNumber:"123-456-7899"}
+	db.Create(&department1)
+	db.Create(&department2)
+
+	faculty1 := model.Faculty{FacultyID:user2.UserID, FacultyType:1, DepartmentID:department1.DepartmentID}
+	faculty2 := model.Faculty{FacultyID:user4.UserID, FacultyType:2, DepartmentID:department2.DepartmentID}
+	db.Create(&faculty1)
+	db.Create(&faculty2)
+
+
 }
 
 

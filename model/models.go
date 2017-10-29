@@ -69,7 +69,7 @@ type Department struct {
 	DepartmentChair string `gorm:"type:varchar(30);not null"`
 	DepartmentBuilding string `gorm:"type:varchar(30);not null"`
 	DepartmentPhoneNumber  string `gorm:"type:varchar(15);not null"`
-	departmentRoomNumber string `gorm:"type:varchar(10);not null"`
+	DepartmentRoomNumber string `gorm:"type:varchar(10);not null"`
 	Faculty []Faculty
 }
 
@@ -82,3 +82,19 @@ type Faculty struct {
 	Department Department `gorm:"ForeignKey:DepartmentID"`
 
 }
+
+type PartTimeFaculty struct {
+	FacultyID uint `gorm:"primary_key" `
+	Faculty Faculty `gorm:"ForeignKey:FacultyID; AssociationForeignKey:FacultyID"`
+}
+
+type FullTimeFaculty struct {
+	FacultyID uint `gorm:"primary_key" `
+	Faculty Faculty `gorm:"ForeignKey:FacultyID; AssociationForeignKey:FacultyID"`
+}
+
+
+
+
+
+
