@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/mux"
 	"fmt"
 	"github.com/gorilla/handlers"
+	"github.com/gorilla/context"
 	"os"
  	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -31,6 +32,12 @@ type Person struct {
 }
 
 
+/*TODO:
+1. user visits /student
+2. app handles route, checks session, if valid, renders page for user id in session
+2b. if not valid, redirects (302) to /login
+
+*/
 
 
 
@@ -151,6 +158,7 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 				//http.Redirect(w,r,"/user/" + strconv.Itoa(int(user.UserID)), http.StatusFound)
 				//http.Redirect(w,r,"/user", http.StatusFound)
 				//tpl.ExecuteTemplate(w,"user",user)
+				context.Set(r, "user", user.FirstName)
 				checkUserType(user, w, r)
 
 			} else {
@@ -171,13 +179,23 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func checkUserType(user model.MainUser, w http.ResponseWriter, r *http.Request){
+	//cont := context.Get(r,"user")
 
+	//TODO: 1. user visits /login (GET)
+	//2. user submits login form (POST)
+	//3. app validates request, logs in, if happy, redirects (302) to /student
+	//4. user is redirected to /student, app gets the data it needs, passes to template and renders the student template
 	switch user.UserType {
 
 	case 1:
 		fmt.Println("You're a student")
 		http.Redirect(w,r,"/student", http.StatusFound)
-		tpl.ExecuteTemplate(w,"student", "You're a student")
+
+		// The data is lost after redirect because it's a new request,
+		// now I need to get the student data and render the template, which is a different request
+		//since http is stateless, you lose the data structure after the first request.
+		tpl.ExecuteTemplate(w,"student", user)
+
 	case 2:
 		fmt.Println("Youre a faculty")
 		http.Redirect(w,r,"/faculty", http.StatusFound)
@@ -186,7 +204,7 @@ func checkUserType(user model.MainUser, w http.ResponseWriter, r *http.Request){
 	case 3:
 		fmt.Println("Youre an admin")
 		http.Redirect(w,r,"/admin", http.StatusFound)
-		tpl.ExecuteTemplate(w,"admin", "You're an admin")
+		tpl.ExecuteTemplate(w,"admin", "administrative user!")
 
 	default:
 		fmt.Println("Not sure your type")
@@ -195,7 +213,12 @@ func checkUserType(user model.MainUser, w http.ResponseWriter, r *http.Request){
 
 	}
 
+	if r.Method == "POST"{
+
+	}
+
 }
+
 
 /*
 func checkLoginUser(w http.ResponseWriter, r *http.Request)(bool, model.MainUser){
@@ -218,6 +241,9 @@ func checkLoginUser(w http.ResponseWriter, r *http.Request)(bool, model.MainUser
 
 */
 
+
+
+
 func checkLoginStatus(w http.ResponseWriter, r *http.Request) (bool,model.MainUser){
 	sess := globalSessions.SessionStart(w,r)
 	sess_uid := sess.Get("UserID")
@@ -235,7 +261,7 @@ func checkLoginStatus(w http.ResponseWriter, r *http.Request) (bool,model.MainUs
 	}
 }
 /*
-In this snippet we're placing our handler logic (a simple w.Write) in an anonymous function
+In this snippet we're placing our handler logic in an anonymous function
  and closing-over the message variable to form a closure.
  We're then converting this closure to a handler by using the http.HandlerFunc adapter and returning it.
  */
@@ -244,7 +270,6 @@ func checkSessionWrapper(handle http.HandlerFunc) http.Handler {
 		fmt.Println("Executing middlewware")
 		isLogged, _ := checkLoginStatus(w, r)
 		if isLogged { //if check user is true, execute the handle that's inside
-			//checkUserType(user,w,r)
 			handle.ServeHTTP(w,r)
 		} else{ //otherwise deny request
 			//http.Redirect(w,r, "/", http.StatusUnauthorized)
@@ -256,27 +281,27 @@ func checkSessionWrapper(handle http.HandlerFunc) http.Handler {
 	})
 }
 
-func checkUserTypeIsValid(handle http.HandlerFunc) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("Executing middlewware")
-		isLogged, _ := checkLoginStatus(w, r)
-		if isLogged { //if check user is true, execute the handle that's inside
-			//checkUserType(user,w,r)
-			handle.ServeHTTP(w,r)
-		} else{ //otherwise deny request
-			//http.Redirect(w,r, "/", http.StatusUnauthorized)
-			w.WriteHeader(http.StatusUnauthorized)
-			tpl.ExecuteTemplate(w,"index", "You can't access that page")
-			http.Redirect(w, r, "/", http.StatusForbidden)
-		}
+/*
+func getUserType(handle http.HandlerFunc) http.Handler {
+	return http.HandlerFunc(func(user model.MainUser){
+
 
 	})
 }
+
+*/
 
 
 func displayStudent(w http.ResponseWriter, r *http.Request){
 	//TODO: Check only user can access correct roles
-	tpl.ExecuteTemplate(w, "student", nil)
+
+	_, user := checkLoginStatus(w, r)
+	if user.UserType == 1 {
+		tpl.ExecuteTemplate(w, "student", nil)
+	}else {
+		http.Redirect(w,r,"/", 1)
+		tpl.ExecuteTemplate(w, "index", "Unauthorized")
+	}
 }
 
 
