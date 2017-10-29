@@ -82,3 +82,8 @@ type Faculty struct {
 	Department Department `gorm:"ForeignKey:DepartmentID"`
 
 }
+
+type Admin struct {
+	AdminID uint `gorm:"primary_key"`
+	MainUser MainUser `gorm:"ForeignKey:UserID;AssociationForeignKey:StudentID"`
+}

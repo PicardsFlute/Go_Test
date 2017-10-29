@@ -23,6 +23,7 @@ func main(){
 	db.DropTable(&model.PartTimeStudent{})
 	db.DropTable(&model.Faculty{})
 	db.DropTable(&model.MainUser{})
+	db.DropTable(&model.Admin{})
 
 	db.DropTable(&model.Department{})
 
@@ -34,20 +35,27 @@ func main(){
 		&model.FullTimeStudent{},
 		&model.Department{},
 		&model.Faculty{},
+		&model.Admin{},
 	)
 	db.Model(&model.Student{}).AddForeignKey("student_id", "main_user(user_id)", "CASCADE", "CASCADE")
-
 	db.Model(&model.Faculty{}).AddForeignKey("faculty_id", "main_user(user_id)", "RESTRICT", "RESTRICT")
+	db.Model(&model.Admin{}).AddForeignKey("admin_id", "main_user(user_uid", "RESTRICT", "RESTRICT")
 	db.Model(&model.Faculty{}).AddForeignKey("department_id", "department(department_id)", "RESTRICT", "RESTRICT")
 
 	user1 := model.MainUser{FirstName: "Pat", LastName:"Lagat", UserEmail:"plagat@yahoo.com", UserPassword:"pl12345"}
 	user2 := model.MainUser{FirstName: "Irish", LastName:"James", UserEmail:"jirish@yahoo.com", UserPassword:"ij12345"}
 	user3 := model.MainUser{FirstName: "Trey", LastName:"Gorkin", UserEmail:"gork@yahoo.com", UserPassword:"tg12345", UserType:1}
 	user4 := model.MainUser{FirstName: "Testy", LastName:"McTest", UserEmail:"test@test.test", UserPassword:"testPW", UserType:1}
+	user5 := model.MainUser{FirstName: "Faculty", LastName:"McFaculton", UserEmail:"faculty@test.test", UserPassword:"testPW", UserType:2}
+	user6 := model.MainUser{FirstName: "Admin", LastName:"McAdminton", UserEmail:"admin@test.test", UserPassword:"testPW", UserType:3}
+
+
 	db.Create(&user1)
 	db.Create(&user2)
 	db.Create(&user3)
 	db.Create(&user4)
+	db.Create(&user5)
+	db.Create(&user6)
 
 	//dbUser := model.User{}
 	//db.Where(&model.User{UserEmail: user1.UserEmail}).First(&dbUser)

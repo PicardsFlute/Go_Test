@@ -56,6 +56,7 @@ func init() {
 		&model.FullTimeStudent{},
 		&model.Department{},
 		&model.Faculty{},
+		&model.Admin{},
 	)
 }
 
@@ -88,7 +89,11 @@ func main() {
 	//routes.HandleFunc("/about/{number}", about)
 	routes.HandleFunc("/login", loginPage).Methods("GET")
 	routes.HandleFunc("/login", loginUser).Methods("POST")
-	routes.Handle("/user",  checkSessionWrapper(displayUser)).Methods("GET")
+	//routes.Handle("/user",  checkSessionWrapper(displayStudent)).Methods("GET")
+	routes.Handle("/student",  checkSessionWrapper(displayStudent)).Methods("GET")
+	routes.Handle("/admin",  checkSessionWrapper(displayAdmin)).Methods("GET")
+	routes.Handle("/faculty",  checkSessionWrapper(displayFacultyt)).Methods("GET")
+
 
 	routes.HandleFunc("/logout", logout)
 	//routes.HandleFunc("/student", AuthHandler(displayUser))
@@ -144,9 +149,10 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 				sess.Set("username", r.Form["username"])
 				sess.Set("UserID", user.UserID)
 				//http.Redirect(w,r,"/user/" + strconv.Itoa(int(user.UserID)), http.StatusFound)
-				http.Redirect(w,r,"/user", http.StatusFound)
+				//http.Redirect(w,r,"/user", http.StatusFound)
+				//tpl.ExecuteTemplate(w,"user",user)
+				checkUserType(user, w, r)
 
-				tpl.ExecuteTemplate(w,"user",user)
 			} else {
 
 				tpl.ExecuteTemplate(w,"login","Error, username or password does not match.")
@@ -161,6 +167,33 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+
+}
+
+func checkUserType(user model.MainUser, w http.ResponseWriter, r *http.Request){
+
+	switch user.UserType {
+
+	case 1:
+		fmt.Println("You're a student")
+		http.Redirect(w,r,"/student", http.StatusFound)
+		tpl.ExecuteTemplate(w,"student", "You're a student")
+	case 2:
+		fmt.Println("Youre a faculty")
+		http.Redirect(w,r,"/faculty", http.StatusFound)
+		tpl.ExecuteTemplate(w,"faculty", "You're a faculty")
+
+	case 3:
+		fmt.Println("Youre an admin")
+		http.Redirect(w,r,"/admin", http.StatusFound)
+		tpl.ExecuteTemplate(w,"admin", "You're an admin")
+
+	default:
+		fmt.Println("Not sure your type")
+		http.Redirect(w,r,"/", http.StatusFound)
+		tpl.ExecuteTemplate(w,"index",nil)
+
+	}
 
 }
 
@@ -185,20 +218,20 @@ func checkLoginUser(w http.ResponseWriter, r *http.Request)(bool, model.MainUser
 
 */
 
-func checkLoginStatus(w http.ResponseWriter, r *http.Request) bool{
+func checkLoginStatus(w http.ResponseWriter, r *http.Request) (bool,model.MainUser){
 	sess := globalSessions.SessionStart(w,r)
 	sess_uid := sess.Get("UserID")
 	u := model.MainUser{}
 	if sess_uid == nil {
 		//http.Redirect(w,r, "/", http.StatusForbidden)
 		//tpl.ExecuteTemplate(w,"index", "You can't access this page")
-		return false
+		return false, u
 	} else {
 		uID := sess_uid
 		db.First(&u, uID)
 		fmt.Println("Logged in User, ", uID)
 		//tpl.ExecuteTemplate(w, "user", nil)
-		return true
+		return true, u
 	}
 }
 /*
@@ -209,21 +242,51 @@ In this snippet we're placing our handler logic (a simple w.Write) in an anonymo
 func checkSessionWrapper(handle http.HandlerFunc) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Executing middlewware")
-
-		if checkLoginStatus(w,r) { //if check user is true, execute the handle that's inside
+		isLogged, _ := checkLoginStatus(w, r)
+		if isLogged { //if check user is true, execute the handle that's inside
+			//checkUserType(user,w,r)
 			handle.ServeHTTP(w,r)
 		} else{ //otherwise deny request
-			http.Redirect(w,r, "/", http.StatusNotFound)
+			//http.Redirect(w,r, "/", http.StatusUnauthorized)
+			w.WriteHeader(http.StatusUnauthorized)
 			tpl.ExecuteTemplate(w,"index", "You can't access that page")
-			return
+			http.Redirect(w, r, "/", http.StatusForbidden)
+		}
+
+	})
+}
+
+func checkUserTypeIsValid(handle http.HandlerFunc) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("Executing middlewware")
+		isLogged, _ := checkLoginStatus(w, r)
+		if isLogged { //if check user is true, execute the handle that's inside
+			//checkUserType(user,w,r)
+			handle.ServeHTTP(w,r)
+		} else{ //otherwise deny request
+			//http.Redirect(w,r, "/", http.StatusUnauthorized)
+			w.WriteHeader(http.StatusUnauthorized)
+			tpl.ExecuteTemplate(w,"index", "You can't access that page")
+			http.Redirect(w, r, "/", http.StatusForbidden)
 		}
 
 	})
 }
 
 
-func displayUser(w http.ResponseWriter, r *http.Request){
-	tpl.ExecuteTemplate(w, "user", nil)
+func displayStudent(w http.ResponseWriter, r *http.Request){
+	//TODO: Check only user can access correct roles
+	tpl.ExecuteTemplate(w, "student", nil)
+}
+
+
+func displayAdmin(w http.ResponseWriter, r *http.Request){
+	tpl.ExecuteTemplate(w, "admin", nil)
+}
+
+
+func displayFacultyt(w http.ResponseWriter, r *http.Request){
+	tpl.ExecuteTemplate(w, "faculty", nil)
 }
 
 
