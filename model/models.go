@@ -11,7 +11,7 @@ import (
 
 type MainUser struct {
 	UserID uint `gorm:"primary_key"`
-	UserEmail string `gorm:"type:varchar(20);unique"`
+	UserEmail string `gorm:"type:varchar(50);unique"`
 	UserPassword string `gorm:"type:varchar(300)"`
 	FirstName string `gorm:"type:varchar(50)"`
 	LastName string `gorm:"type:varchar(50)"`
@@ -50,15 +50,13 @@ type Student struct {
 
 type PartTimeStudent struct {
 	PartTimeStudentID uint `gorm:"primary_key"`
-	Student  Student `gorm:"ForeignKey:StudentID"`
-	StudentRefer uint `gorm:"not null"`
+	Student  Student `gorm:"ForeignKey:StudentID;AssociationForeignKey:PartTimeStudentID"`
 	NumCredits int `gorm:"not null"`
 }
 
 type FullTimeStudent struct {
-	PartTimeStudentID uint `gorm:"primary_key"`
-	Student  Student `gorm:"ForeignKey:StudentID"`
-	StudentRefer uint `gorm:"not null"`
+	FullTimeStudentID uint `gorm:"primary_key"`
+	Student  Student `gorm:"ForeignKey:StudentID;AssociationForeignKey:FullTimeStudentID"`
 	NumCredits int `gorm:"not null"`
 }
 
@@ -66,8 +64,8 @@ type FullTimeStudent struct {
 type Department struct {
 	DepartmentID uint `gorm:"primary_key" `
 	DepartmentName string `gorm:"type:varchar(30);not null"`
-	DepartmentChair string `gorm:"type:varchar(30);not null"`
-	DepartmentBuilding string `gorm:"type:varchar(30);not null"`
+	DepartmentChair string `gorm:"type:varchar(50);not null"`
+	DepartmentBuilding string `gorm:"type:varchar(50);not null"`
 	DepartmentPhoneNumber  string `gorm:"type:varchar(15);not null"`
 	DepartmentRoomNumber string `gorm:"type:varchar(10);not null"`
 	Faculty []Faculty
@@ -84,18 +82,23 @@ type Faculty struct {
 }
 
 type PartTimeFaculty struct {
-	FacultyID uint `gorm:"primary_key" `
-	Faculty Faculty `gorm:"ForeignKey:FacultyID; AssociationForeignKey:FacultyID"`
+	PartTimeFacultyID uint `gorm:"primary_key" `
+	Faculty Faculty `gorm:"ForeignKey:FacultyID; AssociationForeignKey:PartTimeFacultyID"`
 }
 
 type FullTimeFaculty struct {
-	FacultyID uint `gorm:"primary_key" `
-	Faculty Faculty `gorm:"ForeignKey:FacultyID; AssociationForeignKey:FacultyID"`
+	FullTimeFacultyID uint `gorm:"primary_key" `
+	Faculty Faculty `gorm:"ForeignKey:FacultyID; AssociationForeignKey:FullTimeFacultyID"`
 }
 
 
 type Admin struct {
 	AdminID uint `gorm:"primary_key"`
-	MainUser MainUser `gorm:"ForeignKey:UserID;AssociationForeignKey:StudentID"`
+	MainUser MainUser `gorm:"ForeignKey:UserID;AssociationForeignKey:AdminID"`
+}
+
+type Researcher struct {
+	ResearcherID uint `gorm:"primary_key"`
+	MainUser MainUser `gorm:"ForeignKey:UserID;AssociationForeignKey:ResearcherID"`
 }
 
