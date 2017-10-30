@@ -273,8 +273,8 @@ func checkSessionWrapper(handle http.HandlerFunc) http.Handler {
 			handle.ServeHTTP(w,r)
 		} else{ //otherwise deny request
 			//http.Redirect(w,r, "/", http.StatusUnauthorized)
-			w.WriteHeader(http.StatusUnauthorized)
-			tpl.ExecuteTemplate(w,"index", "You can't access that page")
+			//w.WriteHeader(http.StatusUnauthorized)
+			//tpl.ExecuteTemplate(w,"index", "You can't access that page")
 			http.Redirect(w, r, "/", http.StatusForbidden)
 		}
 
