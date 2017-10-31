@@ -25,11 +25,6 @@ var (
 	globalSessions *session.Manager
 )
 
-type Person struct {
-	Email string
-	Password string
-}
-
 
 /*TODO:
 1. user visits /student
@@ -232,8 +227,8 @@ func checkSessionWrapper(handle http.HandlerFunc) http.Handler {
 			handle.ServeHTTP(w,r)
 		} else{ //otherwise deny request
 			//tpl.ExecuteTemplate(w,"index", "You can't access that page")
-			http.Redirect(w, r, "/", http.StatusUnauthorized) // redirects route and gives unauthorized link
-			tpl.ExecuteTemplate(w,"index", "You are unauthorized to acess that page") //this renders the index template right under it
+			http.Redirect(w, r, "/login", http.StatusUnauthorized) // redirects route and gives unauthorized link
+			tpl.ExecuteTemplate(w,"login", "You must login first.") //this renders the index template right under it
 		}
 
 	})
@@ -256,7 +251,14 @@ func displayStudent(w http.ResponseWriter, r *http.Request){
 
 
 func displayAdmin(w http.ResponseWriter, r *http.Request){
-	tpl.ExecuteTemplate(w, "admin", nil)
+	_, user := checkLoginStatus(w,r)
+
+	if user.UserType == 3 {
+		tpl.ExecuteTemplate(w, "admin", user)
+	}else {
+		http.Redirect(w,r,"/", http.StatusForbidden)
+		index(w,r)
+	}
 }
 
 
