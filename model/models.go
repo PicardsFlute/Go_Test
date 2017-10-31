@@ -7,6 +7,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 
 	"fmt"
+	"time"
 )
 
 type MainUser struct {
@@ -77,7 +78,7 @@ type Faculty struct {
 	FacultyType int `gorm:"not null"`
 	MainUser  MainUser `gorm:"ForeignKey:UserID; AssociationForeignKey:FacultyID"`
 	DepartmentID uint `gorm:"not null"`
-	Department Department `gorm:"ForeignKey:DepartmentID"`
+	Department Department `gorm:"ForeignKey:DepartmentID; AssociationForeignKey:DepartmentID"`
 
 }
 
@@ -101,4 +102,79 @@ type Researcher struct {
 	ResearcherID uint `gorm:"primary_key"`
 	MainUser MainUser `gorm:"ForeignKey:UserID;AssociationForeignKey:ResearcherID"`
 }
+
+type Major struct {
+	MajorID uint `gorm:"primary_key"`
+	DepartmentID uint `gorm:"not null"`
+	MajorName string `gorm:"type:varchar(59)"`
+	Department Department `gorm:"ForeignKey:DepartmentID; AssociationForeignKey:DepartmentID"`
+
+}
+
+type Minor struct {
+	MinorID uint `gorm:"primary_key"`
+	MinorName string `gorm:"type:varchar(50)"`
+	DepartmentID uint `gorm:"not null"`
+	Department Department `gorm:"ForeignKey:DepartmentID; AssociationForeignKey:DepartmentID"`
+}
+
+type StudentMajor struct {
+	StudentID uint `gorm:"primary_key "`
+	MajorID uint `gorm:"primary_key "`
+	Major Major `gorm:"ForeignKey:MajorID; AssociationForeignKey:MajorID"`
+	Student Student `gorm:"ForeignKey:StudentID; AssociationForeignKey:StudentID"`
+}
+
+type StudentMinor struct {
+	StudentID uint `gorm:"primary_key "`
+	MinorID uint `gorm:"primary_key "`
+	Minor Minor `gorm:"ForeignKey:MinorID; AssociationForeignKey:MinorID"`
+	Student Student `gorm:"ForeignKey:StudentID; AssociationForeignKey:StudentID"`
+}
+
+
+type Course struct {
+	CourseID uint `gorm:"primary_key"`
+	CourseName string `gorm:"type:varchar(50)"`
+	CourseCredits int `gorm:"type:integer"`
+	CourseDescription string `gorm:"type:text"`
+	DepartmentID uint `gorm:"not null"`
+	Department Department `gorm:"ForeignKey:DepartmentID; AssociationForeignKey:DepartmentID"`
+}
+
+
+type Prerequisite struct {
+	CourseRequiredBy uint `gorm:"primary_key"`
+	CourseRequirement uint `gorm:"primary_key"`
+	Course Course  `gorm:"ForeignKey:CourseID; AssociationForeignKey:CourseRequiredBy"`
+	CourseRequired Course  `gorm:"ForeignKey:CourseID; AssociationForeignKey:CourseRequirement"`
+}
+
+type Day struct{
+	DayID uint `gorm:"primary_key"`
+	MeetingDay string `gorm:"type:varchar(50)"`
+}
+
+type Semester struct {
+	SemesterID uint `gorm:"primary_key"`
+	Year int `gorm:"type:integer"`
+	Season string `gorm:"type:varchar(50)"`
+}
+
+type Period struct {
+	PeriodID uint `gorm:"primary_key"`
+	StartTime time.Time
+	EndTime time.Time
+}
+
+type TimeSlot struct{
+	TimeSlotID uint `gorm:"primary_key"`
+	PeriodID uint `gorm:"not null"`
+	SemesterID uint `gorm:"not null"`
+	DayID uint `gorm:"not null"`
+	Period Period  `gorm:"ForeignKey:PeriodID; AssociationForeignKey:PeriodID"`
+	Semester Semester  `gorm:"ForeignKey:SemesterID; AssociationForeignKey:SemesterID"`
+	Day Day  `gorm:"ForeignKey:DayID; AssociationForeignKey:DayID"`
+}
+
 

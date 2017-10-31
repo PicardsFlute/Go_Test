@@ -4,10 +4,8 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"Starfleet/model"
-
 	"os"
 	"fmt"
-
 )
 
 func main(){
@@ -18,6 +16,19 @@ func main(){
 		fmt.Println("DB Error: ", err)
 	}
 	db.SingularTable(true)
+
+	db.DropTable(&model.Prerequisite{})
+	db.DropTable(&model.Course{})
+
+	db.DropTable(&model.TimeSlot{})
+	db.DropTable(&model.Day{})
+	db.DropTable(&model.Semester{})
+	db.DropTable(&model.Period{})
+
+	db.DropTable(&model.StudentMajor{})
+	db.DropTable(&model.StudentMinor{})
+	db.DropTable(&model.Major{})
+	db.DropTable(&model.Major{})
 	db.DropTable(&model.FullTimeStudent{})
 	db.DropTable(&model.PartTimeStudent{})
 	db.DropTable(&model.Student{})
@@ -42,6 +53,19 @@ func main(){
 		&model.FullTimeFaculty{},
 		&model.Admin{},
 		&model.Researcher{},
+		&model.Major{},
+		&model.Minor{},
+		&model.StudentMajor{},
+		&model.StudentMinor{},
+
+		&model.Course{},
+		&model.Prerequisite{},
+
+		&model.Day{},
+		&model.Semester{},
+		&model.Period{},
+		&model.TimeSlot{},
+
 	)
 
 	db.Model(&model.Student{}).AddForeignKey("student_id", "main_user(user_id)", "CASCADE", "CASCADE")
@@ -58,6 +82,24 @@ func main(){
 	db.Model(&model.Admin{}).AddForeignKey("admin_id", "main_user(user_id)", "RESTRICT", "RESTRICT")
 
 	db.Model(&model.Researcher{}).AddForeignKey("researcher_id", "main_user(user_id)", "RESTRICT", "RESTRICT")
+
+	db.Model(&model.Major{}).AddForeignKey("department_id", "department(department_id)", "RESTRICT", "RESTRICT")
+	db.Model(&model.Minor{}).AddForeignKey("department_id", "department(department_id)", "RESTRICT", "RESTRICT")
+
+	db.Model(&model.StudentMajor{}).AddForeignKey("student_id", "student(student_id)", "RESTRICT", "RESTRICT")
+	db.Model(&model.StudentMajor{}).AddForeignKey("major_id", "major(major_id)", "RESTRICT", "RESTRICT")
+
+	db.Model(&model.StudentMinor{}).AddForeignKey("student_id", "student(student_id)", "RESTRICT", "RESTRICT")
+	db.Model(&model.StudentMinor{}).AddForeignKey("major_id", "major(major_id)", "RESTRICT", "RESTRICT")
+
+	db.Model(&model.TimeSlot{}).AddForeignKey("day_id", "day(day_id)", "RESTRICT", "RESTRICT")
+	db.Model(&model.TimeSlot{}).AddForeignKey("semester_id", "semester(semester_id)", "RESTRICT", "RESTRICT")
+	db.Model(&model.TimeSlot{}).AddForeignKey("period_id", "period(period_id)", "RESTRICT", "RESTRICT")
+
+	db.Model(&model.Course{}).AddForeignKey("department_id", "department(department_id)", "RESTRICT", "RESTRICT")
+
+	db.Model(&model.Prerequisite{}).AddForeignKey("course_required_by", "course(course_id)", "RESTRICT", "RESTRICT")
+	db.Model(&model.Prerequisite{}).AddForeignKey("course_requirement", "course(course_id)", "RESTRICT", "RESTRICT")
 
 	user1 := model.MainUser{FirstName: "Pat", LastName:"Lagat", UserEmail:"plagat@yahoo.com", UserPassword:"pl12345", UserType:1}
 	user2 := model.MainUser{FirstName: "Irish", LastName:"James", UserEmail:"jirish@yahoo.com", UserPassword:"ij12345", UserType:1}
@@ -123,6 +165,20 @@ func main(){
 	db.Create(&faculty2)
 	db.Create(&faculty3)
 
+	// example of finding a many-one lookup
+	dep := model.Department{}
+	db.Model(&faculty1).Association("Department").Find(&dep)
+	fmt.Println("For the faculty1, the department is: ", dep.DepartmentName)
+	facMembers := []model.Faculty{}
+	// search faculty by department (.Association and .Related doesn't seem to work)
+	//db.Model(&department1).Association("Faculty").Find(&facMembers)
+	db.Where(model.Faculty{DepartmentID: department1.DepartmentID}).Find(&facMembers)
+	fmt.Println("For the departent1 (Math), the faculty is: ")
+	for _, v := range facMembers {
+		fmt.Println("FacultyID", v.FacultyID)
+	}
+
+
 	admin1 := model.Admin{AdminID:user8.UserID}
 	admin2 := model.Admin{AdminID:user9.UserID}
 	db.Create(&admin1)
@@ -130,7 +186,28 @@ func main(){
 
 	researcher1 := model.Researcher{ResearcherID:user10.UserID}
 	db.Create(researcher1)
+
+
+	major1 := model.Major{DepartmentID: department1.DepartmentID, MajorName:"MATH"}
+	major2 := model.Major{DepartmentID: department1.DepartmentID, MajorName:"SUPERMATH"}
+	major3 := model.Major{DepartmentID: department2.DepartmentID, MajorName:"CIS"}
+	major4 := model.Major{DepartmentID: department2.DepartmentID, MajorName:"MIS"}
+	db.Create(&major1)
+	db.Create(&major2)
+	db.Create(&major3)
+	db.Create(&major4)
+
+	minor1 := model.Minor{DepartmentID: department1.DepartmentID, MinorName:"APPLIED MATH"}
+	minor2 := model.Minor{DepartmentID: department1.DepartmentID, MinorName:"MINOR MATH"}
+	minor3 := model.Minor{DepartmentID: department2.DepartmentID, MinorName:"LITTLE COMPUTERS"}
+	minor4 := model.Minor{DepartmentID: department2.DepartmentID, MinorName:"COMPUTER STUFF"}
+	db.Create(&minor1)
+	db.Create(&minor2)
+	db.Create(&minor3)
+	db.Create(&minor4)
+
 }
+
 
 
 
