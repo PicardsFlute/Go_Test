@@ -33,10 +33,16 @@ var (
 
 */
 
+type StudentController struct{
+	user *model.MainUser
+}
+
+
 
 
 // Then, initialize the session manager
 func init() {
+
 	globalSessions, _ = session.NewManager("memory", "gosessionid", 3600)
 	go globalSessions.GC()
 
@@ -65,6 +71,7 @@ func init() {
 
 
 func main() {
+	sc := StudentController{}
 
 	routes := mux.NewRouter()
 	tpl = template.Must(template.ParseGlob("templates/*"))
@@ -76,9 +83,10 @@ func main() {
 	routes.HandleFunc("/login", loginPage).Methods("GET")
 	routes.HandleFunc("/login", loginUser).Methods("POST")
 	//routes.Handle("/user",  checkSessionWrapper(displayStudent)).Methods("GET")
-	routes.Handle("/student",  checkSessionWrapper(displayStudent)).Methods("GET")
+	//routes.Handle("/student",  checkSessionWrapper(displayStudent)).Methods("GET")
 	routes.Handle("/admin",  checkSessionWrapper(displayAdmin)).Methods("GET")
 	routes.Handle("/faculty",  checkSessionWrapper(displayFacultyt)).Methods("GET")
+	routes.Handle("/student", checkSessionWrapper(sc.StudentIndex))
 	//routes.HandleFunc("/unauthorized", unauthorized)
 
 	routes.HandleFunc("/logout", logout)
@@ -93,6 +101,10 @@ func main() {
 	http.ListenAndServe(":8080", handlers.LoggingHandler(os.Stdout,routes))
 
 	//defer db.Close(), want to keep db connection open
+}
+
+func(userController *StudentController) StudentIndex(w http.ResponseWriter, r *http.Request){
+	tpl.ExecuteTemplate(w, "student", userController.user)
 }
 
 
