@@ -7,7 +7,6 @@ import (
 	"github.com/gorilla/mux"
 	"fmt"
 	"github.com/gorilla/handlers"
-	"github.com/gorilla/context"
 	"os"
  	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -68,22 +67,7 @@ func init() {
 }
 
 
-/*
-type User struct {
-	UserID int `gorm:"primary_key"`
-	UserEmail string `gorm:"type:varchar(20);unique"`
-	UserPassword string `gorm:"type:varchar(300)"`
-	FirstName string `gorm:"type:varchar(50)"`
-	LastName string `gorm:"type:varchar(50)"`
-	UserType int
-}
 
-type Student struct {
-	StudentID uint `gorm:"primary_key"`
-	User  User `gorm:"ForeignKey:UserRefer"`
-	UserRefer uint
-}
-*/
 
 func main() {
 
@@ -100,7 +84,7 @@ func main() {
 	routes.Handle("/student",  checkSessionWrapper(displayStudent)).Methods("GET")
 	routes.Handle("/admin",  checkSessionWrapper(displayAdmin)).Methods("GET")
 	routes.Handle("/faculty",  checkSessionWrapper(displayFacultyt)).Methods("GET")
-
+	//routes.HandleFunc("/unauthorized", unauthorized)
 
 	routes.HandleFunc("/logout", logout)
 	//routes.HandleFunc("/student", AuthHandler(displayUser))
@@ -120,9 +104,12 @@ func main() {
 // routes for site
 
 func index(w http.ResponseWriter, r *http.Request){
-	//checkLoginUser(w,r)
 	tpl.ExecuteTemplate(w, "index", nil)
 
+}
+
+func unauthorized(w http.ResponseWriter, r *http.Request){
+	tpl.ExecuteTemplate(w, "index" , "You can not view this page")
 }
 
 func loginPage(w http.ResponseWriter, r *http.Request){
@@ -157,10 +144,7 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 				sess.Set("UserID", user.UserID)
 				//http.Redirect(w,r,"/user/" + strconv.Itoa(int(user.UserID)), http.StatusFound)
 				//http.Redirect(w,r,"/user", http.StatusFound)
-				//tpl.ExecuteTemplate(w,"user",user)
-				context.Set(r, "user", user.FirstName)
 				checkUserType(user, w, r)
-
 			} else {
 
 				tpl.ExecuteTemplate(w,"login","Error, username or password does not match.")
@@ -179,67 +163,42 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func checkUserType(user model.MainUser, w http.ResponseWriter, r *http.Request){
-	//cont := context.Get(r,"user")
 
+	//cont := context.Get(r,"user")
 	//TODO: 1. user visits /login (GET)
 	//2. user submits login form (POST)
 	//3. app validates request, logs in, if happy, redirects (302) to /student
 	//4. user is redirected to /student, app gets the data it needs, passes to template and renders the student template
+
 	switch user.UserType {
 
 	case 1:
 		fmt.Println("You're a student")
+		fmt.Println("User data is", user.FirstName)
 		http.Redirect(w,r,"/student", http.StatusFound)
 
 		// The data is lost after redirect because it's a new request,
 		// now I need to get the student data and render the template, which is a different request
 		//since http is stateless, you lose the data structure after the first request.
-		tpl.ExecuteTemplate(w,"student", user)
-
 	case 2:
 		fmt.Println("Youre a faculty")
 		http.Redirect(w,r,"/faculty", http.StatusFound)
-		tpl.ExecuteTemplate(w,"faculty", "You're a faculty")
+
 
 	case 3:
 		fmt.Println("Youre an admin")
 		http.Redirect(w,r,"/admin", http.StatusFound)
-		tpl.ExecuteTemplate(w,"admin", "administrative user!")
+		//tpl.ExecuteTemplate(w,"admin", "administrative user!")
 
 	default:
 		fmt.Println("Not sure your type")
 		http.Redirect(w,r,"/", http.StatusFound)
 		tpl.ExecuteTemplate(w,"index",nil)
-
+		//return user,user.UserType
 	}
 
-	if r.Method == "POST"{
-
-	}
 
 }
-
-
-/*
-func checkLoginUser(w http.ResponseWriter, r *http.Request)(bool, model.MainUser){
-
-
-	sess := globalSessions.SessionStart(w, r)
-	sess_uid := sess.Get("UserID")
-	//sess_username := sess.Get("username")
-	u := model.MainUser{}
-	if sess_uid == nil {
-		fmt.Println("No loggin in user")
-		return false, u
-	} else {
-		uID := sess_uid
-		db.First(&u, uID)
-		fmt.Println("Logged in User, ", uID)
-		return true, u
-	}
-}
-
-*/
 
 
 
@@ -272,35 +231,26 @@ func checkSessionWrapper(handle http.HandlerFunc) http.Handler {
 		if isLogged { //if check user is true, execute the handle that's inside
 			handle.ServeHTTP(w,r)
 		} else{ //otherwise deny request
-			//http.Redirect(w,r, "/", http.StatusUnauthorized)
-			w.WriteHeader(http.StatusUnauthorized)
-			tpl.ExecuteTemplate(w,"index", "You can't access that page")
-			http.Redirect(w, r, "/", http.StatusForbidden)
+			//tpl.ExecuteTemplate(w,"index", "You can't access that page")
+			http.Redirect(w, r, "/", http.StatusUnauthorized) // redirects route and gives unauthorized link
+			tpl.ExecuteTemplate(w,"index", "You are unauthorized to acess that page") //this renders the index template right under it
 		}
 
 	})
 }
 
-/*
-func getUserType(handle http.HandlerFunc) http.Handler {
-	return http.HandlerFunc(func(user model.MainUser){
-
-
-	})
-}
-
-*/
 
 
 func displayStudent(w http.ResponseWriter, r *http.Request){
 	//TODO: Check only user can access correct roles
 
+
 	_, user := checkLoginStatus(w, r)
 	if user.UserType == 1 {
-		tpl.ExecuteTemplate(w, "student", nil)
+		tpl.ExecuteTemplate(w, "student", user)
 	}else {
-		http.Redirect(w,r,"/", 1)
-		tpl.ExecuteTemplate(w, "index", "Unauthorized")
+		http.Redirect(w,r,"/", http.StatusForbidden)
+		index(w,r)
 	}
 }
 
@@ -356,5 +306,4 @@ func logout(w http.ResponseWriter, r *http.Request){
 	sess.Delete("UserID")
 	sess.Delete("username")
 	http.Redirect(w,r,"/login", http.StatusSeeOther)
-	loginPage(w,r)
 }
