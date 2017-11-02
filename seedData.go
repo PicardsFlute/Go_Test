@@ -17,28 +17,41 @@ func main(){
 	}
 	db.SingularTable(true)
 
+	db.DropTable(&model.Reports{})
+	db.DropTable(&model.StudentHistory{})
+	db.DropTable(&model.Attends{})
+	db.DropTable(&model.Enrollment{})
+	db.DropTable(&model.Section{})
+
+	db.DropTable(&model.Location{})
+	db.DropTable(&model.Room{})
+	db.DropTable(&model.Building{})
+
+	db.DropTable(&model.TimeSlot{})
+	db.DropTable(&model.Period{})
+	db.DropTable(&model.Semester{})
+	db.DropTable(&model.Day{})
+
 	db.DropTable(&model.Prerequisite{})
 	db.DropTable(&model.Course{})
 
-	db.DropTable(&model.TimeSlot{})
-	db.DropTable(&model.Day{})
-	db.DropTable(&model.Semester{})
-	db.DropTable(&model.Period{})
 
 	db.DropTable(&model.StudentMajor{})
 	db.DropTable(&model.StudentMinor{})
+	db.DropTable(&model.Minor{})
 	db.DropTable(&model.Major{})
-	db.DropTable(&model.Major{})
+
 	db.DropTable(&model.FullTimeStudent{})
 	db.DropTable(&model.PartTimeStudent{})
 	db.DropTable(&model.Student{})
+
 	db.DropTable(&model.PartTimeFaculty{})
 	db.DropTable(&model.FullTimeFaculty{})
 	db.DropTable(&model.Faculty{})
+
 	db.DropTable(&model.Researcher{})
 	db.DropTable(&model.Admin{})
 	db.DropTable(&model.MainUser{})
-
 	db.DropTable(&model.Department{})
 
 
@@ -66,6 +79,16 @@ func main(){
 		&model.Period{},
 		&model.TimeSlot{},
 
+		&model.Building{},
+		&model.Room{},
+		&model.Location{},
+
+		&model.Section{},
+		&model.Enrollment{},
+		&model.Attends{},
+		&model.StudentHistory{},
+
+		&model.Reports{},
 	)
 
 	db.Model(&model.Student{}).AddForeignKey("student_id", "main_user(user_id)", "CASCADE", "CASCADE")
@@ -90,7 +113,7 @@ func main(){
 	db.Model(&model.StudentMajor{}).AddForeignKey("major_id", "major(major_id)", "RESTRICT", "RESTRICT")
 
 	db.Model(&model.StudentMinor{}).AddForeignKey("student_id", "student(student_id)", "RESTRICT", "RESTRICT")
-	db.Model(&model.StudentMinor{}).AddForeignKey("major_id", "major(major_id)", "RESTRICT", "RESTRICT")
+	db.Model(&model.StudentMinor{}).AddForeignKey("minor_id", "major(major_id)", "RESTRICT", "RESTRICT")
 
 	db.Model(&model.TimeSlot{}).AddForeignKey("day_id", "day(day_id)", "RESTRICT", "RESTRICT")
 	db.Model(&model.TimeSlot{}).AddForeignKey("semester_id", "semester(semester_id)", "RESTRICT", "RESTRICT")
@@ -100,6 +123,30 @@ func main(){
 
 	db.Model(&model.Prerequisite{}).AddForeignKey("course_required_by", "course(course_id)", "RESTRICT", "RESTRICT")
 	db.Model(&model.Prerequisite{}).AddForeignKey("course_requirement", "course(course_id)", "RESTRICT", "RESTRICT")
+
+	db.Model(&model.TimeSlot{}).AddForeignKey("period_id", "period(period_id)", "RESTRICT", "RESTRICT")
+	db.Model(&model.TimeSlot{}).AddForeignKey("day_id", "day(day_id)", "RESTRICT", "RESTRICT")
+	db.Model(&model.TimeSlot{}).AddForeignKey("semester_id", "semester(semester_id)", "RESTRICT", "RESTRICT")
+
+	db.Model(&model.Location{}).AddForeignKey("building_id", "building(building_id)", "RESTRICT", "RESTRICT")
+	db.Model(&model.Location{}).AddForeignKey("room_id", "room(room_id)", "RESTRICT", "RESTRICT")
+
+	db.Model(&model.Section{}).AddForeignKey("faculty_id", "faculty(faculty_id)", "RESTRICT", "RESTRICT")
+	db.Model(&model.Section{}).AddForeignKey("time_slot_id", "time_slot(time_slot_id)", "RESTRICT", "RESTRICT")
+	db.Model(&model.Section{}).AddForeignKey("course_id", "course(course_id)", "RESTRICT", "RESTRICT")
+	db.Model(&model.Section{}).AddForeignKey("location_id", "location(location_id)", "RESTRICT", "RESTRICT")
+
+	db.Model(&model.Enrollment{}).AddForeignKey("student_id", "student(student_id)", "RESTRICT", "RESTRICT")
+	db.Model(&model.Enrollment{}).AddForeignKey("section_id", "section(section_id)", "RESTRICT", "RESTRICT")
+
+	db.Model(&model.Attends{}).AddForeignKey("student_id", "student(student_id)", "RESTRICT", "RESTRICT")
+	db.Model(&model.Attends{}).AddForeignKey("enrollment_id", "enrollment(enrollment_id)", "RESTRICT", "RESTRICT")
+
+	db.Model(&model.StudentHistory{}).AddForeignKey("student_id", "student(student_id)", "RESTRICT", "RESTRICT")
+	db.Model(&model.StudentHistory{}).AddForeignKey("enrollment_id", "enrollment(enrollment_id)", "RESTRICT", "RESTRICT")
+
+	db.Model(&model.Reports{}).AddForeignKey("researcher_id", "researcher(researcher_id)", "RESTRICT", "RESTRICT")
+
 
 	user1 := model.MainUser{FirstName: "Pat", LastName:"Lagat", UserEmail:"plagat@yahoo.com", UserPassword:"pl12345", UserType:1}
 	user2 := model.MainUser{FirstName: "Irish", LastName:"James", UserEmail:"jirish@yahoo.com", UserPassword:"ij12345", UserType:1}
@@ -205,6 +252,9 @@ func main(){
 	db.Create(&minor2)
 	db.Create(&minor3)
 	db.Create(&minor4)
+
+	
+
 
 }
 
