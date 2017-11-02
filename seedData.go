@@ -29,16 +29,18 @@ func main(){
 	db.DropTable(&model.StudentMinor{})
 	db.DropTable(&model.Major{})
 	db.DropTable(&model.Major{})
+
 	db.DropTable(&model.FullTimeStudent{})
 	db.DropTable(&model.PartTimeStudent{})
 	db.DropTable(&model.Student{})
+
 	db.DropTable(&model.PartTimeFaculty{})
 	db.DropTable(&model.FullTimeFaculty{})
 	db.DropTable(&model.Faculty{})
+
 	db.DropTable(&model.Researcher{})
 	db.DropTable(&model.Admin{})
 	db.DropTable(&model.MainUser{})
-
 	db.DropTable(&model.Department{})
 
 
@@ -90,7 +92,7 @@ func main(){
 	db.Model(&model.StudentMajor{}).AddForeignKey("major_id", "major(major_id)", "RESTRICT", "RESTRICT")
 
 	db.Model(&model.StudentMinor{}).AddForeignKey("student_id", "student(student_id)", "RESTRICT", "RESTRICT")
-	db.Model(&model.StudentMinor{}).AddForeignKey("major_id", "major(major_id)", "RESTRICT", "RESTRICT")
+	db.Model(&model.StudentMinor{}).AddForeignKey("minor_id", "major(major_id)", "RESTRICT", "RESTRICT")
 
 	db.Model(&model.TimeSlot{}).AddForeignKey("day_id", "day(day_id)", "RESTRICT", "RESTRICT")
 	db.Model(&model.TimeSlot{}).AddForeignKey("semester_id", "semester(semester_id)", "RESTRICT", "RESTRICT")
@@ -100,6 +102,13 @@ func main(){
 
 	db.Model(&model.Prerequisite{}).AddForeignKey("course_required_by", "course(course_id)", "RESTRICT", "RESTRICT")
 	db.Model(&model.Prerequisite{}).AddForeignKey("course_requirement", "course(course_id)", "RESTRICT", "RESTRICT")
+
+	db.Model(&model.TimeSlot{}).AddForeignKey("period_id", "period(period_id)", "RESTRICT", "RESTRICT")
+	db.Model(&model.TimeSlot{}).AddForeignKey("day_id", "day(day_id)", "RESTRICT", "RESTRICT")
+	db.Model(&model.TimeSlot{}).AddForeignKey("semester_id", "semester(semester_id)", "RESTRICT", "RESTRICT")
+
+	db.Model(&model.Location{}).AddForeignKey("building_id", "building(building_id)", "RESTRICT", "RESTRICT")
+	db.Model(&model.Location{}).AddForeignKey("room_id", "room(room_id)", "RESTRICT", "RESTRICT")
 
 	user1 := model.MainUser{FirstName: "Pat", LastName:"Lagat", UserEmail:"plagat@yahoo.com", UserPassword:"pl12345", UserType:1}
 	user2 := model.MainUser{FirstName: "Irish", LastName:"James", UserEmail:"jirish@yahoo.com", UserPassword:"ij12345", UserType:1}
@@ -205,6 +214,8 @@ func main(){
 	db.Create(&minor2)
 	db.Create(&minor3)
 	db.Create(&minor4)
+
+
 
 }
 

@@ -67,7 +67,7 @@ type Department struct {
 	DepartmentName string `gorm:"type:varchar(30);not null"`
 	DepartmentChair string `gorm:"type:varchar(50);not null"`
 	DepartmentBuilding string `gorm:"type:varchar(50);not null"`
-	DepartmentPhoneNumber  string `gorm:"type:varchar(15);not null"`
+	DepartmentPhoneNumber  string `gorm:"type:varchar(25);not null"`
 	DepartmentRoomNumber string `gorm:"type:varchar(10);not null"`
 	Faculty []Faculty
 }
@@ -178,3 +178,72 @@ type TimeSlot struct{
 }
 
 
+
+type Room struct {
+	RoomID uint `gorm:"primary_key"`
+	RoomType string `gorm:"type:varchar(50)"`
+	RoomNumber string `gorm:"type:varchar(50)"`
+}
+
+type Building struct {
+	BuildingID uint `gorm:"primary_key"`
+	BuildingName string `gorm:"type:varchar(150)"`
+	BuildingAddress string `gorm:"type:varchar(200)"`
+}
+
+type Location struct {
+	LocationID uint `gorm:"primary_key"`
+	BuildingID uint `gorm:"not null"`
+	RoomID uint `gorm:"not null"`
+	Building Building `gorm:"ForeignKey:BuildingID; AssociationForeignKey:BuildingID"`
+	Room Room `gorm:"ForeignKey:RoomID; AssociationForeignKey:RoomID"`
+}
+
+type Section struct {
+	SectionID uint `gorm:"primary_key"`
+	CourseSectionNumber int `gorm:"not null"`
+	CourseID uint `gorm:"not null"`
+	FacultyID uint `gorm:"not null"`
+	TimeSlotID uint `gorm:"not null"`
+	LocationID uint `gorm:"not null"`
+	Course Course `gorm:"ForeignKey:CourseID; AssociationForeignKey:CourseID"`
+	TimeSlot TimeSlot `gorm:"ForeignKey:TimeSlotID; AssociationForeignKey:TimeSlotID"`
+	Faculty Faculty `gorm:"ForeignKey:FacultyID; AssociationForeignKey:FacultyID"`
+	Location Location `gorm:"ForeignKey:LocationID; AssociationForeignKey:LocationID"`
+
+}
+
+type Enrollment struct {
+	EnrollmentID uint `gorm:"primary_key"`
+	Grade uint `gorm:"type:varchar(5)"`
+	StudentID uint `gorm:"not null"`
+	SectionID uint `gorm:"not null"`
+	Student Student  `gorm:"ForeignKey:StudentID; AssociationForeignKey:StudentID"`
+	Section Section  `gorm:"ForeignKey:SectionID; AssociationForeignKey:SectionID"`
+}
+
+type Attends struct {
+	EnrollmentID uint `gorm:"primary_key"`
+	StudentID uint `gorm:"primary_key"`
+	AttendsDate time.Time `gorm:"primary_key"`
+	Present bool `gorm:"primary_key"`
+	Enrollment Enrollment  `gorm:"ForeignKey:EnrollmentID; AssociationForeignKey:EnrollmentID"`
+	Student Student  `gorm:"ForeignKey:StudentID; AssociationForeignKey:StudentID"`
+}
+
+type StudentHistory struct {
+	StudentID uint `gorm:"primary_key"`
+	EnrollmentID uint `gorm:"primary_key"`
+	Status string `gorm:"primary_key"`
+	Student Student  `gorm:"ForeignKey:StudentID; AssociationForeignKey:StudentID"`
+	Enrollment Enrollment  `gorm:"ForeignKey:EnrollmentID; AssociationForeignKey:EnrollmentID"`
+}
+
+type Reports struct {
+	ReportID uint `gorm:"primary_key"`
+	DateCreated time.Time
+	Description string  `gorm:"type:text"`
+	ReportPath string  `gorm:"type:text"`
+	ResearcherID uint `gorm:"not null"`
+	Researcher Researcher `gorm:"ForeignKey:ResearcherID; AssociationForeignKey:ResearcherID"`
+}
