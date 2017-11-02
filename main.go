@@ -57,7 +57,23 @@ func init() {
 		&model.FullTimeStudent{},
 		&model.Department{},
 		&model.Faculty{},
+		&model.PartTimeFaculty{},
+		&model.FullTimeFaculty{},
 		&model.Admin{},
+		&model.Researcher{},
+		&model.Major{},
+		&model.Minor{},
+		&model.StudentMajor{},
+		&model.StudentMinor{},
+
+		&model.Course{},
+		&model.Prerequisite{},
+
+		&model.Day{},
+		&model.Semester{},
+		&model.Period{},
+		&model.TimeSlot{},
+
 	)
 }
 
@@ -78,7 +94,8 @@ func main() {
 	//routes.Handle("/user",  checkSessionWrapper(displayStudent)).Methods("GET")
 	routes.Handle("/student",  checkSessionWrapper(displayStudent)).Methods("GET")
 	routes.Handle("/admin",  checkSessionWrapper(displayAdmin)).Methods("GET")
-	routes.Handle("/faculty",  checkSessionWrapper(displayFacultyt)).Methods("GET")
+	routes.Handle("/faculty",  checkSessionWrapper(displayFaculty)).Methods("GET")
+	routes.Handle("/researcher", checkSessionWrapper(displayResearcher)).Methods("GET")
 	//routes.HandleFunc("/unauthorized", unauthorized)
 
 	routes.HandleFunc("/logout", logout)
@@ -185,6 +202,11 @@ func checkUserType(user model.MainUser, w http.ResponseWriter, r *http.Request){
 		http.Redirect(w,r,"/admin", http.StatusFound)
 		//tpl.ExecuteTemplate(w,"admin", "administrative user!")
 
+	case 4:
+		fmt.Println("Youre a researcher")
+		http.Redirect(w,r,"/researcher", http.StatusFound)
+		//tpl.ExecuteTemplate(w,"admin", "administrative user!")
+
 	default:
 		fmt.Println("Not sure your type")
 		http.Redirect(w,r,"/", http.StatusFound)
@@ -237,12 +259,22 @@ func checkSessionWrapper(handle http.HandlerFunc) http.Handler {
 
 
 func displayStudent(w http.ResponseWriter, r *http.Request){
-	//TODO: Check only user can access correct roles
-
 
 	_, user := checkLoginStatus(w, r)
 	if user.UserType == 1 {
 		tpl.ExecuteTemplate(w, "student", user)
+	}else {
+		http.Redirect(w,r,"/", http.StatusForbidden)
+		index(w,r)
+	}
+}
+
+
+func displayFaculty(w http.ResponseWriter, r *http.Request){
+	_, user := checkLoginStatus(w,r)
+
+	if user.UserType == 2 {
+		tpl.ExecuteTemplate(w, "faculty", user)
 	}else {
 		http.Redirect(w,r,"/", http.StatusForbidden)
 		index(w,r)
@@ -262,9 +294,19 @@ func displayAdmin(w http.ResponseWriter, r *http.Request){
 }
 
 
-func displayFacultyt(w http.ResponseWriter, r *http.Request){
-	tpl.ExecuteTemplate(w, "faculty", nil)
+
+func displayResearcher(w http.ResponseWriter, r *http.Request){
+
+	_, user := checkLoginStatus(w,r)
+
+	if user.UserType == 4 {
+		tpl.ExecuteTemplate(w, "researcher", user)
+	}else {
+		http.Redirect(w,r,"/", http.StatusForbidden)
+		index(w,r)
+	}
 }
+
 
 
 /*
