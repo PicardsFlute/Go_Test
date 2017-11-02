@@ -158,7 +158,7 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 				//http.Redirect(w,r,"/user/" + strconv.Itoa(int(user.UserID)), http.StatusFound)
 				//http.Redirect(w,r,"/user", http.StatusFound)
 				//tpl.ExecuteTemplate(w,"user",user)
-				context.Set(r, "user", user.FirstName)
+				//context.Set(r, "user", user.FirstName)
 				checkUserType(user, w, r)
 
 			} else {

@@ -253,7 +253,44 @@ func main(){
 	db.Create(&minor3)
 	db.Create(&minor4)
 
-	
+	course1 := model.Course{CourseName:"Warp Field Mechanics", CourseCredits:4, DepartmentID:department1.DepartmentID,
+		CourseDescription:"An introduction to the theory behind faster than light space travel."}
+
+	course2 := model.Course{CourseName:"History of Space Travel", CourseCredits:4, DepartmentID:department1.DepartmentID,
+		CourseDescription:"A survey of humanity's entry into the age of space exploration, from the first artificial satellite to first contact with the Vulcans. "}
+
+	course3 := model.Course{CourseName:"Contemporary Holography", CourseCredits:4, DepartmentID:department1.DepartmentID,
+		CourseDescription:"An introduction to Holography."}
+
+	course4 := model.Course{CourseName:"Newtonian Physics I", CourseCredits:4, DepartmentID:department2.DepartmentID, CourseDescription:"The basic building blocks of Newtonain physics icluding kinetics, force, rotation, and harmonic motion"}
+	course5 := model.Course{CourseName:"Newtonian Physics II", CourseCredits:4, DepartmentID:department2.DepartmentID, CourseDescription:"The fundamentals of optics, electricity and magnetism"}
+
+	db.Create(&course1)
+	db.Create(&course2)
+	db.Create(&course3)
+	db.Create(&course4)
+	db.Create(&course5)
+
+	preReq1 := model.Prerequisite{CourseRequiredBy:course5.CourseID, CourseRequirement: course4.CourseID}
+	preReq2 := model.Prerequisite{CourseRequiredBy:course1.CourseID, CourseRequirement: course2.CourseID}
+	db.Create(&preReq1)
+	db.Create(&preReq2)
+
+	building := model.Building{BuildingName:"TheBuilding", BuildingAddress:"5 Shady Grove"}
+	db.Create(&building)
+
+	room1 := model.Room{RoomNumber:"B100", RoomType:"Lecture"}
+	room2 := model.Room{RoomNumber:"C200", RoomType: "LAB"}
+	db.Create(&room1)
+	db.Create(&room2)
+
+	location1 := model.Location{BuildingID:building.BuildingID, RoomID:room1.RoomID}
+	location2 := model.Location{BuildingID:building.BuildingID, RoomID:room2.RoomID}
+	db.Create(&location1)
+	db.Create(&location2)
+
+
+
 
 
 }
