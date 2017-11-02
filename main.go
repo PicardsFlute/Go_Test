@@ -155,7 +155,8 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 				sess.Set("username", r.Form["username"])
 				sess.Set("UserID", user.UserID)
 				//http.Redirect(w,r,"/user/" + strconv.Itoa(int(user.UserID)), http.StatusFound)
-				//http.Redirect(w,r,"/user", http.StatusFound)
+
+				//tpl.ExecuteTemplate(w,"user",user)
 				checkUserType(user, w, r)
 			} else {
 

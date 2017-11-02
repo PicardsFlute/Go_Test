@@ -147,7 +147,7 @@ type Prerequisite struct {
 	CourseRequiredBy uint `gorm:"primary_key"`
 	CourseRequirement uint `gorm:"primary_key"`
 	Course Course  `gorm:"ForeignKey:CourseID; AssociationForeignKey:CourseRequiredBy"`
-	CourseRequired Course  `gorm:"ForeignKey:CourseID; AssociationForeignKey:CourseRequirement"`
+	CourseReq Course  `gorm:"ForeignKey:CourseID; AssociationForeignKey:CourseRequirement"`
 }
 
 type Day struct{
