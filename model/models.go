@@ -8,6 +8,7 @@ import (
 
 	"fmt"
 	"time"
+
 )
 
 type MainUser struct {
@@ -150,6 +151,14 @@ type Prerequisite struct {
 	CourseReq Course  `gorm:"ForeignKey:CourseID; AssociationForeignKey:CourseRequirement"`
 }
 
+//func (course *Course)StudentHasPrerequisites(stu Student, db gorm.DB) bool {
+//
+//}
+//
+//func (course *Course)getPrerequisites(db gorm.DB) []Prerequisite {
+//
+//}
+
 type Day struct{
 	DayID uint `gorm:"primary_key"`
 	MeetingDay string `gorm:"type:varchar(50)"`
@@ -215,7 +224,7 @@ type Section struct {
 
 type Enrollment struct {
 	EnrollmentID uint `gorm:"primary_key"`
-	Grade uint `gorm:"type:varchar(5)"`
+	Grade string `gorm:"type:varchar(5)"`
 	StudentID uint `gorm:"not null"`
 	SectionID uint `gorm:"not null"`
 	Student Student  `gorm:"ForeignKey:StudentID; AssociationForeignKey:StudentID"`
