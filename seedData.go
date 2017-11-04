@@ -6,6 +6,7 @@ import (
 	"Starfleet/model"
 	"os"
 	"fmt"
+	"time"
 )
 
 func main(){
@@ -289,10 +290,101 @@ func main(){
 	db.Create(&location1)
 	db.Create(&location2)
 
+	day1 := model.Day{MeetingDay:"MW"}
+	day2 := model.Day{MeetingDay:"TR"}
+	db.Create(&day1)
+	db.Create(&day2)
 
+	semester1 := model.Semester{Year:2017, Season:"Spring"}
+	semester2 := model.Semester{Year: 2018, Season:"Fall"}
+	db.Create(&semester1)
+	db.Create(&semester2)
 
+	timeform := "Jan 2, 2006 at 3:04pm (MST)"
+	t1, _ := time.Parse(timeform, "Jan 2, 2006 at 1:00pm (MST)")
+	t2, _ := time.Parse(timeform, "Jan 2, 2006 at 2:30pm (MST)")
+	t3, _ := time.Parse(timeform, "Jan 2, 2006 at 10:00pm (MST)")
+	t4, _ := time.Parse(timeform, "Jan 2, 2006 at 11:30pm (MST)")
+	period1 := model.Period{StartTime: t1, EndTime: t2}
+	period2 := model.Period{StartTime: t3, EndTime: t4}
+	db.Create(&period1)
+	db.Create(&period2)
 
+	timeslot1 := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day1.DayID, PeriodID:period1.PeriodID}
+	timeslot2 := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day1.DayID, PeriodID:period2.PeriodID}
+	timeslot3 := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day2.DayID, PeriodID:period1.PeriodID}
+	timeslot4 := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day2.DayID, PeriodID:period2.PeriodID}
+	db.Create(&timeslot1)
+	db.Create(&timeslot2)
+	db.Create(&timeslot3)
+	db.Create(&timeslot4)
 
+	section1 := model.Section{CourseSectionNumber:001, CourseID:course1.CourseID, FacultyID:faculty1.FacultyID, TimeSlotID:timeslot1.TimeSlotID, LocationID:location1.LocationID}
+	section2 := model.Section{CourseSectionNumber:002, CourseID:course1.CourseID, FacultyID:faculty1.FacultyID, TimeSlotID:timeslot2.TimeSlotID, LocationID:location1.LocationID}
+	section3 := model.Section{CourseSectionNumber:001, CourseID:course2.CourseID, FacultyID:faculty2.FacultyID, TimeSlotID:timeslot1.TimeSlotID, LocationID:location2.LocationID}
+	section4 := model.Section{CourseSectionNumber:002, CourseID:course2.CourseID, FacultyID:faculty2.FacultyID, TimeSlotID:timeslot2.TimeSlotID, LocationID:location2.LocationID}
+	section5 := model.Section{CourseSectionNumber:001, CourseID:course3.CourseID, FacultyID:faculty1.FacultyID, TimeSlotID:timeslot3.TimeSlotID, LocationID:location1.LocationID}
+	section6 := model.Section{CourseSectionNumber:001, CourseID:course4.CourseID, FacultyID:faculty3.FacultyID, TimeSlotID:timeslot3.TimeSlotID, LocationID:location2.LocationID}
+	section7 := model.Section{CourseSectionNumber:002, CourseID:course4.CourseID, FacultyID:faculty1.FacultyID, TimeSlotID:timeslot4.TimeSlotID, LocationID:location1.LocationID}
+	section8 := model.Section{CourseSectionNumber:001, CourseID:course5.CourseID, FacultyID:faculty3.FacultyID, TimeSlotID:timeslot4.TimeSlotID, LocationID:location2.LocationID}
+	db.Create(&section1)
+	db.Create(&section2)
+	db.Create(&section3)
+	db.Create(&section4)
+	db.Create(&section5)
+	db.Create(&section6)
+	db.Create(&section7)
+	db.Create(&section8)
+
+	enroll1 := model.Enrollment{StudentID:student1.StudentID, SectionID:section3.SectionID, Grade:"-"}
+	enroll2 := model.Enrollment{StudentID:student2.StudentID, SectionID:section3.SectionID, Grade:"-"}
+	enroll3 := model.Enrollment{StudentID:student3.StudentID, SectionID:section4.SectionID, Grade:"-"}
+	enroll4 := model.Enrollment{StudentID:student4.StudentID, SectionID:section4.SectionID, Grade:"-"}
+	enroll5 := model.Enrollment{StudentID:student1.StudentID, SectionID:section6.SectionID, Grade:"-"}
+	enroll6 := model.Enrollment{StudentID:student2.StudentID, SectionID:section6.SectionID, Grade:"-"}
+	enroll7 := model.Enrollment{StudentID:student3.StudentID, SectionID:section6.SectionID, Grade:"-"}
+	enroll8 := model.Enrollment{StudentID:student4.StudentID, SectionID:section7.SectionID, Grade:"-"}
+	enroll9 := model.Enrollment{StudentID:student1.StudentID, SectionID:section5.SectionID, Grade:"-"}
+	enroll10 := model.Enrollment{StudentID:student2.StudentID, SectionID:section5.SectionID, Grade:"-"}
+	enroll11 := model.Enrollment{StudentID:student3.StudentID, SectionID:section1.SectionID, Grade:"-"}
+	enroll12 := model.Enrollment{StudentID:student1.StudentID, SectionID:section2.SectionID, Grade:"-"}
+	db.Create(&enroll1)
+	db.Create(&enroll2)
+	db.Create(&enroll3)
+	db.Create(&enroll4)
+	db.Create(&enroll5)
+	db.Create(&enroll6)
+	db.Create(&enroll7)
+	db.Create(&enroll8)
+	db.Create(&enroll9)
+	db.Create(&enroll10)
+	db.Create(&enroll11)
+	db.Create(&enroll12)
+
+	history1 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll1.EnrollmentID, Status:"In progress"}
+	history2 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enroll2.EnrollmentID, Status:"In progress"}
+	history3 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enroll3.EnrollmentID, Status:"In progress"}
+	history4 := model.StudentHistory{StudentID:student4.StudentID, EnrollmentID:enroll4.EnrollmentID, Status:"In progress"}
+	history5 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll5.EnrollmentID, Status:"In progress"}
+	history6 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enroll6.EnrollmentID, Status:"In progress"}
+	history7 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enroll7.EnrollmentID, Status:"In progress"}
+	history8 := model.StudentHistory{StudentID:student4.StudentID, EnrollmentID:enroll8.EnrollmentID, Status:"In progress"}
+	history9 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll9.EnrollmentID, Status:"In progress"}
+	history10 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enroll10.EnrollmentID, Status:"In progress"}
+	history11 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enroll11.EnrollmentID, Status:"In progress"}
+	history12 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll12.EnrollmentID, Status:"In progress"}
+	db.Create(&history1)
+	db.Create(&history2)
+	db.Create(&history3)
+	db.Create(&history4)
+	db.Create(&history5)
+	db.Create(&history6)
+	db.Create(&history7)
+	db.Create(&history8)
+	db.Create(&history9)
+	db.Create(&history10)
+	db.Create(&history11)
+	db.Create(&history12)
 }
 
 
