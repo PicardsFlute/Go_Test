@@ -13,14 +13,14 @@ import (
 	"Starfleet/session"
 	_"Starfleet/memory"
 	"Starfleet/model"
-	//"os/user"
+	"Starfleet/global"
 
-	//"strconv"
+
 )
 
 var (
-	tpl *template.Template
-	db *gorm.DB
+
+	db  *gorm.DB
 	err error
 	globalSessions *session.Manager
 )
@@ -73,6 +73,9 @@ func init() {
 		&model.Semester{},
 		&model.Period{},
 		&model.TimeSlot{},
+		&model.Section{},
+		&model.Enrollment{},
+		&model.StudentHistory{},
 
 	)
 }
@@ -83,7 +86,7 @@ func init() {
 func main() {
 
 	routes := mux.NewRouter()
-	tpl = template.Must(template.ParseGlob("templates/*"))
+	global.Tpl = template.Must(template.ParseGlob("templates/*"))
 	routes.PathPrefix("/style").Handler(http.StripPrefix("/style/",http.FileServer(http.Dir("style"))))
 	routes.PathPrefix("/public").Handler(http.StripPrefix("/public", http.FileServer(http.Dir("./public"))))
 
@@ -96,6 +99,15 @@ func main() {
 	routes.Handle("/admin",  checkSessionWrapper(displayAdmin)).Methods("GET")
 	routes.Handle("/faculty",  checkSessionWrapper(displayFaculty)).Methods("GET")
 	routes.Handle("/researcher", checkSessionWrapper(displayResearcher)).Methods("GET")
+
+
+	routes.Handle("/admin/student" , checkSessionWrapper(ViewStudentSchedulePage)).Methods("GET")
+	routes.HandleFunc("/admin/student/{student}", ViewStudentSchedule).Methods("GET")
+	routes.Handle("/admin/student/holds", checkSessionWrapper(ViewStudentHoldsPage))
+	routes.Handle("/admin/student/holds/{student}", checkSessionWrapper(ViewStudentHolds))
+	routes.Handle("/admin/course",checkSessionWrapper(AdminAddCoursePage))
+	//routes.Handle("/admin/course/{course}",checkSessionWrapper(AdminAddCoursePage))
+
 	//routes.HandleFunc("/unauthorized", unauthorized)
 
 	routes.HandleFunc("/logout", logout)
@@ -116,16 +128,16 @@ func main() {
 // routes for site
 
 func index(w http.ResponseWriter, r *http.Request){
-	tpl.ExecuteTemplate(w, "index", nil)
+	global.Tpl.ExecuteTemplate(w, "index", nil)
 
 }
 
 func unauthorized(w http.ResponseWriter, r *http.Request){
-	tpl.ExecuteTemplate(w, "index" , "You can not view this page")
+	global.Tpl.ExecuteTemplate(w, "index" , "You can not view this page")
 }
 
 func loginPage(w http.ResponseWriter, r *http.Request){
-	tpl.ExecuteTemplate(w,"login",nil)
+	global.Tpl.ExecuteTemplate(w,"login",nil)
 }
 
 
@@ -156,18 +168,18 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 				sess.Set("UserID", user.UserID)
 				//http.Redirect(w,r,"/user/" + strconv.Itoa(int(user.UserID)), http.StatusFound)
 
-				//tpl.ExecuteTemplate(w,"user",user)
+				//Tpl.ExecuteTemplate(w,"user",user)
 				checkUserType(user, w, r)
 			} else {
 
-				tpl.ExecuteTemplate(w,"login","Error, username or password does not match.")
+				global.Tpl.ExecuteTemplate(w,"login","Error, username or password does not match.")
 
 			}
 
 
 		} else {
 			fmt.Println()
-			tpl.ExecuteTemplate(w,"login","User not found")
+			global.Tpl.ExecuteTemplate(w,"login","User not found")
 		}
 
 	}
@@ -201,17 +213,17 @@ func checkUserType(user model.MainUser, w http.ResponseWriter, r *http.Request){
 	case 3:
 		fmt.Println("Youre an admin")
 		http.Redirect(w,r,"/admin", http.StatusFound)
-		//tpl.ExecuteTemplate(w,"admin", "administrative user!")
+		//Tpl.ExecuteTemplate(w,"admin", "administrative user!")
 
 	case 4:
 		fmt.Println("Youre a researcher")
 		http.Redirect(w,r,"/researcher", http.StatusFound)
-		//tpl.ExecuteTemplate(w,"admin", "administrative user!")
+		//Tpl.ExecuteTemplate(w,"admin", "administrative user!")
 
 	default:
 		fmt.Println("Not sure your type")
 		http.Redirect(w,r,"/", http.StatusFound)
-		tpl.ExecuteTemplate(w,"index",nil)
+		global.Tpl.ExecuteTemplate(w,"index",nil)
 		//return user,user.UserType
 	}
 
@@ -221,19 +233,19 @@ func checkUserType(user model.MainUser, w http.ResponseWriter, r *http.Request){
 
 
 
-func checkLoginStatus(w http.ResponseWriter, r *http.Request) (bool,model.MainUser){
+func CheckLoginStatus(w http.ResponseWriter, r *http.Request) (bool,model.MainUser){
 	sess := globalSessions.SessionStart(w,r)
 	sess_uid := sess.Get("UserID")
 	u := model.MainUser{}
 	if sess_uid == nil {
 		//http.Redirect(w,r, "/", http.StatusForbidden)
-		//tpl.ExecuteTemplate(w,"index", "You can't access this page")
+		//Tpl.ExecuteTemplate(w,"index", "You can't access this page")
 		return false, u
 	} else {
 		uID := sess_uid
 		db.First(&u, uID)
 		fmt.Println("Logged in User, ", uID)
-		//tpl.ExecuteTemplate(w, "user", nil)
+		//Tpl.ExecuteTemplate(w, "user", nil)
 		return true, u
 	}
 }
@@ -245,13 +257,13 @@ In this snippet we're placing our handler logic in an anonymous function
 func checkSessionWrapper(handle http.HandlerFunc) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Executing middlewware")
-		isLogged, _ := checkLoginStatus(w, r)
+		isLogged, _ := CheckLoginStatus(w, r)
 		if isLogged { //if check user is true, execute the handle that's inside
 			handle.ServeHTTP(w,r)
 		} else{ //otherwise deny request
-			//tpl.ExecuteTemplate(w,"index", "You can't access that page")
-			http.Redirect(w, r, "/login", http.StatusUnauthorized) // redirects route and gives unauthorized link
-			tpl.ExecuteTemplate(w,"login", "You must login first.") //this renders the index template right under it
+			//Tpl.ExecuteTemplate(w,"index", "You can't access that page")
+			http.Redirect(w, r, "/login", http.StatusUnauthorized)           // redirects route and gives unauthorized link
+			global.Tpl.ExecuteTemplate(w,"login", "You must login first.") //this renders the index template right under it
 		}
 
 	})
@@ -261,9 +273,9 @@ func checkSessionWrapper(handle http.HandlerFunc) http.Handler {
 
 func displayStudent(w http.ResponseWriter, r *http.Request){
 
-	_, user := checkLoginStatus(w, r)
+	_, user := CheckLoginStatus(w, r)
 	if user.UserType == 1 {
-		tpl.ExecuteTemplate(w, "student", user)
+		global.Tpl.ExecuteTemplate(w, "student", user)
 	}else {
 		http.Redirect(w,r,"/", http.StatusForbidden)
 		index(w,r)
@@ -272,10 +284,10 @@ func displayStudent(w http.ResponseWriter, r *http.Request){
 
 
 func displayFaculty(w http.ResponseWriter, r *http.Request){
-	_, user := checkLoginStatus(w,r)
+	_, user := CheckLoginStatus(w,r)
 
 	if user.UserType == 2 {
-		tpl.ExecuteTemplate(w, "faculty", user)
+		global.Tpl.ExecuteTemplate(w, "faculty", user)
 	}else {
 		http.Redirect(w,r,"/", http.StatusForbidden)
 		index(w,r)
@@ -284,10 +296,10 @@ func displayFaculty(w http.ResponseWriter, r *http.Request){
 
 
 func displayAdmin(w http.ResponseWriter, r *http.Request){
-	_, user := checkLoginStatus(w,r)
+	_, user := CheckLoginStatus(w,r)
 
 	if user.UserType == 3 {
-		tpl.ExecuteTemplate(w, "admin", user)
+		global.Tpl.ExecuteTemplate(w, "admin", user)
 	}else {
 		http.Redirect(w,r,"/", http.StatusForbidden)
 		index(w,r)
@@ -298,10 +310,10 @@ func displayAdmin(w http.ResponseWriter, r *http.Request){
 
 func displayResearcher(w http.ResponseWriter, r *http.Request){
 
-	_, user := checkLoginStatus(w,r)
+	_, user := CheckLoginStatus(w,r)
 
 	if user.UserType == 4 {
-		tpl.ExecuteTemplate(w, "researcher", user)
+		global.Tpl.ExecuteTemplate(w, "researcher", user)
 	}else {
 		http.Redirect(w,r,"/", http.StatusForbidden)
 		index(w,r)
@@ -316,10 +328,10 @@ func about(w http.ResponseWriter, r *http.Request){
 	personId := vars["number"] //get map with key id number
 	if num, _ := strconv.Atoi(personId); num > 3 {
 		p := Person{"Bob", 4}
-		tpl.ExecuteTemplate(w, "index.html", p)
+		Tpl.ExecuteTemplate(w, "index.html", p)
 	}else {
 		p := Person{"Steve", 2}
-		tpl.ExecuteTemplate(w, "index.html", p)
+		Tpl.ExecuteTemplate(w, "index.html", p)
 	}
 }
 func generateHTML(writer http.ResponseWriter, data interface{}, filenames ...string) {
