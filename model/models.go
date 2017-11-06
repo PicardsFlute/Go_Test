@@ -133,6 +133,18 @@ type StudentMinor struct {
 	Student Student `gorm:"ForeignKey:StudentID; AssociationForeignKey:StudentID"`
 }
 
+type Hold struct{
+	HoldID uint `gorm:"primary_key"`
+	HoldName string `gorm:"type:varchar(50)"`
+}
+
+type StudentHolds struct {
+	StudentID uint `gorm:"primary_key "`
+	HoldID uint `gorm:"primary_key"`
+	Student Student `gorm:"ForeignKey:StudentID; AssociationForeignKey:StudentID"`
+	Hold Hold `gorm:"ForeignKey:HoldID; AssociationForeignKey:HoldID"`
+}
+
 
 type Course struct {
 	CourseID uint `gorm:"primary_key"`

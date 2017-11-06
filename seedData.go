@@ -1,5 +1,4 @@
 package main
-/*
 import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -71,6 +70,9 @@ func main(){
 		&model.Minor{},
 		&model.StudentMajor{},
 		&model.StudentMinor{},
+
+		&model.Hold{},
+		&model.StudentHolds{},
 
 		&model.Course{},
 		&model.Prerequisite{},
@@ -254,6 +256,14 @@ func main(){
 	db.Create(&minor3)
 	db.Create(&minor4)
 
+	hold1 := model.Hold{HoldName:"Unpaid Bill"}
+	hold2 := model.Hold{HoldName:"Unsubmitted Health Forms"}
+	hold3 := model.Hold{HoldName:"Unpaid Parking Ticket"}
+
+	db.Create(&hold1)
+	db.Create(&hold2)
+	db.Create(&hold3)
+
 	course1 := model.Course{CourseName:"Warp Field Mechanics", CourseCredits:4, DepartmentID:department1.DepartmentID,
 		CourseDescription:"An introduction to the theory behind faster than light space travel."}
 
@@ -388,5 +398,4 @@ func main(){
 }
 
 
-*/
 
