@@ -16,6 +16,7 @@ import (
 	"Starfleet/global"
 
 	"os/user"
+	"strconv"
 )
 
 var (
@@ -390,10 +391,31 @@ func createUser (w http.ResponseWriter, r *http.Request) {
 			case 1:
 				fmt.Println("You're a student")
 				userDB.UserType = 1;
-
+				studentType,_ := strconv.Atoi(r.FormValue("student_type"))
+				numCred,_ := strconv.Atoi(r.FormValue("num_credits"))
+ 				student := model.Student{StudentID:userDB.UserID, StudentType:studentType }
+ 				db.Create(&student)
+ 				if (studentType == 1){
+ 					studentFT := model.FullTimeStudent{FullTimeStudentID:student.StudentID, NumCredits:numCred}
+ 					db.Create(&studentFT)
+				} else if (studentType == 2){
+					studentPT := model.FullTimeStudent{FullTimeStudentID:student.StudentID, NumCredits:numCred}
+					db.Create(&studentPT)
+				}
 
 			case 2:
 				fmt.Println("Youre a faculty")
+				userDB.UserType = 2;
+				facultyType,_ := strconv.Atoi(r.FormValue("faculty_type"))
+				faculty := model.Faculty{FacultyID:userDB.UserID, FacultyType:facultyType}
+				db.Create(&faculty)
+				if ( == 1){
+					studentFT := model.FullTimeStudent{FullTimeStudentID:student.StudentID, NumCredits:numCred}
+					db.Create(&studentFT)
+				} else if (studentType == 2){
+					studentPT := model.FullTimeStudent{FullTimeStudentID:student.StudentID, NumCredits:numCred}
+					db.Create(&studentPT)
+				}
 				http.Redirect(w,r,"/faculty", http.StatusFound)
 
 
