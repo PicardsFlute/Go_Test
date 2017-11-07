@@ -15,7 +15,7 @@ import (
 	"Starfleet/model"
 	"Starfleet/global"
 
-
+	"os/user"
 )
 
 var (
@@ -363,4 +363,64 @@ func logout(w http.ResponseWriter, r *http.Request){
 	sess.Delete("UserID")
 	sess.Delete("username")
 	http.Redirect(w,r,"/login", http.StatusSeeOther)
+}
+
+/* CRUD for users */
+func createUser (w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	formEmail := r.FormValue("email")
+
+	userDB := model.MainUser{}
+	userDB.UserEmail = formEmail
+
+	//db.Where(&model.MainUser{UserEmail: formEmail}).First(&userDB)
+	count := 1
+	db.Where(&model.MainUser{UserEmail: formEmail}).Count(&count)
+	if count == 0 {
+		userDB.FirstName = r.FormValue("first_name")
+		userDB.LastName = r.FormValue("last_name")
+		userDB.UserPassword = r.FormValue("password")
+
+		valid, err := userDB.ValidateData()
+		if valid {
+			db.Create(&userDB)
+
+			switch userDB.UserType {
+
+			case 1:
+				fmt.Println("You're a student")
+				userDB.UserType = 1;
+
+
+			case 2:
+				fmt.Println("Youre a faculty")
+				http.Redirect(w,r,"/faculty", http.StatusFound)
+
+
+			case 3:
+				fmt.Println("Youre an admin")
+				http.Redirect(w,r,"/admin", http.StatusFound)
+				//Tpl.ExecuteTemplate(w,"admin", "administrative user!")
+
+			case 4:
+				fmt.Println("Youre a researcher")
+				http.Redirect(w,r,"/researcher", http.StatusFound)
+				//Tpl.ExecuteTemplate(w,"admin", "administrative user!")
+
+			default:
+				fmt.Println("Not sure your type")
+				http.Redirect(w,r,"/", http.StatusFound)
+				global.Tpl.ExecuteTemplate(w,"index",nil)
+				//return user,user.UserType
+			}
+
+		} else {
+			global.Tpl.ExecuteTemplate(w,"login",err)
+		}
+
+	}
+}
+
+func createStudent(w http.ResponseWriter, r *http.Request){
+
 }

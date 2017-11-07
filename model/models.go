@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"time"
 
+	"errors"
 )
 
 type MainUser struct {
@@ -17,7 +18,7 @@ type MainUser struct {
 	UserPassword string `gorm:"type:varchar(300)"`
 	FirstName string `gorm:"type:varchar(50)"`
 	LastName string `gorm:"type:varchar(50)"`
-	UserType int `gorm:"not null"`
+	UserType int `gorm:"not null";default:1"`
 }
 
 func (u *MainUser)BeforeCreate(){
@@ -30,7 +31,7 @@ func (u *MainUser)BeforeCreate(){
 	u.UserPassword = string(hashedPW)
 }
 
-func (u *MainUser)CheckPasswordMatch(plainTextPassword string)(bool){
+func (u *MainUser)CheckPasswordMatch(plainTextPassword string)(bool) {
 	// returns true is hashed plainTest matches hashed PW in database
 	dbPassword := u.UserPassword
 	check := bcrypt.CompareHashAndPassword([]byte(dbPassword), []byte(plainTextPassword))
@@ -40,7 +41,17 @@ func (u *MainUser)CheckPasswordMatch(plainTextPassword string)(bool){
 	} else {
 		return true
 	}
+}
 
+
+func (u *MainUser)ValidateData()(bool, error){
+
+	if (len(u.UserPassword) < 6 ){
+		return false, errors.New("Password must be at least 8 characters")
+	}
+
+
+	return true, nil
 }
 
 
