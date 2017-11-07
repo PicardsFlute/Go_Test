@@ -1,4 +1,4 @@
-{{define "adminStudentHold"}}
+{{define "adminViewStudentScheduleDetails"}}
 {{template "head"}}
 
 <!--
@@ -26,19 +26,22 @@
 
     {{template "admin-navbar"}}
 
-    {{if .User.FirstName}}
-    <h1>Holds for {{.User.FirstName}} {{.User.LastName}}</h1>
-        <hr>
-    {{if .Holds}}
-        {{range .Holds}}
-            <h2>Hold name: {{.HoldName}}</h2>
+    {{if .}}
+        {{range .}}
+            <div class="course_details">
+                <p>Course Name: {{.CourseName}}</p>
+                <p>Course Credits: {{.CourseCredits}}</p>
+                <p>Room Number: {{.RoomNumber}}</p>
+                <p>Building Name: {{.BuildingName}}</p>
+                <p>Start Time: {{.StartTime}}</p>
+                <p>End Time: {{.EndTime}}</p>
+                <p>Meeting Days: {{.MeetingDay}}</p>
+            </div>
             <hr>
         {{end}}
-
         {{else}}
             <h1>No holds for this user</h1>
         {{end}}
-    {{end}}
 
 
 

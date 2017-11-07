@@ -62,10 +62,10 @@
                     <form action="/admin/student/{student}" id="requestData" class="form-horizontal" method="GET">
 
                         <label class="form-group">Id</label>
-                        <input type="text" class="form-control" name="id" placeholder="" required=""><br />
+                        <input type="text" class="form-control" name="id"><br />
 
-                        <label class="form-group">Name</label>
-                        <input type="text" class="form-control" name="name" placeholder=""><br />
+                        <label class="form-group">Email</label>
+                        <input type="text" class="form-control" name="email"><br />
 
 
                         <label class="form-group">Major</label>
@@ -77,6 +77,9 @@
 
                 </div>
 
+                {{with .}}
+                    <h4>user not found</h4>
+                {{end}}
             </div>
         </div>
         <br/>
