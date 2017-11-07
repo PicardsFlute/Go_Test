@@ -3,7 +3,7 @@
 <div class="container">
 
     <h1>Welcome {{.FirstName}}</h1>
-
+    <!--
     <ul class="nav nav-pills center-nav">
         <li role="presentation" class="active"><a href="index.html">Add Course</a></li>
         <li role="presentation"><a href="#">View Schedule</a></li>
@@ -11,13 +11,14 @@
         <li role="presentation"><a href="#">View Transcript</a></li>
         <li role="presentation"><a href="#">View Advisor</a></li>
     </ul>
+    -->
+
+    {{template "admin-navbar"}}
 
 
-    <h1>Viewing Student Schedule</h1>
 
 
-
-    <form action="/admin/student/holds/{student}" id="requestData" class="form-horizontal" method="GET">
+    <form action="/admin/holds/" id="requestData" class="form-horizontal" method="GET">
 
         <div class="form-group">
             <label class="control-label col-sm-1" for="name">Student Name</label>

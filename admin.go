@@ -10,6 +10,7 @@ import (
 	"Starfleet/model"
 	"strconv"
 	"fmt"
+	"time"
 )
 
 
@@ -21,6 +22,20 @@ func ViewStudentSchedulePage(w http.ResponseWriter, r *http.Request){
 	if isLogged && user.UserType == 3 {
 		global.Tpl.ExecuteTemplate(w, "viewStudentScheduleAdmin", user)
 	}
+}
+
+type StudentSchedule struct {
+	CourseName string
+	CourseCredits string
+	RoomNumber string
+	BuildingName string
+	StartTime time.Time
+	EndTime time.Time
+	MeetingDay string
+}
+
+type HoldDetail struct {
+	HoldName string
 }
 
 func ViewStudentSchedule(w http.ResponseWriter, r *http.Request){
@@ -76,6 +91,7 @@ func ViewStudentSchedule(w http.ResponseWriter, r *http.Request){
 	*/
 
 	//this correctly joins enrollment and section on section_id, could possible store all the data in an empty interface
+	/*
 	rows, err := db.Table("enrollment").Select("*").Joins("join section on section.section_id = enrollment.section_id  AND student_id = ?", id).Rows()
 	if err != nil{
 		fmt.Println(err.Error())
@@ -84,7 +100,15 @@ func ViewStudentSchedule(w http.ResponseWriter, r *http.Request){
 			fmt.Println("found rows", rows)
 		}
 	}
+	*/
+	ss := StudentSchedule{}
 
+	db.Table("enrollment").Select("course_name,course_credits," +
+		//"room_number,building_name,start_time,end_time,meeting_day" +
+		"").Joins("JOIN section on section.section_id = enrollment.section_id AND student_id = ?" +
+		"", id).Joins("JOIN section.course_id = course.course_id").First(&ss)
+
+	fmt.Println(ss)
 
 	//fmt.Println("Results from query are", results)
 
@@ -95,8 +119,11 @@ func ViewStudentSchedule(w http.ResponseWriter, r *http.Request){
 
 func ViewStudentHoldsPage(w http.ResponseWriter, r *http.Request){
 	isLogged, user := CheckLoginStatus(w,r)
+
 	if isLogged && user.UserType == 3 {
 		global.Tpl.ExecuteTemplate(w, "viewStudentHoldsAdmin", user)
+	}else {
+		http.Redirect(w,r,"/",http.StatusForbidden)
 	}
 }
 
@@ -125,11 +152,29 @@ func ViewStudentHolds (w http.ResponseWriter,r *http.Request) {
 	} else {
 		fmt.Println("Error searching user", user)
 	}
+	/*
+	results := model.StudentHolds{} //should be student-holds
 
-	results := model.Student{} //should be student-holds
+	db.Table("student").Select("*").Joins("join student_holds on student.student_id = holds.student_id WHERE student_id = ?", intId).Scan(&results)
 
-	db.Table("student").Select("*").Joins("join student_holds on student.studentID = holds.studentID WHERE student.id = ?", intId).Scan(&results)
-	//TODO: No holds table in db or model in project
+	fmt.Println("Hold id is:",results.HoldID, "Student id:", results.StudentID)
+	hold := model.Hold{}
+
+	db.Where(model.Hold{HoldID:results.HoldID}).First(&hold)
+
+	hd := HoldDetail{StudentName:user.FirstName, HoldName:hold.HoldName}
+	global.Tpl.ExecuteTemplate(w, "adminStudentHold" , hd)
+	*/
+	hd := []HoldDetail{}
+
+	db.Raw("SELECT hold_name FROM student NATURAL JOIN student_holds NATURAL JOIN hold WHERE student.student_id =?", user.UserID).Scan(&hd)
+	fmt.Println(hd)
+	m := map[string]interface{}{
+		"User": user,
+		"Holds": hd,
+	}
+	global.Tpl.ExecuteTemplate(w, "adminStudentHold" , m)
+
 }
 
 

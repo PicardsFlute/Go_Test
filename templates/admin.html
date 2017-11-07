@@ -3,7 +3,7 @@
 <div class="container">
 
     <h1>Welcome {{.FirstName}}</h1>
-
+    <!--
     <ul class="nav nav-pills center-nav">
         <li role="presentation" class="active"><a href="/admin/course">Add Course</a></li>
         <li role="presentation"><a href="/admin/student">View Student Schedule</a></li>
@@ -11,6 +11,8 @@
         <li role="presentation"><a href="#">View Transcript</a></li>
         <li role="presentation"><a href="#">View Advisor</a></li>
     </ul>
+    -->
+    {{template "admin-navbar"}}
 
 </div>
 {{template "end"}}
