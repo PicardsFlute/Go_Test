@@ -34,6 +34,10 @@ type StudentSchedule struct {
 	MeetingDay string
 }
 
+type HoldDetail struct {
+	HoldName string
+}
+
 func ViewStudentSchedule(w http.ResponseWriter, r *http.Request){
 
 	//vars := mux.Vars(r) //returns a mapping responses
@@ -148,15 +152,29 @@ func ViewStudentHolds (w http.ResponseWriter,r *http.Request) {
 	} else {
 		fmt.Println("Error searching user", user)
 	}
-
+	/*
 	results := model.StudentHolds{} //should be student-holds
 
-	db.Table("student").Select("*").Joins("join student_holds on student.studentID = holds.studentID WHERE student.id = ?", intId).Scan(&results)
+	db.Table("student").Select("*").Joins("join student_holds on student.student_id = holds.student_id WHERE student_id = ?", intId).Scan(&results)
 
-	fmt.Println("Hold id is:",results.HoldID)
+	fmt.Println("Hold id is:",results.HoldID, "Student id:", results.StudentID)
 	hold := model.Hold{}
 
 	db.Where(model.Hold{HoldID:results.HoldID}).First(&hold)
+
+	hd := HoldDetail{StudentName:user.FirstName, HoldName:hold.HoldName}
+	global.Tpl.ExecuteTemplate(w, "adminStudentHold" , hd)
+	*/
+	hd := []HoldDetail{}
+
+	db.Raw("SELECT hold_name FROM student NATURAL JOIN student_holds NATURAL JOIN hold WHERE student.student_id =?", user.UserID).Scan(&hd)
+	fmt.Println(hd)
+	m := map[string]interface{}{
+		"User": user,
+		"Holds": hd,
+	}
+	global.Tpl.ExecuteTemplate(w, "adminStudentHold" , m)
+
 }
 
 

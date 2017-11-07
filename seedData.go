@@ -1,10 +1,5 @@
 package main
-
 /*
-
-import "github.com/jinzhu/gorm"
-
-
 
 import (
 	"github.com/jinzhu/gorm"
@@ -41,6 +36,8 @@ func main(){
 	db.DropTable(&model.Prerequisite{})
 	db.DropTable(&model.Course{})
 
+	db.DropTable(&model.StudentHolds{})
+	db.DropTable(&model.Hold{})
 
 	db.DropTable(&model.StudentMajor{})
 	db.DropTable(&model.StudentMinor{})
@@ -263,7 +260,7 @@ func main(){
 	db.Create(&minor4)
 
 	hold1 := model.Hold{HoldName:"Unpaid Bill"}
-	hold2 := model.Hold{HoldName:"Unsubmitted Health Forms"}
+	hold2 := model.Hold{HoldName:"Un-submitted Health Forms"}
 	hold3 := model.Hold{HoldName:"Unpaid Parking Ticket"}
 
 	db.Create(&hold1)
@@ -271,8 +268,12 @@ func main(){
 	db.Create(&hold3)
 
 	studenthold1 := model.StudentHolds{StudentID:student1.StudentID, HoldID:hold1.HoldID}
+	studenthold2 := model.StudentHolds{StudentID:student1.StudentID, HoldID:hold2.HoldID}
+	studenthold3 := model.StudentHolds{StudentID:student2.StudentID, HoldID:hold3.HoldID}
 
 	db.Create(&studenthold1)
+	db.Create(&studenthold2)
+	db.Create(&studenthold3)
 
 	course1 := model.Course{CourseName:"Warp Field Mechanics", CourseCredits:4, DepartmentID:department1.DepartmentID,
 		CourseDescription:"An introduction to the theory behind faster than light space travel."}
@@ -406,7 +407,6 @@ func main(){
 	db.Create(&history11)
 	db.Create(&history12)
 }
-
 
 
 */

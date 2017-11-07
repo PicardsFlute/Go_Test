@@ -1,0 +1,29 @@
+{{define "adminStudentHold"}}
+{{template "head"}}
+<div class="container">
+
+    <!--
+    <ul class="nav nav-pills center-nav">
+        <li role="presentation" class="active"><a href="index.html">Add Course</a></li>
+        <li role="presentation"><a href="#">View Schedule</a></li>
+        <li role="presentation"><a href="#">View Holds</a></li>
+        <li role="presentation"><a href="#">View Transcript</a></li>
+        <li role="presentation"><a href="#">View Advisor</a></li>
+    </ul>
+    -->
+
+    {{template "admin-navbar"}}
+
+    <h1>Holds for {{.User.FirstName}}</h1>
+
+    {{range .Holds}}
+        <h2>Hold name: {{.HoldName}}</h2>
+    {{end}}
+
+
+
+</div>
+
+{{template "end"}}
+{{end}}
+

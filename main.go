@@ -108,7 +108,7 @@ func main() {
 	routes.HandleFunc("/admin/student/{student}", ViewStudentSchedule).Methods("GET")
 
 	routes.HandleFunc("/admin/holds", ViewStudentHoldsPage)
-	routes.HandleFunc("/admin/holds/{student}", ViewStudentHolds)
+	routes.HandleFunc("/admin/holds/", ViewStudentHolds)
 	//routes.HandleFunc("/admin/student/holds/{student}", ViewStudentHolds)
 	routes.Handle("/admin/course",checkSessionWrapper(AdminAddCoursePage))
 	//routes.Handle("/admin/course/{course}",checkSessionWrapper(AdminAddCoursePage))
