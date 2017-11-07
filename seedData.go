@@ -1,4 +1,11 @@
 package main
+
+/*
+
+import "github.com/jinzhu/gorm"
+
+
+
 import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -7,7 +14,6 @@ import (
 	"fmt"
 	"time"
 )
-
 func main(){
 	dbPassword := os.Getenv("PG_DATABASE_PW")
 	db, err := gorm.Open("postgres", "host=127.0.0.1 dbname=Starfleet sslmode=disable password="+dbPassword)
@@ -264,6 +270,10 @@ func main(){
 	db.Create(&hold2)
 	db.Create(&hold3)
 
+	studenthold1 := model.StudentHolds{StudentID:student1.StudentID, HoldID:hold1.HoldID}
+
+	db.Create(&studenthold1)
+
 	course1 := model.Course{CourseName:"Warp Field Mechanics", CourseCredits:4, DepartmentID:department1.DepartmentID,
 		CourseDescription:"An introduction to the theory behind faster than light space travel."}
 
@@ -399,3 +409,4 @@ func main(){
 
 
 
+*/

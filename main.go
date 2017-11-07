@@ -66,6 +66,9 @@ func init() {
 		&model.StudentMajor{},
 		&model.StudentMinor{},
 
+		&model.Hold{},
+		&model.StudentHolds{},
+
 		&model.Course{},
 		&model.Prerequisite{},
 
@@ -103,8 +106,10 @@ func main() {
 
 	routes.Handle("/admin/student" , checkSessionWrapper(ViewStudentSchedulePage)).Methods("GET")
 	routes.HandleFunc("/admin/student/{student}", ViewStudentSchedule).Methods("GET")
-	routes.Handle("/admin/student/holds", checkSessionWrapper(ViewStudentHoldsPage))
-	routes.Handle("/admin/student/holds/{student}", checkSessionWrapper(ViewStudentHolds))
+
+	routes.HandleFunc("/admin/holds", ViewStudentHoldsPage)
+	routes.HandleFunc("/admin/holds/{student}", ViewStudentHolds)
+	//routes.HandleFunc("/admin/student/holds/{student}", ViewStudentHolds)
 	routes.Handle("/admin/course",checkSessionWrapper(AdminAddCoursePage))
 	//routes.Handle("/admin/course/{course}",checkSessionWrapper(AdminAddCoursePage))
 
