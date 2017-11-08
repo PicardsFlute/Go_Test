@@ -304,7 +304,10 @@ func displayAdmin(w http.ResponseWriter, r *http.Request){
 	_, user := CheckLoginStatus(w,r)
 
 	if user.UserType == 3 {
-		global.Tpl.ExecuteTemplate(w, "admin", user)
+		m := map[string]interface{}{
+			"User":user,
+		}
+		global.Tpl.ExecuteTemplate(w, "admin", m)
 	}else {
 		http.Redirect(w,r,"/", http.StatusForbidden)
 		index(w,r)

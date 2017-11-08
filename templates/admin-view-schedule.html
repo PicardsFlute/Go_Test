@@ -2,7 +2,8 @@
 {{template "head"}}
 <div class="container">
 
-    <h1>Welcome {{.FirstName}}</h1>
+          <h1>Welcome {{ .FirstName}}</h1>
+
     <!--
     <ul class="nav nav-pills center-nav">
         <li role="presentation" class="active"><a href="index.html">Add Course</a></li>
@@ -65,7 +66,7 @@
                         <input type="text" class="form-control" name="id"><br />
 
                         <label class="form-group">Email</label>
-                        <input type="text" class="form-control" name="email"><br />
+                        <input type="email" class="form-control" name="email"><br />
 
 
                         <label class="form-group">Major</label>
@@ -77,11 +78,13 @@
 
                 </div>
 
-                {{with .}}
-                    <h4>user not found</h4>
-                {{end}}
             </div>
         </div>
+        {{if .NoUser}}
+            <h2>No results for that user</h2>
+        {{else}}
+            <h2>Try searching for a user</h2>
+        {{end}}
         <br/>
         <div class="container">
 

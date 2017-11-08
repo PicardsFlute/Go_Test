@@ -20,7 +20,14 @@ import (
 func ViewStudentSchedulePage(w http.ResponseWriter, r *http.Request){
 	isLogged, user := CheckLoginStatus(w,r)
 	if isLogged && user.UserType == 3 {
-		global.Tpl.ExecuteTemplate(w, "viewStudentScheduleAdmin", user)
+		m := map[string]interface{}{
+			"User":user,
+		}
+		err := global.Tpl.ExecuteTemplate(w, "viewStudentScheduleAdmin", m)
+		//err := global.Tpl.ExecuteTemplate(w, "viewStudentScheduleAdmin", user)
+		if err != nil {
+			fmt.Println(err.Error())
+		}
 	}
 }
 
@@ -39,7 +46,7 @@ type HoldDetail struct {
 }
 
 type NoUser struct {
-	errorMessage string
+	ErrorMessage string
 }
 
 func ViewStudentSchedule(w http.ResponseWriter, r *http.Request){
@@ -64,20 +71,26 @@ func ViewStudentSchedule(w http.ResponseWriter, r *http.Request){
 	//first check if they entered an ID
 	if id != "" {
 		db.Where(&model.MainUser{UserID: uint(intId)}).Find(&user).Count(&count)
-	} else {
-		db.Where(&model.MainUser{UserEmail: email}).Find(&user).Count(&count)
 	}
 
+	if email != ""{
+		db.Where(&model.MainUser{UserEmail: email}).Find(&user).Count(&count)
+	}
+	//nu := NoUser{"Nobody found"}
 	if count > 0 {
 		fmt.Println("You have a user", user.FirstName)
 	} else {//TODO: Render error correctly, try passing in map with admin user
-		global.Tpl.ExecuteTemplate(w,"adminViewStudentScheduleDetails", "No user found")
+
+		m := map[string]interface{}{
+			"NoUser": "Nobody Home",
+		}
+
+		fmt.Println("Showing no users found error")
+		global.Tpl.ExecuteTemplate(w,"viewStudentScheduleAdmin", m)
 		return
 	}
 
-	//Successfully gets the student
 
-	//email := user.UserEmail
 
 	//this correctly joins enrollment and section on section_id, could possible store all the data in an empty interface
 	/*
@@ -91,12 +104,6 @@ func ViewStudentSchedule(w http.ResponseWriter, r *http.Request){
 	}
 	*/
 	ss := []StudentSchedule{}
-	/*
-	db.Table("enrollment").Select("course_name,course_credits," +
-		//"room_number,building_name,start_time,end_time,meeting_day" +
-		"").Joins("JOIN section on section.section_id = enrollment.section_id AND student_id = ?" +
-		"", id).Joins("JOIN section.course_id = course.course_id").First(&ss)
-	*/
 	db.Raw(`SELECT course_name,course_credits,building_name,room_number,meeting_day,start_time,end_time
 	FROM enrollment
 	NATURAL JOIN Section
@@ -107,8 +114,6 @@ func ViewStudentSchedule(w http.ResponseWriter, r *http.Request){
 	JOIN location NATURAL JOIN building
 	NATURAL JOIN room WHERE enrollment.student_id =?`,user.UserID).Scan(&ss)
 	fmt.Println(ss)
-
-	//fmt.Println("Results from query are", results)
 
 	global.Tpl.ExecuteTemplate(w, "adminViewStudentScheduleDetails", ss)
 
@@ -156,20 +161,6 @@ func ViewStudentHolds (w http.ResponseWriter,r *http.Request) {
 		return
 	}
 
-	/*
-	results := model.StudentHolds{} //should be student-holds
-
-	db.Table("student").Select("*").Joins("join student_holds on student.student_id = holds.student_id WHERE student_id = ?", intId).Scan(&results)
-
-	fmt.Println("Hold id is:",results.HoldID, "Student id:", results.StudentID)
-	hold := model.Hold{}
-
-	db.Where(model.Hold{HoldID:results.HoldID}).First(&hold)
-
-	hd := HoldDetail{StudentName:user.FirstName, HoldName:hold.HoldName}
-	global.Tpl.ExecuteTemplate(w, "adminStudentHold" , hd)
-	*/
-	//hd := []HoldDetail{}
 	hs := []model.Hold{}
 
 	db.Raw("SELECT hold_name FROM student NATURAL JOIN student_holds NATURAL JOIN hold WHERE student.student_id =?", user.UserID).Scan(&hs)
