@@ -28,11 +28,13 @@
 
     {{if .User.FirstName}}
     <h1>Holds for {{.User.FirstName}} {{.User.LastName}}</h1>
+    {{$user := .User.UserID}}
+    <h3>User is {{$user}}</h3>
         <hr>
     {{if .Holds}}
         {{range .Holds}}
             <h2>Hold name: {{.HoldName}}</h2>
-    <form action="/admin/holds/{user}/{{.HoldID}}" method="POST" id="{{.HoldID}}">
+    <form action="/admin/holds/{{$user}}/{{.HoldID}}" method="POST" id="{{.HoldID}}">
         <input type="submit" value="Remove Hold"
                class="btn btn-default pull-right">
     </form>

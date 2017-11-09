@@ -184,18 +184,26 @@ func ViewStudentHolds (w http.ResponseWriter,r *http.Request) {
 
 func AdminDeleteHold(w http.ResponseWriter, r *http.Request){
 	vars := mux.Vars(r)
-	holdId := vars["HoldID"]
-	studentID := vars["UserID"]
-	_, err := strconv.Atoi(holdId)
+	holdId := vars["id"]
+	user := vars["user"]
+
+	holdInt , err := strconv.Atoi(holdId)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	user := vars["user"]
-	fmt.Println("StudentID =", studentID, "HoldID =", holdId, "User =", user)
+	userInt , err := strconv.Atoi(user)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+		fmt.Println("StudentID =", userInt, "HoldID =", holdInt, "User =", user)
 	//TODO: use ajax to delete the hold, get the id of the hold, and get the student id from a different portion of the page by using attribute
-	//hold := model.StudentHolds{}
-	//db.Where(model.StudentHolds{HoldID:uint(holdIdInt)}).First(&hold)
+	studentHold := model.StudentHolds{}
+	//db.Where("student_id = ? AND hold_id = ?", userInt,holdInt).First(&studentHold)
 	//db.Delete(&hold)
+	db.Raw("SELECT * FROM student_holds WHERE student_id = ? AND hold_id = ?", userInt,holdInt).Scan(&studentHold)
+	fmt.Println("Hold found", studentHold)
+	db.Delete(&studentHold)
 	//fmt.Println("Hold deleted sucessfully")
 
 
