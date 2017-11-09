@@ -15,7 +15,6 @@ import (
 	"Starfleet/model"
 	"Starfleet/global"
 
-	"os/user"
 	"strconv"
 )
 
@@ -105,15 +104,19 @@ func main() {
 	routes.Handle("/researcher", checkSessionWrapper(displayResearcher)).Methods("GET")
 
 
-	routes.Handle("/admin/student" , checkSessionWrapper(ViewStudentSchedulePage)).Methods("GET")
-	routes.HandleFunc("/admin/student/{student}", ViewStudentSchedule).Methods("GET")
+	//routes.Handle("/admin/student" , checkSessionWrapper(ViewStudentSchedulePage)).Methods("GET")
+	//routes.HandleFunc("/a	dmin/student/{student}", ViewStudentSchedule).Methods("GET")
 
-	routes.HandleFunc("/admin/holds", ViewStudentHoldsPage)
-	routes.HandleFunc("/admin/holds/", ViewStudentHolds)
+	//routes.HandleFunc("/admin/holds", ViewStudentHoldsPage)
+	//routes.HandleFunc("/admin/holds/", ViewStudentHolds)
 	//routes.HandleFunc("/admin/student/holds/{student}", ViewStudentHolds)
-	routes.Handle("/admin/course",checkSessionWrapper(AdminAddCoursePage))
+	//routes.Handle("/admin/course",checkSessionWrapper(AdminAddCoursePage))
 	//routes.Handle("/admin/course/{course}",checkSessionWrapper(AdminAddCoursePage))
 
+	routes.Handle("/admin/user", checkSessionWrapper(newUserForm)).Methods("GET")
+	routes.Handle("/admin/user", checkSessionWrapper(createUser)).Methods("POST")
+	routes.Handle("/admin/user/student", checkSessionWrapper(createStudent)).Methods("POST")
+	routes.Handle("/admin/user/faculty", checkSessionWrapper(createFaculty)).Methods("POST")
 	//routes.HandleFunc("/unauthorized", unauthorized)
 
 	routes.HandleFunc("/logout", logout)
@@ -122,12 +125,12 @@ func main() {
 
 
 	// USED FOR HEROKU
-	//http.ListenAndServe(":" + os.Getenv("PORT"), routes)
-
-	//USED FOR LOCAL, only use one
+	//http.ListenAndServe(":" + os.Getenv("POR
 	http.ListenAndServe(":8080", handlers.LoggingHandler(os.Stdout,routes))
 
-	//defer db.Close(), want to keep db connection open
+	//defer db.Close(), want to keep db connectioT"), routes)
+
+	//USED FOR LOCAL, only use onen open
 }
 
 
@@ -210,7 +213,7 @@ func checkUserType(user model.MainUser, w http.ResponseWriter, r *http.Request){
 
 		// The data is lost after redirect because it's a new request,
 		// now I need to get the student data and render the template, which is a different request
-		//since http is stateless, you lose the data structure after the first request.
+		//since http is stateless, you l;ose the data structure after the first request.
 	case 2:
 		fmt.Println("Youre a faculty")
 		http.Redirect(w,r,"/faculty", http.StatusFound)
@@ -319,7 +322,7 @@ func displayResearcher(w http.ResponseWriter, r *http.Request){
 	_, user := CheckLoginStatus(w,r)
 
 	if user.UserType == 4 {
-		global.Tpl.ExecuteTemplate(w, "researcher", user)
+			global.Tpl.ExecuteTemplate(w, "researcher", user)
 	}else {
 		http.Redirect(w,r,"/", http.StatusForbidden)
 		index(w,r)
@@ -371,7 +374,14 @@ func logout(w http.ResponseWriter, r *http.Request){
 	http.Redirect(w,r,"/login", http.StatusSeeOther)
 }
 
+
 /* CRUD for users */
+
+func newUserForm(w http.ResponseWriter, r *http.Request) {
+	res := global.Tpl.ExecuteTemplate(w, "viewNewUserAdmin", nil)
+	println("newUserForm: ", res.Error())
+}
+
 func createUser (w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	formEmail := r.FormValue("email")
@@ -386,7 +396,8 @@ func createUser (w http.ResponseWriter, r *http.Request) {
 		userDB.FirstName = r.FormValue("first_name")
 		userDB.LastName = r.FormValue("last_name")
 		userDB.UserPassword = r.FormValue("password")
-
+		userType,_ := strconv.Atoi(r.FormValue("user-type"))
+		userDB.UserType = userType
 		valid, err := userDB.ValidateData()
 		if valid {
 			db.Create(&userDB)
@@ -395,59 +406,115 @@ func createUser (w http.ResponseWriter, r *http.Request) {
 
 			case 1:
 				fmt.Println("You're a student")
-				userDB.UserType = 1;
-				studentType,_ := strconv.Atoi(r.FormValue("student_type"))
-				numCred,_ := strconv.Atoi(r.FormValue("num_credits"))
- 				student := model.Student{StudentID:userDB.UserID, StudentType:studentType }
- 				db.Create(&student)
- 				if (studentType == 1){
- 					studentFT := model.FullTimeStudent{FullTimeStudentID:student.StudentID, NumCredits:numCred}
- 					db.Create(&studentFT)
-				} else if (studentType == 2){
-					studentPT := model.FullTimeStudent{FullTimeStudentID:student.StudentID, NumCredits:numCred}
-					db.Create(&studentPT)
+				student := model.Student{}
+				m := map[string]interface{}{
+					"user": userDB,
+					"student":student,
 				}
+				global.Tpl.ExecuteTemplate(w, "admin-new-user-generic", m)
+				//
+				//studentType,_ := strconv.Atoi(r.FormValue("student_type"))
+				//numCred,_ := strconv.Atoi(r.FormValue("num_credits"))
+ 				//student := model.Student{StudentID:userDB.UserID, StudentType:studentType }
+ 				//db.Create(&student)
+ 				//if (studentType == 1){
+ 				//	studentFT := model.FullTimeStudent{FullTimeStudentID:student.StudentID, NumCredits:numCred}
+ 				//	db.Create(&studentFT)
+				//} else if (studentType == 2){
+				//	studentPT := model.FullTimeStudent{FullTimeStudentID:student.StudentID, NumCredits:numCred}
+				//	db.Create(&studentPT)
+				//}
 
 			case 2:
 				fmt.Println("Youre a faculty")
-				userDB.UserType = 2;
-				facultyType,_ := strconv.Atoi(r.FormValue("faculty_type"))
-				faculty := model.Faculty{FacultyID:userDB.UserID, FacultyType:facultyType}
-				db.Create(&faculty)
-				if ( == 1){
-					studentFT := model.FullTimeStudent{FullTimeStudentID:student.StudentID, NumCredits:numCred}
-					db.Create(&studentFT)
-				} else if (studentType == 2){
-					studentPT := model.FullTimeStudent{FullTimeStudentID:student.StudentID, NumCredits:numCred}
-					db.Create(&studentPT)
-				}
-				http.Redirect(w,r,"/faculty", http.StatusFound)
+				faculty := model.Faculty{}
+				global.Tpl.ExecuteTemplate(w, "admin-new-user-generic", faculty)
+				//userDB.UserType = 2;
+				//facultyType,_ := strconv.Atoi(r.FormValue("faculty_type"))
+				//faculty := model.Faculty{FacultyID:userDB.UserID, FacultyType:facultyType}
+				//db.Create(&faculty)
+				//if (facultyType == 1){
+				//	facultyFT := model.FullTimeFaculty{FullTimeFacultyID: faculty.FacultyID }
+				//	db.Create(&facultyFT)
+				//} else if (facultyType == 2){
+				//	facultyPT := model.PartTimeStudent{PartTimeStudentID: faculty.FacultyID }
+				//	db.Create(&facultyPT)
+				//}
 
 
 			case 3:
 				fmt.Println("Youre an admin")
+				admin := model.Admin{AdminID:userDB.UserID}
+				db.Create(&admin)
+				//global.Tpl.ExecuteTemplate(w, "admin-new-user-generic", userDB)
 				http.Redirect(w,r,"/admin", http.StatusFound)
-				//Tpl.ExecuteTemplate(w,"admin", "administrative user!")
+				displayAdmin(w,r)
 
 			case 4:
 				fmt.Println("Youre a researcher")
-				http.Redirect(w,r,"/researcher", http.StatusFound)
-				//Tpl.ExecuteTemplate(w,"admin", "administrative user!")
+				researcher := model.Researcher{ResearcherID:userDB.UserID}
+				db.Create(&researcher)
+				//global.Tpl.ExecuteTemplate(w, "admin-new-user-generic", userDB)
+				http.Redirect(w,r,"/admin", http.StatusFound)
+				displayAdmin(w,r)
 
 			default:
 				fmt.Println("Not sure your type")
-				http.Redirect(w,r,"/", http.StatusFound)
-				global.Tpl.ExecuteTemplate(w,"index",nil)
-				//return user,user.UserType
+				global.Tpl.ExecuteTemplate(w, "admin-new-user-generic", userDB)
 			}
 
 		} else {
-			global.Tpl.ExecuteTemplate(w,"login",err)
+			// validation failed
+			m := map[string]interface{}{
+				"error": err,
+			}
+			global.Tpl.ExecuteTemplate(w, "admin-new-user-generic", m)
 		}
-
+		// add to the err - email already taken
+		m := map[string]interface{}{
+			"error": "Email Already Taken",
+		}
+		global.Tpl.ExecuteTemplate(w, "admin-new-user-generic",m )
 	}
 }
 
-func createStudent(w http.ResponseWriter, r *http.Request){
+func createStudent(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	formEmail := r.FormValue("email")
+	credits,_ := strconv.Atoi(r.FormValue("credits"))
+	studentType, _ := strconv.Atoi(r.FormValue("user-type"))
+	mu := model.MainUser{}
+	db.Where(&model.MainUser{UserEmail: formEmail}).First(&mu)
+	stu := model.Student{StudentID:mu.UserID, StudentType:studentType}
+	db.Create(&stu)
 
+	if (studentType == 1){
+		stuFT := model.FullTimeStudent{NumCredits:credits}
+		db.Create(&stuFT)
+	} else {
+		stuPT := model.PartTimeStudent{NumCredits:credits}
+		db.Create(&stuPT)
+	}
+	http.Redirect(w,r,"/admin", http.StatusFound)
+	displayAdmin(w,r)
+}
+
+func createFaculty(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	formEmail := r.FormValue("email")
+	mu := model.MainUser{}
+	db.Where(&model.MainUser{UserEmail: formEmail}).First(&mu)
+	facultyType,_ := strconv.Atoi(r.FormValue("faculty-type"))
+	department,_ := strconv.ParseUint(r.FormValue("department"),10,64)
+	faculty := model.Faculty{FacultyID:mu.UserID, FacultyType:facultyType, DepartmentID:uint(department)}
+	db.Create(&faculty)
+	if (facultyType == 1){
+		facultyFT := model.FullTimeFaculty{FullTimeFacultyID: faculty.FacultyID }
+		db.Create(&facultyFT)
+	} else if (facultyType == 2){
+		facultyPT := model.PartTimeStudent{PartTimeStudentID: faculty.FacultyID }
+		db.Create(&facultyPT)
+	}
+	http.Redirect(w,r,"/admin", http.StatusFound)
+	displayAdmin(w,r)
 }
