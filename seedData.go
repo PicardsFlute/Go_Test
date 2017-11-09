@@ -1,5 +1,4 @@
 package main
-
 /*
 import (
 	"github.com/jinzhu/gorm"
@@ -262,18 +261,23 @@ func main(){
 	hold1 := model.Hold{HoldName:"Unpaid Bill"}
 	hold2 := model.Hold{HoldName:"Un-submitted Health Forms"}
 	hold3 := model.Hold{HoldName:"Unpaid Parking Ticket"}
+	hold4 := model.Hold{HoldName:"Unpaid Speeding Ticket"}
+
 
 	db.Create(&hold1)
 	db.Create(&hold2)
 	db.Create(&hold3)
+	db.Create(&hold4)
 
 	studenthold1 := model.StudentHolds{StudentID:student1.StudentID, HoldID:hold1.HoldID}
 	studenthold2 := model.StudentHolds{StudentID:student1.StudentID, HoldID:hold2.HoldID}
 	studenthold3 := model.StudentHolds{StudentID:student2.StudentID, HoldID:hold3.HoldID}
+	studenthold4 := model.StudentHolds{StudentID:student1.StudentID, HoldID:hold4.HoldID}
 
 	db.Create(&studenthold1)
 	db.Create(&studenthold2)
 	db.Create(&studenthold3)
+	db.Create(&studenthold4)
 
 	course1 := model.Course{CourseName:"Warp Field Mechanics", CourseCredits:4, DepartmentID:department1.DepartmentID,
 		CourseDescription:"An introduction to the theory behind faster than light space travel."}
@@ -407,7 +411,6 @@ func main(){
 	db.Create(&history11)
 	db.Create(&history12)
 }
-
 
 
 */

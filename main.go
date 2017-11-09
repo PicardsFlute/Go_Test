@@ -108,9 +108,14 @@ func main() {
 	routes.HandleFunc("/admin/student/{student}", ViewStudentSchedule).Methods("GET")
 
 	routes.HandleFunc("/admin/holds", ViewStudentHoldsPage)
-	routes.HandleFunc("/admin/holds/", ViewStudentHolds)
+	routes.HandleFunc("/admin/holds/{id}", ViewStudentHolds).Methods("GET")
+	routes.HandleFunc("/admin/holds/{id}", AdminDeleteCourse).Methods("POST")
+
 	//routes.HandleFunc("/admin/student/holds/{student}", ViewStudentHolds)
 	routes.Handle("/admin/course",checkSessionWrapper(AdminAddCoursePage))
+	routes.HandleFunc("/admin/course/{course}",AdminAddCourse)
+	//routes.HandleFunc("/admin/course/", AdminDeleteCourse)
+
 	//routes.Handle("/admin/course/{course}",checkSessionWrapper(AdminAddCoursePage))
 
 	//routes.HandleFunc("/unauthorized", unauthorized)

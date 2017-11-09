@@ -1,21 +1,9 @@
 {{define "addCourseAdmin"}}
 {{template "head"}}
-<div class="container">
 
-    <h1>Welcome {{.FirstName}}</h1>
+    {{template "admin-navbar"}}
 
-    <ul class="nav nav-pills center-nav">
-        <li role="presentation" class="active"><a href="index.html">Add Course</a></li>
-        <li role="presentation"><a href="#">View Schedule</a></li>
-        <li role="presentation"><a href="#">View Holds</a></li>
-        <li role="presentation"><a href="#">View Transcript</a></li>
-        <li role="presentation"><a href="#">View Advisor</a></li>
-    </ul>
-
-
-    <h1>Viewing Student Schedule</h1>
-
-
+<!--
 
     <form action="/admin/course/{course}" id="requestData" class="form-horizontal" method="GET">
 
@@ -52,10 +40,50 @@
 
     </form>
 
-
 </div>
 
+-->
+<div class="contact-w3-agileits" id="contact" >
+    <div class="container">
+        <div class="col-md-12 contact-left-w3l" >
+            <h3>Add Course</h3>
+            <div class="visit">
 
+                <div class="clearfix"></div>
+            </div>
+
+            <form action="/admin/course/{course}" id="requestData" class="form-horizontal" method="POST">
+
+
+            <div class="col-md-8 contact-left-w3l">
+
+
+                <label class="form-group">Course Name</label>
+                <input type="text" class="form-control" name="name" placeholder="" required><p id="demo"></p><br />
+
+                <label class="form-group">Course Credits</label>
+                <input type="number" class="form-control" name="credits" placeholder="" required id="major" ><p style="color:red" id="demo1"></p><br />
+
+                <label class="form-group">Course Description</label>
+                <textarea type="text"  class="form-control" name="description" placeholder="" required id="sid"></textarea>
+
+                <label class="form-group">Department Name</label>
+                <select name="department" required class="form-control">
+                    <option value="2">Computer Science</option>
+                    <option value="1">Math</option>
+                </select>
+                <br />
+
+                <input type="submit" value="submit" id="submit" class="btn btn-default pull-right">
+
+
+            </div>
+
+            </form>
+        </div>
+    </div>
+
+</div>
 <script>
 
 </script>

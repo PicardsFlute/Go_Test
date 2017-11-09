@@ -32,6 +32,10 @@
     {{if .Holds}}
         {{range .Holds}}
             <h2>Hold name: {{.HoldName}}</h2>
+    <form action="/admin/holds/{{.HoldID}}" type="hidden" method="POST" id="{{.HoldID}}">
+        <input type="submit" value="Remove Hold"
+               class="btn btn-default pull-right">
+    </form>
             <hr>
         {{end}}
 

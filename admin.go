@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"fmt"
 	"time"
+	"github.com/gorilla/mux"
 )
 
 
@@ -163,7 +164,7 @@ func ViewStudentHolds (w http.ResponseWriter,r *http.Request) {
 
 	hs := []model.Hold{}
 
-	db.Raw("SELECT hold_name FROM student NATURAL JOIN student_holds NATURAL JOIN hold WHERE student.student_id =?", user.UserID).Scan(&hs)
+	db.Raw("SELECT * FROM student NATURAL JOIN student_holds NATURAL JOIN hold WHERE student.student_id =?", user.UserID).Scan(&hs)
 	//fmt.Println(hd)
 
 	m := map[string]interface{}{
@@ -176,6 +177,20 @@ func ViewStudentHolds (w http.ResponseWriter,r *http.Request) {
 
 }
 
+func AdminDeleteCourse(w http.ResponseWriter, r *http.Request){
+	vars := mux.Vars(r)
+	holdId := vars["id"]
+	holdIdInt, err := strconv.Atoi(holdId)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	hold := model.Hold{}
+	db.Where(model.Hold{HoldID:uint(holdIdInt)}).First(&hold)
+	db.Delete(&hold)
+
+}
+
 
 
 func AdminAddCoursePage(w http.ResponseWriter, r *http.Request){
@@ -183,4 +198,34 @@ func AdminAddCoursePage(w http.ResponseWriter, r *http.Request){
 	if isLogged && user.UserType == 3 {
 		global.Tpl.ExecuteTemplate(w, "addCourseAdmin", user)
 	}
+}
+
+func AdminAddCourse(w http.ResponseWriter, r *http.Request){
+	isLogged, user := CheckLoginStatus(w,r)
+	if !isLogged || user.UserType != 3{
+		http.Redirect(w, r, "/", http.StatusForbidden)
+	}
+
+	courseName := r.FormValue("name")
+	courseCredits := r.FormValue("credits")
+	courseDescription := r.FormValue("description")
+	courseDepartment := r.FormValue("department")
+
+
+	intCredits,err := strconv.Atoi(courseCredits)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	intDepartment, err := strconv.Atoi(courseDepartment)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	course := model.Course{CourseName:courseName, CourseCredits:intCredits,
+	CourseDescription:courseDescription, DepartmentID:uint(intDepartment)}
+
+	fmt.Println("Course info is", course)
+	db.Create(&course)
+
 }
