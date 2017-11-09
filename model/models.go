@@ -24,7 +24,7 @@ func (u *MainUser)BeforeCreate(){
 	// hash the password text, and save it as the password
 	println("User object created: ", u.UserEmail )
 	hashedPW, err := bcrypt.GenerateFromPassword( []byte(u.UserPassword), 10)
-	if (err != nil){
+	if err != nil{
 		fmt.Println("Problem hashing...", err)
 	}
 	u.UserPassword = string(hashedPW)

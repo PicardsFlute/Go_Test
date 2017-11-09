@@ -1,0 +1,62 @@
+{{define "searchCourseAdmin"}}
+{{template "head"}}
+
+{{template "admin-navbar"}}
+
+
+<div class="contact-w3-agileits" id="contact" >
+    <div class="container">
+        <div class="col-md-12 contact-left-w3l" >
+            <h3>Search Course</h3>
+            <div class="visit">
+
+                <div class="clearfix"></div>
+            </div>
+
+
+
+            <div class="col-md-8 contact-left-w3l">
+
+
+                <label class="form-group">Course Name</label>
+                <input type="text" class="form-control" name="name" placeholder="" id="numb" required=""><p style="color:red" id="demo"></p><br />
+
+                <label class="form-group">Section Name</label>
+                <input type="text" class="form-control" name="name" placeholder="" required="" id="major" ><p style="color:red" id="demo1"></p><br />
+
+
+
+                <label class="form-group">Department Name</label>
+                <select name="subject" class="form-control">
+
+
+                    <option value="saab">Computer Science</option>
+                    <option value="fiat">Maths</option>
+                    <option value="audi">Media science</option>
+                    <option value="audi">Fashion Designing</option>
+                    <option value="audi">Business admininstration</option>
+
+                </select><br />
+
+
+                <label class="form-group">Semester</label>
+                <select name="subject" class="form-control">
+
+
+                    <option value="saab">spring 2018</option>
+                    <option value="fiat">summer 2018</option>
+                    <option value="audi">fall 2018</option>
+                    <option value="audi">spring 2019</option>
+                    <option value="audi">summer 2019</option>
+
+                </select><br />
+                <input type="button" class="btn-success" onclick="myFunction()"   value="Search">
+                <p style="color:red" id="success"></p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{{template "end"}}
+{{end}}

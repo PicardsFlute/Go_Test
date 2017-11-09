@@ -134,6 +134,8 @@ func ViewStudentHoldsPage(w http.ResponseWriter, r *http.Request){
 
 func ViewStudentHolds (w http.ResponseWriter,r *http.Request) {
 
+
+
 	user := model.MainUser{}
 
 	email := r.FormValue("email")
@@ -171,23 +173,31 @@ func ViewStudentHolds (w http.ResponseWriter,r *http.Request) {
 		"User": user,
 		"Holds": hs,
 	}
-
-	global.Tpl.ExecuteTemplate(w, "adminStudentHold", m)
+	errTpl := global.Tpl.ExecuteTemplate(w, "adminStudentHold", m)
+	if errTpl != nil {
+		fmt.Println(errTpl.Error())
+	}
 
 
 }
 
-func AdminDeleteCourse(w http.ResponseWriter, r *http.Request){
+
+func AdminDeleteHold(w http.ResponseWriter, r *http.Request){
 	vars := mux.Vars(r)
-	holdId := vars["id"]
-	holdIdInt, err := strconv.Atoi(holdId)
+	holdId := vars["HoldID"]
+	studentID := vars["UserID"]
+	_, err := strconv.Atoi(holdId)
 	if err != nil {
 		fmt.Println(err.Error())
-		return
 	}
-	hold := model.Hold{}
-	db.Where(model.Hold{HoldID:uint(holdIdInt)}).First(&hold)
-	db.Delete(&hold)
+	user := vars["user"]
+	fmt.Println("StudentID =", studentID, "HoldID =", holdId, "User =", user)
+	//TODO: use ajax to delete the hold, get the id of the hold, and get the student id from a different portion of the page by using attribute
+	//hold := model.StudentHolds{}
+	//db.Where(model.StudentHolds{HoldID:uint(holdIdInt)}).First(&hold)
+	//db.Delete(&hold)
+	//fmt.Println("Hold deleted sucessfully")
+
 
 }
 
@@ -227,5 +237,42 @@ func AdminAddCourse(w http.ResponseWriter, r *http.Request){
 
 	fmt.Println("Course info is", course)
 	db.Create(&course)
+
+}
+
+func AdminSearchCoursePage(w http.ResponseWriter, r *http.Request){
+	isLogged, user := CheckLoginStatus(w,r)
+	if isLogged && user.UserType == 3 {
+		global.Tpl.ExecuteTemplate(w, "addCourseAdmin", user)
+	}
+}
+
+type CourseOptions struct {
+	CourseName string
+	CourseID uint
+}
+
+
+
+func AdminAddSectionPage(w http.ResponseWriter, r *http.Request){
+	courses := []CourseOptions{}
+	fac := []model.MainUser{}
+
+	//db.Raw("SELECT user_id,first_name,last_name FROM main_user WHERE user_type= ?", 2).Scan(&fac)
+
+	db.Table("course").Select("course_name, course_id").Scan(&courses)
+
+	db.Table("main_user").Select("*").Where("user_type = ?",2).Scan(&fac)
+
+	fmt.Println("Courses are", courses, "Faculty are", fac)
+
+	m := map[string]interface{}{
+		"Courses": courses,
+		"Faculty": fac,
+	}
+	errTpl := global.Tpl.ExecuteTemplate(w, "addSectionAdmin", m)
+	if errTpl != nil {
+		fmt.Println(errTpl.Error())
+	}
 
 }
