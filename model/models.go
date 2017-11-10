@@ -181,11 +181,16 @@ type Semester struct {
 	Year int `gorm:"type:integer"`
 	Season string `gorm:"type:varchar(50)"`
 }
-
+/*
 type Period struct {
 	PeriodID uint `gorm:"primary_key"`
 	StartTime time.Time
 	EndTime time.Time
+}
+*/
+type Period struct {
+	PeriodID uint `gorm:"primary_key"`
+	Time string `gorm:"not null"`
 }
 
 type TimeSlot struct{
@@ -204,6 +209,7 @@ type Room struct {
 	RoomID uint `gorm:"primary_key"`
 	RoomType string `gorm:"type:varchar(50)"`
 	RoomNumber string `gorm:"type:varchar(50)"`
+	RoomCapacity int `gorm:"not null"`
 }
 
 type Building struct {

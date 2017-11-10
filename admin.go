@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"time"
 	"github.com/gorilla/mux"
+	"encoding/json"
 )
 
 
@@ -265,6 +266,9 @@ type CourseOptions struct {
 func AdminAddSectionPage(w http.ResponseWriter, r *http.Request){
 	courses := []CourseOptions{}
 	fac := []model.MainUser{}
+	periods := []model.Period{}
+	buildings := []model.Building{}
+	//timeSlot := []model.TimeSlot{}
 
 	//db.Raw("SELECT user_id,first_name,last_name FROM main_user WHERE user_type= ?", 2).Scan(&fac)
 
@@ -272,15 +276,123 @@ func AdminAddSectionPage(w http.ResponseWriter, r *http.Request){
 
 	db.Table("main_user").Select("*").Where("user_type = ?",2).Scan(&fac)
 
+	db.Table("period").Select("*").Scan(&periods)
+
+	db.Table("building").Select("*").Scan(&buildings)
+
+
 	fmt.Println("Courses are", courses, "Faculty are", fac)
+	fmt.Println("Periods are", periods)
 
 	m := map[string]interface{}{
 		"Courses": courses,
 		"Faculty": fac,
+		"Period": periods,
+		"Building":buildings,
 	}
 	errTpl := global.Tpl.ExecuteTemplate(w, "addSectionAdmin", m)
 	if errTpl != nil {
 		fmt.Println(errTpl.Error())
 	}
+}
+
+func GetRoomsForBuilding(w http.ResponseWriter, r *http.Request){
+	vars := mux.Vars(r)
+	buildingId := vars["id"]
+	buildingInt, _ := strconv.Atoi(buildingId)
+
+	rooms := []model.Room{}
+
+	//db.Table("room").Select("*").Where("room_id = ?", buildingInt).Scan(&rooms)
+	db.Raw("select room_id,room_type,room_number from location natural join " +
+		"room natural join building where building_id = ?",buildingInt).Scan(&rooms)
+	//data := json.NewEncoder(w).Encode(rooms)
+
+	//encode the rooms to a slice of bytes in json form
+	data , err := json.Marshal(rooms)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	//write those bytes to the response
+	w.Write(data)
+	fmt.Println(data)
+
+
+}
+
+type SectionInfo struct {
+	Year int
+	Season string
+	Day string
+}
+
+type RawTime []byte
+
+func (t RawTime) Time() (time.Time, error) {
+	return time.Parse("15:04:05", string(t))
+}
+
+func AdminAddSection(w http.ResponseWriter, r *http.Request){
+
+	sectionNum := r.FormValue("section-number")
+	courseName := r.FormValue("course-name")
+	faculty := r.FormValue("faculty-name")
+	time := r.FormValue("time")
+	buildingNum := r.FormValue("building")
+	roomNum := r.FormValue("room")
+	semester := r.FormValue("semester")
+	day := r.FormValue("day")
+
+	fmt.Println(sectionNum)
+	fmt.Println(courseName)
+	fmt.Println(faculty)
+	fmt.Println(time)
+	fmt.Println(buildingNum)
+	fmt.Println(roomNum)
+	fmt.Println(semester)
+	fmt.Println(day)
+
+
+	//section := SectionInfo{}
+
+	//time period object
+	//section := SectionInfo{}
+
+	//inserting creating a period because there are to many possibilities
+
+	/*
+	db.Raw(`SELECT year,season,meeting_day FROM time_slot
+	 JOIN semester on semester.semester_id = ?
+	 JOIN day on day.day_id = ?`, semester,day).Scan(&section)
+	 */
+	//room := model.Room{RoomNumber:roomNum,RoomType:roomType}
+	//db.Create(&room)
+	semesterInt, _ := strconv.Atoi(semester)
+	dayInt , _ := strconv.Atoi(day)
+	timeInt , _ := strconv.Atoi(time)
+
+	timeSlot := model.TimeSlot{PeriodID:uint(timeInt),SemesterID:uint(semesterInt),DayID:uint(dayInt)}
+	//buildingInt , _ := strconv.Atoi("buildingNum")
+
+	//TODO: can't insert the id until you create it and read it back
+
+	//location := model.Location{BuildingID:uint(buildingInt),RoomID:1}
+	//db.Create(&location)
+	db.Create(&timeSlot)
+
+	timeSlotID := timeSlot.TimeSlotID
+
+	sectionInt, _ := strconv.Atoi(sectionNum)
+	courseInt, _ := strconv.Atoi(courseName)
+	facultyID, _ := strconv.Atoi(faculty)
+
+	newCourseSection := model.Section{CourseSectionNumber:sectionInt,CourseID:uint(courseInt), FacultyID:uint(facultyID),
+	TimeSlotID:timeSlotID,LocationID:1}
+
+	db.Create(&newCourseSection)
+	//fmt.Println(timeSlot)
+	//semStruct := model.Semester{}
+
 
 }

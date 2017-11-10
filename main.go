@@ -117,6 +117,9 @@ func main() {
 	routes.HandleFunc("/admin/course/search", AdminSearchCoursePage).Methods("GET")
 	//routes.HandleFunc("/admin/course/", AdminDeleteCourse)
 	routes.HandleFunc("/admin/section", AdminAddSectionPage)
+	routes.HandleFunc("/admin/section/{section}", AdminAddSection)
+	routes.HandleFunc("/admin/section/room/{id}", GetRoomsForBuilding)
+
 	//routes.Handle("/admin/course/{course}",checkSessionWrapper(AdminAddCoursePage))
 
 	//routes.HandleFunc("/unauthorized", unauthorized)

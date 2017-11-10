@@ -55,7 +55,7 @@
 
 
             <div class="col-md-8 contact-left-w3l">
-
+                <form action="/admin/section/{section" method="POST">
 
                 <label class="form-group">Course Section Number</label>
                 <input type="number" class="form-control" name="section-number" placeholder="" required="" id="major"><br />
@@ -68,24 +68,54 @@
                 </select>
 
                 <label class="form-group">Faculty Name</label>
-                <select name="course-name" required class="form-control">
+                <select name="faculty-name" required class="form-control">
                     {{range .Faculty}}
                         <option value="{{.UserID}}">{{.FirstName}} {{.LastName}}</option>
                     {{end}}
                 </select>
-                <label class="form-group">Time Slot Name</label>
-                <input type="text" class="form-control" name="name" placeholder="" required="" id="tsname"><br />
+
+                <label class="form-group">Time Slot</label>
+                    <select name="time" required class="form-control">
+                        {{range .Period}}
+                            <option value="{{.PeriodID}}">{{.Time}}</option>
+                        {{end}}
+                    </select>
 
 
+                <label class="form-group">Building Number</label>
+                    <select name="building" id="building-select" required class="form-control">
+                        <option disabled selected value> -- select an option -- </option>
+                        {{range .Building}}
+                            <option value="{{.BuildingID}}">{{.BuildingName}}</option>
+                        {{end}}
+                    </select>
 
-                <label class="form-group">Location Name</label>
-                <input type="text" class="form-control" name="name" placeholder="" required="" id="lname"><p style="color:red" id="demo5"></p><br />
 
-                <input type="button" class="btn-success" onclick="myFunction()"   value="Submit">
+                <label class="form-group">Room Number</label>
+                    <select name="room" id="room-results" required class="form-control">
+
+                    </select>
+
+
+                    <label class="form-group">Semester</label>
+                    <select name="semester" required class="form-control">
+                        <option value="1">Spring</option>
+                        <option value="2">Fall</option>
+                    </select>
+
+                    <label class="form-group">Day</label>
+                    <select name="day" required class="form-control">
+                        <option value="1">MW</option>
+                        <option value="2">TR</option>
+                    </select>
+
+                <input type="submit" class="btn-success pull-right" value="Submit">
                 <p style="color:red" id="success"></p>
-            </div>
+                </form>
 
+            </div>
         </div>
+    </div>
     </div>
     <br/>
     <div class="container" style="margin-left:50px">
@@ -112,10 +142,30 @@
         </table>
     </div>
 
-    <div class="clearfix"></div>
-</div>
-</div>
+<div class="clearfix"></div>
+
 <script>
+    $('#building-select').on('change',function(){
+        $.ajax({
+            url:"/admin/section/room/"+this.value,
+            type:"GET",
+            success:function(data){
+                var jsonData = JSON.parse(data);
+                var results = $('#room-results');
+                //empty results
+                results.empty();
+
+                jsonData.forEach(function(value){
+                    var option = $("<option val="+value.RoomID +">" +value.RoomNumber +
+                        "---- <b>Type: </b>"+ value.RoomType +
+                        "</option>");
+                   // option.add('value',value.RoomID);
+                    results.append(option);
+                });
+                console.log(jsonData)
+            }
+        })
+    })
 
 </script>
 {{end}}

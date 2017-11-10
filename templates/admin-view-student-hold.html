@@ -29,7 +29,6 @@
     {{if .User.FirstName}}
     <h1>Holds for {{.User.FirstName}} {{.User.LastName}}</h1>
     {{$user := .User.UserID}}
-    <h3>User is {{$user}}</h3>
         <hr>
     {{if .Holds}}
         {{range .Holds}}

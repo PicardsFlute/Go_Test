@@ -6,7 +6,7 @@ import (
 	"Starfleet/model"
 	"os"
 	"fmt"
-	"time"
+	//"time"
 )
 func main(){
 	dbPassword := os.Getenv("PG_DATABASE_PW")
@@ -302,38 +302,93 @@ func main(){
 	db.Create(&preReq1)
 	db.Create(&preReq2)
 
-	building := model.Building{BuildingName:"TheBuilding", BuildingAddress:"5 Shady Grove"}
-	db.Create(&building)
+	building := model.Building{BuildingName:"The Academy", BuildingAddress:"5 Shawsington Road"}
+	building2 := model.Building{BuildingName:"Riften Building", BuildingAddress:"115 Shawsington Road"}
 
-	room1 := model.Room{RoomNumber:"B100", RoomType:"Lecture"}
-	room2 := model.Room{RoomNumber:"C200", RoomType: "LAB"}
+	db.Create(&building)
+	db.Create(&building2)
+
+	//building 1
+	room1 := model.Room{RoomNumber:"B100", RoomType:"Lecture Hall", RoomCapacity:100}
+	room2 := model.Room{RoomNumber:"C200", RoomType: "LAB",RoomCapacity:10}
+	room3 := model.Room{RoomNumber:"C210", RoomType: "Classroom",RoomCapacity:30}
+	room4 := model.Room{RoomNumber:"C220", RoomType: "Classroom",RoomCapacity:30}
+	room5 := model.Room{RoomNumber:"C230", RoomType: "Classroom", RoomCapacity:40}
+	room6 := model.Room{RoomNumber:"C240", RoomType: "Classroom", RoomCapacity:25}
+
+	//building 2
+	b2room1 := model.Room{RoomNumber:"P100", RoomType:"Classroom",RoomCapacity:25}
+	b2room2 := model.Room{RoomNumber:"P150", RoomType:"Classroom",RoomCapacity:25}
+	b2room3 := model.Room{RoomNumber:"P180", RoomType:"Classroom",RoomCapacity:30}
+	b2room4 := model.Room{RoomNumber:"H100", RoomType:"Lecture Hall", RoomCapacity:125}
+
+	db.Create(&b2room1)
+	db.Create(&b2room2)
+	db.Create(&b2room3)
+	db.Create(&b2room4)
+
+
 	db.Create(&room1)
 	db.Create(&room2)
+	db.Create(&room3)
+	db.Create(&room4)
+	db.Create(&room5)
+	db.Create(&room6)
 
 	location1 := model.Location{BuildingID:building.BuildingID, RoomID:room1.RoomID}
 	location2 := model.Location{BuildingID:building.BuildingID, RoomID:room2.RoomID}
+	location3 := model.Location{BuildingID:building.BuildingID, RoomID:room3.RoomID}
+	location4 := model.Location{BuildingID:building.BuildingID, RoomID:room4.RoomID}
+	location5 := model.Location{BuildingID:building.BuildingID, RoomID:room5.RoomID}
+	location6 := model.Location{BuildingID:building.BuildingID, RoomID:room6.RoomID}
+
+	location7 := model.Location{BuildingID:building2.BuildingID, RoomID:b2room1.RoomID}
+	location8 := model.Location{BuildingID:building2.BuildingID, RoomID:b2room2.RoomID}
+	location9 := model.Location{BuildingID:building2.BuildingID, RoomID:b2room3.RoomID}
+	location10 := model.Location{BuildingID:building2.BuildingID, RoomID:b2room4.RoomID}
+
 	db.Create(&location1)
 	db.Create(&location2)
+	db.Create(&location3)
+	db.Create(&location4)
+	db.Create(&location5)
+	db.Create(&location6)
+
+	db.Create(&location7)
+	db.Create(&location8)
+	db.Create(&location9)
+	db.Create(&location10)
 
 	day1 := model.Day{MeetingDay:"MW"}
 	day2 := model.Day{MeetingDay:"TR"}
 	db.Create(&day1)
 	db.Create(&day2)
 
-	semester1 := model.Semester{Year:2017, Season:"Spring"}
+	semester1 := model.Semester{Year:2018, Season:"Spring"}
 	semester2 := model.Semester{Year: 2018, Season:"Fall"}
 	db.Create(&semester1)
 	db.Create(&semester2)
-
+	/*
 	timeform := "Jan 2, 2006 at 3:04pm (MST)"
 	t1, _ := time.Parse(timeform, "Jan 2, 2006 at 1:00pm (MST)")
 	t2, _ := time.Parse(timeform, "Jan 2, 2006 at 2:30pm (MST)")
 	t3, _ := time.Parse(timeform, "Jan 2, 2006 at 10:00pm (MST)")
 	t4, _ := time.Parse(timeform, "Jan 2, 2006 at 11:30pm (MST)")
-	period1 := model.Period{StartTime: t1, EndTime: t2}
+	period1 := model.Period{Star	tTime: t1, EndTime: t2}
 	period2 := model.Period{StartTime: t3, EndTime: t4}
+	*/
+
+/*
+	period0 := model.Period{Time:"9:40 AM - 11:10 AM"}
+	period1 := model.Period{Time:"11:20 AM - 12:50 PM"}
+	period2 := model.Period{Time:"3:50 PM - 5:20 PM"}
+	period3 := model.Period{Time:"5:30 PM - 7:00 PM"}
+	period4 := model.Period{Time:"7:10 PM - 8:40 PM"}
+	db.Create(&period0)
 	db.Create(&period1)
 	db.Create(&period2)
+	db.Create(&period3)
+	db.Create(&period4)
 
 	timeslot1 := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day1.DayID, PeriodID:period1.PeriodID}
 	timeslot2 := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day1.DayID, PeriodID:period2.PeriodID}
@@ -411,6 +466,5 @@ func main(){
 	db.Create(&history11)
 	db.Create(&history12)
 }
-
 
 */
