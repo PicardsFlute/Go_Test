@@ -30,17 +30,18 @@
             {{ if .error }}
                 {{ .error }}
             {{ end }}
-            {{ if not .user }}
+
+            {{ if not .User }}
                 {{ template "adminUserDetail" }}
 
             {{ else }}
             <!--put detail for user types here..-->
                 {{ if .student }}
-                    {{ template "adminStudentDetail" }}
+                    {{ template "adminStudentDetail" . }}
 
 
                 {{ else if .faculty }}
-                    {{ template "adminFacultyDetail" }}
+                    {{ template "adminFacultyDetail" . }}
 
 
                 {{ end }}

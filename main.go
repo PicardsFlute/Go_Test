@@ -379,7 +379,9 @@ func logout(w http.ResponseWriter, r *http.Request){
 
 func newUserForm(w http.ResponseWriter, r *http.Request) {
 	res := global.Tpl.ExecuteTemplate(w, "viewNewUserAdmin", nil)
-	println("newUserForm: ", res.Error())
+	if res != nil{
+		println("newUserForm: ", res.Error())
+	}
 }
 
 func createUser (w http.ResponseWriter, r *http.Request) {
@@ -389,14 +391,14 @@ func createUser (w http.ResponseWriter, r *http.Request) {
 	userDB := model.MainUser{}
 	userDB.UserEmail = formEmail
 
-	//db.Where(&model.MainUser{UserEmail: formEmail}).First(&userDB)
+		//db.Where(&model.MainUser{UserEmail: formEmail}).First(&userDB)
 	count := 1
-	db.Where(&model.MainUser{UserEmail: formEmail}).Count(&count)
+	db.Model(&model.MainUser{}).Where("user_email = ?", formEmail).Count(&count)
 	if count == 0 {
-		userDB.FirstName = r.FormValue("first_name")
-		userDB.LastName = r.FormValue("last_name")
+		userDB.FirstName = r.FormValue("first-name")
+		userDB.LastName = r.FormValue("last-name")
 		userDB.UserPassword = r.FormValue("password")
-		userType,_ := strconv.Atoi(r.FormValue("user-type"))
+		userType, _ := strconv.Atoi(r.FormValue("user-type"))
 		userDB.UserType = userType
 		valid, err := userDB.ValidateData()
 		if valid {
@@ -408,59 +410,46 @@ func createUser (w http.ResponseWriter, r *http.Request) {
 				fmt.Println("You're a student")
 				student := model.Student{}
 				m := map[string]interface{}{
-					"user": userDB,
-					"student":student,
+					"User":    userDB,
+					"student": student,
 				}
-				global.Tpl.ExecuteTemplate(w, "admin-new-user-generic", m)
-				//
-				//studentType,_ := strconv.Atoi(r.FormValue("student_type"))
-				//numCred,_ := strconv.Atoi(r.FormValue("num_credits"))
- 				//student := model.Student{StudentID:userDB.UserID, StudentType:studentType }
- 				//db.Create(&student)
- 				//if (studentType == 1){
- 				//	studentFT := model.FullTimeStudent{FullTimeStudentID:student.StudentID, NumCredits:numCred}
- 				//	db.Create(&studentFT)
-				//} else if (studentType == 2){
-				//	studentPT := model.FullTimeStudent{FullTimeStudentID:student.StudentID, NumCredits:numCred}
-				//	db.Create(&studentPT)
-				//}
+				res := global.Tpl.ExecuteTemplate(w, "viewNewUserAdmin", m)
+				if res != nil{
+					println("newUserForm: ", res.Error())
+				}
+				//return
+
 
 			case 2:
 				fmt.Println("Youre a faculty")
 				faculty := model.Faculty{}
-				global.Tpl.ExecuteTemplate(w, "admin-new-user-generic", faculty)
-				//userDB.UserType = 2;
-				//facultyType,_ := strconv.Atoi(r.FormValue("faculty_type"))
-				//faculty := model.Faculty{FacultyID:userDB.UserID, FacultyType:facultyType}
-				//db.Create(&faculty)
-				//if (facultyType == 1){
-				//	facultyFT := model.FullTimeFaculty{FullTimeFacultyID: faculty.FacultyID }
-				//	db.Create(&facultyFT)
-				//} else if (facultyType == 2){
-				//	facultyPT := model.PartTimeStudent{PartTimeStudentID: faculty.FacultyID }
-				//	db.Create(&facultyPT)
-				//}
+				m := map[string]interface{}{
+					"User":    userDB,
+					"faculty": faculty,
+				}
+				global.Tpl.ExecuteTemplate(w, "viewNewUserAdmin", m)
+				//return
 
 
 			case 3:
 				fmt.Println("Youre an admin")
-				admin := model.Admin{AdminID:userDB.UserID}
+				admin := model.Admin{AdminID: userDB.UserID}
 				db.Create(&admin)
-				//global.Tpl.ExecuteTemplate(w, "admin-new-user-generic", userDB)
-				http.Redirect(w,r,"/admin", http.StatusFound)
-				displayAdmin(w,r)
+					//global.Tpl.ExecuteTemplate(w, "admin-new-user-generic", userDB)
+				http.Redirect(w, r, "/admin", http.StatusFound)
+				displayAdmin(w, r)
 
 			case 4:
 				fmt.Println("Youre a researcher")
-				researcher := model.Researcher{ResearcherID:userDB.UserID}
+				researcher := model.Researcher{ResearcherID: userDB.UserID}
 				db.Create(&researcher)
 				//global.Tpl.ExecuteTemplate(w, "admin-new-user-generic", userDB)
-				http.Redirect(w,r,"/admin", http.StatusFound)
-				displayAdmin(w,r)
+				http.Redirect(w, r, "/admin", http.StatusFound)
+				displayAdmin(w, r)
 
 			default:
 				fmt.Println("Not sure your type")
-				global.Tpl.ExecuteTemplate(w, "admin-new-user-generic", userDB)
+				global.Tpl.ExecuteTemplate(w, "viewNewUserAdmin", userDB)
 			}
 
 		} else {
@@ -468,14 +457,21 @@ func createUser (w http.ResponseWriter, r *http.Request) {
 			m := map[string]interface{}{
 				"error": err,
 			}
-			global.Tpl.ExecuteTemplate(w, "admin-new-user-generic", m)
+			global.Tpl.ExecuteTemplate(w, "viewNewUserAdmin", m)
+			//return
 		}
+
+
+	} else {
 		// add to the err - email already taken
 		m := map[string]interface{}{
 			"error": "Email Already Taken",
 		}
-		global.Tpl.ExecuteTemplate(w, "admin-new-user-generic",m )
+		global.Tpl.ExecuteTemplate(w, "viewNewUserAdmin", m)
+		//return
 	}
+
+
 }
 
 func createStudent(w http.ResponseWriter, r *http.Request) {
@@ -489,10 +485,10 @@ func createStudent(w http.ResponseWriter, r *http.Request) {
 	db.Create(&stu)
 
 	if (studentType == 1){
-		stuFT := model.FullTimeStudent{NumCredits:credits}
+		stuFT := model.FullTimeStudent{FullTimeStudentID: stu.StudentID, NumCredits:credits}
 		db.Create(&stuFT)
 	} else {
-		stuPT := model.PartTimeStudent{NumCredits:credits}
+		stuPT := model.PartTimeStudent{PartTimeStudentID: stu.StudentID, NumCredits:credits}
 		db.Create(&stuPT)
 	}
 	http.Redirect(w,r,"/admin", http.StatusFound)
