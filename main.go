@@ -478,7 +478,7 @@ func createStudent(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	formEmail := r.FormValue("email")
 	credits,_ := strconv.Atoi(r.FormValue("credits"))
-	studentType, _ := strconv.Atoi(r.FormValue("user-type"))
+	studentType, _ := strconv.Atoi(r.FormValue("student-type"))
 	mu := model.MainUser{}
 	db.Where(&model.MainUser{UserEmail: formEmail}).First(&mu)
 	stu := model.Student{StudentID:mu.UserID, StudentType:studentType}
@@ -501,6 +501,7 @@ func createFaculty(w http.ResponseWriter, r *http.Request) {
 	mu := model.MainUser{}
 	db.Where(&model.MainUser{UserEmail: formEmail}).First(&mu)
 	facultyType,_ := strconv.Atoi(r.FormValue("faculty-type"))
+	println("Faculty type num: ", facultyType)
 	department,_ := strconv.ParseUint(r.FormValue("department"),10,64)
 	faculty := model.Faculty{FacultyID:mu.UserID, FacultyType:facultyType, DepartmentID:uint(department)}
 	db.Create(&faculty)
