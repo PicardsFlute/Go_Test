@@ -371,16 +371,15 @@ func AdminAddSection(w http.ResponseWriter, r *http.Request){
 	semesterInt, _ := strconv.Atoi(semester)
 	dayInt , _ := strconv.Atoi(day)
 	timeInt , _ := strconv.Atoi(time)
-
+	//TODO should be reading not creating
 	timeSlot := model.TimeSlot{PeriodID:uint(timeInt),SemesterID:uint(semesterInt),DayID:uint(dayInt)}
-	//buildingInt , _ := strconv.Atoi("buildingNum")
+	buildingInt , _ := strconv.Atoi(buildingNum)
+	roomInt, _ := strconv.Atoi(roomNum)
 
-	//TODO: can't insert the id until you create it and read it back
 
-	//location := model.Location{BuildingID:uint(buildingInt),RoomID:1}
-	//db.Create(&location)
 	db.Create(&timeSlot)
-
+	location := model.Location{}
+	db.Where(model.Location{BuildingID:uint(buildingInt),RoomID:uint(roomInt)}).First(&location)
 	timeSlotID := timeSlot.TimeSlotID
 
 	sectionInt, _ := strconv.Atoi(sectionNum)
@@ -388,11 +387,10 @@ func AdminAddSection(w http.ResponseWriter, r *http.Request){
 	facultyID, _ := strconv.Atoi(faculty)
 
 	newCourseSection := model.Section{CourseSectionNumber:sectionInt,CourseID:uint(courseInt), FacultyID:uint(facultyID),
-	TimeSlotID:timeSlotID,LocationID:1}
+	TimeSlotID:timeSlotID,LocationID:location.LocationID}
 
 	db.Create(&newCourseSection)
-	//fmt.Println(timeSlot)
-	//semStruct := model.Semester{}
+
 
 
 }

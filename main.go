@@ -103,6 +103,8 @@ func main() {
 	routes.Handle("/faculty",  checkSessionWrapper(displayFaculty)).Methods("GET")
 	routes.Handle("/researcher", checkSessionWrapper(displayResearcher)).Methods("GET")
 
+	routes.HandleFunc("/course/search", SearchMasterSchedule).Methods("GET")
+
 
 	routes.Handle("/admin/student" , checkSessionWrapper(ViewStudentSchedulePage)).Methods("GET")
 	routes.HandleFunc("/admin/student/{student}", ViewStudentSchedule).Methods("GET")
@@ -398,4 +400,8 @@ func logout(w http.ResponseWriter, r *http.Request){
 	sess.Delete("UserID")
 	sess.Delete("username")
 	http.Redirect(w,r,"/login", http.StatusSeeOther)
+}
+
+func SearchMasterSchedule(w http.ResponseWriter, r *http.Request){
+	global.Tpl.ExecuteTemplate(w, "masterSchedule", nil)
 }
