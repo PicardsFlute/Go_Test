@@ -121,6 +121,7 @@ func main() {
 	routes.HandleFunc("/admin/section", AdminAddSectionPage)
 	routes.HandleFunc("/admin/section/{section}", AdminAddSection)
 	routes.HandleFunc("/admin/section/room/{id}", GetRoomsForBuilding)
+	routes.HandleFunc("/admin/section/department/{id}", GetDepartmentsForSections).Methods("GET")
 
 	//routes.Handle("/admin/course/{course}",checkSessionWrapper(AdminAddCoursePage))
 

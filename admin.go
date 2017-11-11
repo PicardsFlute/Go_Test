@@ -268,6 +268,7 @@ func AdminAddSectionPage(w http.ResponseWriter, r *http.Request){
 	fac := []model.MainUser{}
 	periods := []model.Period{}
 	buildings := []model.Building{}
+	departments := []model.Department{}
 	//timeSlot := []model.TimeSlot{}
 
 	//db.Raw("SELECT user_id,first_name,last_name FROM main_user WHERE user_type= ?", 2).Scan(&fac)
@@ -280,6 +281,8 @@ func AdminAddSectionPage(w http.ResponseWriter, r *http.Request){
 
 	db.Table("building").Select("*").Scan(&buildings)
 
+	db.Table("department").Select("*").Scan(&departments)
+
 
 	fmt.Println("Courses are", courses, "Faculty are", fac)
 	fmt.Println("Periods are", periods)
@@ -289,6 +292,7 @@ func AdminAddSectionPage(w http.ResponseWriter, r *http.Request){
 		"Faculty": fac,
 		"Period": periods,
 		"Building":buildings,
+		"Department":departments,
 	}
 	errTpl := global.Tpl.ExecuteTemplate(w, "addSectionAdmin", m)
 	if errTpl != nil {
@@ -299,14 +303,14 @@ func AdminAddSectionPage(w http.ResponseWriter, r *http.Request){
 func GetRoomsForBuilding(w http.ResponseWriter, r *http.Request){
 	vars := mux.Vars(r)
 	buildingId := vars["id"]
-	buildingInt, _ := strconv.Atoi(buildingId)
-
 	rooms := []model.Room{}
 
-	//db.Table("room").Select("*").Where("room_id = ?", buildingInt).Scan(&rooms)
+	//if they select all then change the query
+
+	buildingInt, _ := strconv.Atoi(buildingId)
 	db.Raw("select room_id,room_type,room_number from location natural join " +
-		"room natural join building where building_id = ?",buildingInt).Scan(&rooms)
-	//data := json.NewEncoder(w).Encode(rooms)
+			"room natural join building where building_id = ?",buildingInt).Scan(&rooms)
+
 
 	//encode the rooms to a slice of bytes in json form
 	data , err := json.Marshal(rooms)
@@ -317,7 +321,30 @@ func GetRoomsForBuilding(w http.ResponseWriter, r *http.Request){
 	//write those bytes to the response
 	w.Write(data)
 	fmt.Println(data)
+}
 
+func GetDepartmentsForSections(w http.ResponseWriter, r *http.Request){
+	vars := mux.Vars(r)
+	departmentID := vars["id"]
+	courses := []model.Course{}
+	fmt.Println(departmentID)
+	if departmentID == "*"{
+		db.Raw("SELECT course_name,course_id FROM course NATURAL JOIN department").Scan(&courses)
+
+	}else {
+		departmentInt, _ := strconv.Atoi(departmentID)
+		db.Raw("SELECT course_name,course_id FROM course NATURAL JOIN department WHERE department_id = ?", departmentInt).Scan(&courses)
+
+	}
+
+
+	data, err := json.Marshal(courses)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	w.Write(data)
+	fmt.Println(data)
 
 }
 
@@ -336,7 +363,8 @@ func (t RawTime) Time() (time.Time, error) {
 func AdminAddSection(w http.ResponseWriter, r *http.Request){
 
 	sectionNum := r.FormValue("section-number")
-	courseName := r.FormValue("course-name")
+	courseSubject := r.FormValue("course-subject")
+	courseName := r.FormValue("course")
 	faculty := r.FormValue("faculty-name")
 	time := r.FormValue("time")
 	buildingNum := r.FormValue("building")
@@ -344,14 +372,15 @@ func AdminAddSection(w http.ResponseWriter, r *http.Request){
 	semester := r.FormValue("semester")
 	day := r.FormValue("day")
 
-	fmt.Println(sectionNum)
-	fmt.Println(courseName)
-	fmt.Println(faculty)
-	fmt.Println(time)
-	fmt.Println(buildingNum)
-	fmt.Println(roomNum)
-	fmt.Println(semester)
-	fmt.Println(day)
+	fmt.Println("Section Num:",sectionNum)
+	fmt.Println("Course Name:",courseName)
+	fmt.Println("Course Subject:",courseSubject)
+	fmt.Println("Faculty",faculty)
+	fmt.Println("Time",time)
+	fmt.Println("Building",buildingNum)
+	fmt.Println("Room Num:",roomNum)
+	fmt.Println("Semester:",semester)
+	fmt.Println("Day",day)
 
 
 	//section := SectionInfo{}
@@ -388,6 +417,9 @@ func AdminAddSection(w http.ResponseWriter, r *http.Request){
 
 	newCourseSection := model.Section{CourseSectionNumber:sectionInt,CourseID:uint(courseInt), FacultyID:uint(facultyID),
 	TimeSlotID:timeSlotID,LocationID:location.LocationID}
+
+	//TODO: Make sure room is not already occupied at that time slot
+	//TODO: Make sure faculty is not teaching at same period
 
 	db.Create(&newCourseSection)
 

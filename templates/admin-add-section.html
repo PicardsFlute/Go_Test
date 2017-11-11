@@ -58,10 +58,18 @@
                 <form action="/admin/section/{section" method="POST">
 
                 <label class="form-group">Course Section Number</label>
-                <input type="number" class="form-control" name="section-number" placeholder="" required="" id="major"><br />
+                <input type="number" class="form-control" name="section-number" placeholder="" required="" id="sec-number"><br />
 
-                <label class="form-group">Course Name</label>
-                <select name="course-name" required class="form-control">
+                    <label class="form-group">Course Subject</label>
+                    <select name="course-subject" id="department-select" required class="form-control">
+                        <option value="*"> -- All Courses -- </option>
+                        {{range .Department}}
+                        <option value="{{.DepartmentID}}">{{.DepartmentName}}</option>
+                        {{end}}
+                    </select>
+
+                    <label class="form-group">Course Name</label>
+                <select name="course" id="course-results" required class="form-control">
                     {{range .Courses}}
                         <option value="{{.CourseID}}">{{.CourseName}}</option>
                     {{end}}
@@ -156,10 +164,30 @@
                 results.empty();
 
                 jsonData.forEach(function(value){
-                    var option = $("<option val="+value.RoomID +">" +value.RoomNumber +
-                        "---- <b>Type: </b>"+ value.RoomType +
-                        "</option>");
+                    var option = $("<option value="+value.RoomID +">" +value.RoomNumber + "</option>");
+
+                    // "---- <b>Type: </b>"+ value.RoomType +
                    // option.add('value',value.RoomID);
+                    results.append(option);
+                });
+                console.log(jsonData)
+            }
+        })
+    });
+
+    $('#department-select').on('change',function(){
+        $.ajax({
+            url:"/admin/section/department/"+this.value,
+            type:"GET",
+            success:function(data){
+                var jsonData = JSON.parse(data);
+                var results = $('#course-results');
+                //empty results
+                results.empty();
+
+                jsonData.forEach(function(value){
+                    var option = $("<option value="+value.CourseID.toString() +">" +value.CourseName +"</option>");
+                    // option.add('value',value.RoomID);
                     results.append(option);
                 });
                 console.log(jsonData)
