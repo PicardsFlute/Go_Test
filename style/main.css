@@ -2,3 +2,8 @@
     color: red;
     font-size: 16px;
 }
+
+.detail-type {
+    font-weight: bold;
+    color: #2b2828;
+}

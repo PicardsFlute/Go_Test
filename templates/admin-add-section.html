@@ -1,0 +1,201 @@
+{{define "addSectionAdmin"}}
+{{template "head"}}
+
+{{template "admin-navbar"}}
+
+<!--
+
+    <form action="/admin/course/{course}" id="requestData" class="form-horizontal" method="GET">
+
+        <div class="form-group">
+            <label class="control-label col-sm-1" for="name">Course Name</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" placeholder="Name" id="name" name="name">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-1" for="id">Course Credits</label>
+            <div class="col-sm-10">
+                <input type="number" class="form-control" placeholder="Credits" id="id" name="credits">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-1" for="car">Department</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" placeholder="Department" name="department">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-1" for="car">Description</label>
+            <div class="col-sm-10">
+                <textarea class="form-control" placeholder="Department" id="car" name="descritpion">
+            </div>
+        </div>
+
+
+        <input type="submit" value="submit" id="submit" class="btn btn-default pull-right">
+
+    </form>
+
+</div>
+
+-->
+<div class="contact-w3-agileits" id="contact" >
+    <div class="container">
+        <div class="col-md-12 contact-left-w3l" >
+            <h3>Add Section</h3>
+            <div class="visit">
+
+                <div class="clearfix"></div>
+            </div>
+
+
+
+            <div class="col-md-8 contact-left-w3l">
+                <form action="/admin/section/{section" method="POST">
+
+                <label class="form-group">Course Section Number</label>
+                <input type="number" class="form-control" name="section-number" placeholder="" required="" id="sec-number"><br />
+
+                    <label class="form-group">Course Subject</label>
+                    <select name="course-subject" id="department-select" required class="form-control">
+                        <option value="*"> -- All Courses -- </option>
+                        {{range .Department}}
+                        <option value="{{.DepartmentID}}">{{.DepartmentName}}</option>
+                        {{end}}
+                    </select>
+
+                    <label class="form-group">Course Name</label>
+                <select name="course" id="course-results" required class="form-control">
+                    {{range .Courses}}
+                        <option value="{{.CourseID}}">{{.CourseName}}</option>
+                    {{end}}
+                </select>
+
+                <label class="form-group">Faculty Name</label>
+                <select name="faculty-name" required class="form-control">
+                    {{range .Faculty}}
+                        <option value="{{.UserID}}">{{.FirstName}} {{.LastName}}</option>
+                    {{end}}
+                </select>
+
+                <label class="form-group">Time Slot</label>
+                    <select name="time" required class="form-control">
+                        {{range .Period}}
+                            <option value="{{.PeriodID}}">{{.Time}}</option>
+                        {{end}}
+                    </select>
+
+
+                <label class="form-group">Building Number</label>
+                    <select name="building" id="building-select" required class="form-control">
+                        <option disabled selected value> -- select an option -- </option>
+                        {{range .Building}}
+                            <option value="{{.BuildingID}}">{{.BuildingName}}</option>
+                        {{end}}
+                    </select>
+
+
+                <label class="form-group">Room Number</label>
+                    <select name="room" id="room-results" required class="form-control">
+
+                    </select>
+
+
+                    <label class="form-group">Semester</label>
+                    <select name="semester" required class="form-control">
+                        <option value="1">Spring</option>
+                        <option value="2">Fall</option>
+                    </select>
+
+                    <label class="form-group">Day</label>
+                    <select name="day" required class="form-control">
+                        <option value="1">MW</option>
+                        <option value="2">TR</option>
+                    </select>
+
+                <input type="submit" class="btn-success pull-right" value="Submit">
+                <p style="color:red" id="success"></p>
+                </form>
+
+            </div>
+        </div>
+    </div>
+    </div>
+    <br/>
+    <div class="container" style="margin-left:50px">
+
+        <table class="table table-striped" id="table" style="display:none">
+            <thead>
+            <tr>
+                <th style="width:250px">Name</th>
+                <th style="width:250px">Major</th>
+                <th style="width:250px">Id</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+
+            </tr>
+            <tr>
+
+            </tr>
+            <tr>
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+<div class="clearfix"></div>
+
+<script>
+    $('#building-select').on('change',function(){
+        $.ajax({
+            url:"/admin/section/room/"+this.value,
+            type:"GET",
+            success:function(data){
+                var jsonData = JSON.parse(data);
+                var results = $('#room-results');
+                //empty results
+                results.empty();
+
+                jsonData.forEach(function(value){
+                    var option = $("<option value="+value.RoomID +">" +value.RoomNumber + "</option>");
+
+                    // "---- <b>Type: </b>"+ value.RoomType +
+                   // option.add('value',value.RoomID);
+                    results.append(option);
+                });
+                console.log(jsonData)
+            }
+        })
+    });
+
+    $('#department-select').on('change',function(){
+        $.ajax({
+            url:"/admin/section/department/"+this.value,
+            type:"GET",
+            success:function(data){
+                var jsonData = JSON.parse(data);
+                var results = $('#course-results');
+                //empty results
+                results.empty();
+
+                jsonData.forEach(function(value){
+                    var option = $("<option value="+value.CourseID.toString() +">" +value.CourseName +"</option>");
+                    // option.add('value',value.RoomID);
+                    results.append(option);
+                });
+                console.log(jsonData)
+            }
+        })
+    })
+
+</script>
+{{template "end"}}
+
+{{end}}

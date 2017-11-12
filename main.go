@@ -15,7 +15,11 @@ import (
 	"Starfleet/model"
 	"Starfleet/global"
 
+
 	"strconv"
+
+	"io/ioutil"
+
 )
 
 var (
@@ -103,14 +107,29 @@ func main() {
 	routes.Handle("/faculty",  checkSessionWrapper(displayFaculty)).Methods("GET")
 	routes.Handle("/researcher", checkSessionWrapper(displayResearcher)).Methods("GET")
 
+	routes.HandleFunc("/course/search", SearchMasterSchedule).Methods("GET")
+
 
 	//routes.Handle("/admin/student" , checkSessionWrapper(ViewStudentSchedulePage)).Methods("GET")
 	//routes.HandleFunc("/a	dmin/student/{student}", ViewStudentSchedule).Methods("GET")
 
-	//routes.HandleFunc("/admin/holds", ViewStudentHoldsPage)
-	//routes.HandleFunc("/admin/holds/", ViewStudentHolds)
+
+
+	routes.HandleFunc("/admin/holds", ViewStudentHoldsPage)
+	routes.HandleFunc("/admin/holds/{user}", ViewStudentHolds).Methods("GET")
+	routes.HandleFunc("/admin/holds/{user}/{id}", AdminDeleteHold).Methods("POST")
+
 	//routes.HandleFunc("/admin/student/holds/{student}", ViewStudentHolds)
-	//routes.Handle("/admin/course",checkSessionWrapper(AdminAddCoursePage))
+	routes.Handle("/admin/course",checkSessionWrapper(AdminAddCoursePage))
+	routes.HandleFunc("/admin/course/{course}",AdminAddCourse).Methods("POST")
+	routes.HandleFunc("/admin/course/search", AdminSearchCoursePage).Methods("GET")
+	//routes.HandleFunc("/admin/course/", AdminDeleteCourse)
+	routes.HandleFunc("/admin/section", AdminAddSectionPage)
+	routes.HandleFunc("/admin/section/{section}", AdminAddSection)
+	routes.HandleFunc("/admin/section/room/{id}", GetRoomsForBuilding)
+	routes.HandleFunc("/admin/section/department/{id}", GetDepartmentsForSections).Methods("GET")
+
+
 	//routes.Handle("/admin/course/{course}",checkSessionWrapper(AdminAddCoursePage))
 
 	routes.Handle("/admin/user", checkSessionWrapper(newUserForm)).Methods("GET")
@@ -147,6 +166,24 @@ func unauthorized(w http.ResponseWriter, r *http.Request){
 
 func loginPage(w http.ResponseWriter, r *http.Request){
 	global.Tpl.ExecuteTemplate(w,"login",nil)
+}
+
+func redirectPost(w http.ResponseWriter, r *http.Request){
+	req, err := http.NewRequest("DELETE", "/admin/holds/{id}", nil)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		panic(err)
+	}
+
+	respBody , err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("HTTP RESPONSE FROM DELETE IS", string(respBody))
+
 }
 
 
@@ -308,7 +345,10 @@ func displayAdmin(w http.ResponseWriter, r *http.Request){
 	_, user := CheckLoginStatus(w,r)
 
 	if user.UserType == 3 {
-		global.Tpl.ExecuteTemplate(w, "admin", user)
+		m := map[string]interface{}{
+			"User":user,
+		}
+		global.Tpl.ExecuteTemplate(w, "admin", m)
 	}else {
 		http.Redirect(w,r,"/", http.StatusForbidden)
 		index(w,r)
@@ -374,6 +414,7 @@ func logout(w http.ResponseWriter, r *http.Request){
 	http.Redirect(w,r,"/login", http.StatusSeeOther)
 }
 
+<<<<<<< HEAD
 
 /* CRUD for users */
 
@@ -514,4 +555,7 @@ func createFaculty(w http.ResponseWriter, r *http.Request) {
 	}
 	http.Redirect(w,r,"/admin", http.StatusFound)
 	displayAdmin(w,r)
+
+func SearchMasterSchedule(w http.ResponseWriter, r *http.Request){
+	global.Tpl.ExecuteTemplate(w, "masterSchedule", nil)
 }

@@ -11,6 +11,8 @@ import (
 	"strconv"
 	"fmt"
 	"time"
+	"github.com/gorilla/mux"
+	"encoding/json"
 )
 
 
@@ -20,7 +22,14 @@ import (
 func ViewStudentSchedulePage(w http.ResponseWriter, r *http.Request){
 	isLogged, user := CheckLoginStatus(w,r)
 	if isLogged && user.UserType == 3 {
-		global.Tpl.ExecuteTemplate(w, "viewStudentScheduleAdmin", user)
+		m := map[string]interface{}{
+			"User":user,
+		}
+		err := global.Tpl.ExecuteTemplate(w, "viewStudentScheduleAdmin", m)
+		//err := global.Tpl.ExecuteTemplate(w, "viewStudentScheduleAdmin", user)
+		if err != nil {
+			fmt.Println(err.Error())
+		}
 	}
 }
 
@@ -38,6 +47,10 @@ type HoldDetail struct {
 	HoldName string
 }
 
+type NoUser struct {
+	ErrorMessage string
+}
+
 func ViewStudentSchedule(w http.ResponseWriter, r *http.Request){
 
 	//vars := mux.Vars(r) //returns a mapping responses
@@ -45,8 +58,9 @@ func ViewStudentSchedule(w http.ResponseWriter, r *http.Request){
 
 	user := model.MainUser{}
 
-	//name := r.FormValue("name")
+	email := r.FormValue("email")
 	id := r.FormValue("id")
+	count := 0
 	//major := r.FormValue("major")
 
 	//db.Where("id = ?", id).Find(&model.Enrollment{})
@@ -55,40 +69,30 @@ func ViewStudentSchedule(w http.ResponseWriter, r *http.Request){
 		err.Error()
 	}
 
+
 	//first check if they entered an ID
 	if id != "" {
-		db.Where(&model.MainUser{UserID: uint(intId)}).Find(&user)
+		db.Where(&model.MainUser{UserID: uint(intId)}).Find(&user).Count(&count)
 	}
 
-	if user.FirstName != "" {
+	if email != ""{
+		db.Where(&model.MainUser{UserEmail: email}).Find(&user).Count(&count)
+	}
+	//nu := NoUser{"Nobody found"}
+	if count > 0 {
 		fmt.Println("You have a user", user.FirstName)
-	} else {
-		fmt.Println("Error searching user", user)
+	} else {//TODO: Render error correctly, try passing in map with admin user
+
+		m := map[string]interface{}{
+			"NoUser": "Nobody Home",
+		}
+
+		fmt.Println("Showing no users found error")
+		global.Tpl.ExecuteTemplate(w,"viewStudentScheduleAdmin", m)
+		return
 	}
 
-	//Successfully gets the student
 
-	//email := user.UserEmail
-
-	//TODO: Check their enrollment by joining enrollment ID and secttion ID
-	//TODO: Then get section details for day, semester, and period info
-	//TODO: Then join course ID in  section and course to get the course name,description, and credits
-
-	history := model.StudentHistory{}
-
-	//results := model.Enrollment{}
-
-
-	//listHistory := make([]model.StudentHistory, 10)
-
-	db.Where(&model.StudentHistory{StudentID: uint(intId)}).Find(&history)
-
-	/*
-
-	for _,v := range listHistory {
-		fmt.Println("Student history is", v.StudentID)
-	}
-	*/
 
 	//this correctly joins enrollment and section on section_id, could possible store all the data in an empty interface
 	/*
@@ -101,18 +105,19 @@ func ViewStudentSchedule(w http.ResponseWriter, r *http.Request){
 		}
 	}
 	*/
-	ss := StudentSchedule{}
-
-	db.Table("enrollment").Select("course_name,course_credits," +
-		//"room_number,building_name,start_time,end_time,meeting_day" +
-		"").Joins("JOIN section on section.section_id = enrollment.section_id AND student_id = ?" +
-		"", id).Joins("JOIN section.course_id = course.course_id").First(&ss)
-
+	ss := []StudentSchedule{}
+	db.Raw(`SELECT course_name,course_credits,building_name,room_number,meeting_day,start_time,end_time
+	FROM enrollment
+	NATURAL JOIN Section
+	NATURAL JOIN time_slot
+	NATURAL JOIN course
+	NATURAL JOIN period
+	NATURAL JOIN day NATURAL
+	JOIN location NATURAL JOIN building
+	NATURAL JOIN room WHERE enrollment.student_id =?`,user.UserID).Scan(&ss)
 	fmt.Println(ss)
 
-	//fmt.Println("Results from query are", results)
-
-	//global.Tpl.ExecuteTemplate(w, "studentHistory", history)
+	global.Tpl.ExecuteTemplate(w, "adminViewStudentScheduleDetails", ss)
 
 }
 
@@ -130,10 +135,13 @@ func ViewStudentHoldsPage(w http.ResponseWriter, r *http.Request){
 
 func ViewStudentHolds (w http.ResponseWriter,r *http.Request) {
 
+
+
 	user := model.MainUser{}
 
-	//name := r.FormValue("name")
+	email := r.FormValue("email")
 	id := r.FormValue("id")
+	count := 0
 	//major := r.FormValue("major")
 
 	//db.Where("id = ?", id).Find(&model.Enrollment{})
@@ -142,38 +150,63 @@ func ViewStudentHolds (w http.ResponseWriter,r *http.Request) {
 		err.Error()
 	}
 
+
 	//first check if they entered an ID
 	if id != "" {
-		db.Where(&model.MainUser{UserID: uint(intId)}).Find(&user)
+		db.Where(&model.MainUser{UserID: uint(intId)}).Find(&user).Count(&count)
+	} else {
+		db.Where(&model.MainUser{UserEmail: email}).Find(&user).Count(&count)
 	}
 
-	if user.FirstName != "" {
+	if count > 0 {
 		fmt.Println("You have a user", user.FirstName)
 	} else {
-		fmt.Println("Error searching user", user)
+		global.Tpl.ExecuteTemplate(w,"viewStudentHoldsAdmin", "No user found")
+		return
 	}
-	/*
-	results := model.StudentHolds{} //should be student-holds
 
-	db.Table("student").Select("*").Joins("join student_holds on student.student_id = holds.student_id WHERE student_id = ?", intId).Scan(&results)
+	hs := []model.Hold{}
 
-	fmt.Println("Hold id is:",results.HoldID, "Student id:", results.StudentID)
-	hold := model.Hold{}
+	db.Raw("SELECT * FROM student NATURAL JOIN student_holds NATURAL JOIN hold WHERE student.student_id =?", user.UserID).Scan(&hs)
+	//fmt.Println(hd)
 
-	db.Where(model.Hold{HoldID:results.HoldID}).First(&hold)
-
-	hd := HoldDetail{StudentName:user.FirstName, HoldName:hold.HoldName}
-	global.Tpl.ExecuteTemplate(w, "adminStudentHold" , hd)
-	*/
-	hd := []HoldDetail{}
-
-	db.Raw("SELECT hold_name FROM student NATURAL JOIN student_holds NATURAL JOIN hold WHERE student.student_id =?", user.UserID).Scan(&hd)
-	fmt.Println(hd)
 	m := map[string]interface{}{
 		"User": user,
-		"Holds": hd,
+		"Holds": hs,
 	}
-	global.Tpl.ExecuteTemplate(w, "adminStudentHold" , m)
+	errTpl := global.Tpl.ExecuteTemplate(w, "adminStudentHold", m)
+	if errTpl != nil {
+		fmt.Println(errTpl.Error())
+	}
+
+
+}
+
+
+func AdminDeleteHold(w http.ResponseWriter, r *http.Request){
+	vars := mux.Vars(r)
+	holdId := vars["id"]
+	user := vars["user"]
+
+	holdInt , err := strconv.Atoi(holdId)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	userInt , err := strconv.Atoi(user)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+		fmt.Println("StudentID =", userInt, "HoldID =", holdInt, "User =", user)
+	//TODO: use ajax to delete the hold, get the id of the hold, and get the student id from a different portion of the page by using attribute
+	studentHold := model.StudentHolds{}
+	//db.Where("student_id = ? AND hold_id = ?", userInt,holdInt).First(&studentHold)
+	//db.Delete(&hold)
+	db.Raw("SELECT * FROM student_holds WHERE student_id = ? AND hold_id = ?", userInt,holdInt).Scan(&studentHold)
+	fmt.Println("Hold found", studentHold)
+	db.Delete(&studentHold)
+	//fmt.Println("Hold deleted sucessfully")
+
 
 }
 
@@ -184,4 +217,212 @@ func AdminAddCoursePage(w http.ResponseWriter, r *http.Request){
 	if isLogged && user.UserType == 3 {
 		global.Tpl.ExecuteTemplate(w, "addCourseAdmin", user)
 	}
+}
+
+func AdminAddCourse(w http.ResponseWriter, r *http.Request){
+	isLogged, user := CheckLoginStatus(w,r)
+	if !isLogged || user.UserType != 3{
+		http.Redirect(w, r, "/", http.StatusForbidden)
+	}
+
+	courseName := r.FormValue("name")
+	courseCredits := r.FormValue("credits")
+	courseDescription := r.FormValue("description")
+	courseDepartment := r.FormValue("department")
+
+
+	intCredits,err := strconv.Atoi(courseCredits)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	intDepartment, err := strconv.Atoi(courseDepartment)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	course := model.Course{CourseName:courseName, CourseCredits:intCredits,
+	CourseDescription:courseDescription, DepartmentID:uint(intDepartment)}
+
+	fmt.Println("Course info is", course)
+	db.Create(&course)
+
+}
+
+func AdminSearchCoursePage(w http.ResponseWriter, r *http.Request){
+	isLogged, user := CheckLoginStatus(w,r)
+	if isLogged && user.UserType == 3 {
+		global.Tpl.ExecuteTemplate(w, "addCourseAdmin", user)
+	}
+}
+
+type CourseOptions struct {
+	CourseName string
+	CourseID uint
+}
+
+
+
+func AdminAddSectionPage(w http.ResponseWriter, r *http.Request){
+	courses := []CourseOptions{}
+	fac := []model.MainUser{}
+	periods := []model.Period{}
+	buildings := []model.Building{}
+	departments := []model.Department{}
+	//timeSlot := []model.TimeSlot{}
+
+	//db.Raw("SELECT user_id,first_name,last_name FROM main_user WHERE user_type= ?", 2).Scan(&fac)
+
+	db.Table("course").Select("course_name, course_id").Scan(&courses)
+
+	db.Table("main_user").Select("*").Where("user_type = ?",2).Scan(&fac)
+
+	db.Table("period").Select("*").Scan(&periods)
+
+	db.Table("building").Select("*").Scan(&buildings)
+
+	db.Table("department").Select("*").Scan(&departments)
+
+
+	fmt.Println("Courses are", courses, "Faculty are", fac)
+	fmt.Println("Periods are", periods)
+
+	m := map[string]interface{}{
+		"Courses": courses,
+		"Faculty": fac,
+		"Period": periods,
+		"Building":buildings,
+		"Department":departments,
+	}
+	errTpl := global.Tpl.ExecuteTemplate(w, "addSectionAdmin", m)
+	if errTpl != nil {
+		fmt.Println(errTpl.Error())
+	}
+}
+
+func GetRoomsForBuilding(w http.ResponseWriter, r *http.Request){
+	vars := mux.Vars(r)
+	buildingId := vars["id"]
+	rooms := []model.Room{}
+
+	//if they select all then change the query
+
+	buildingInt, _ := strconv.Atoi(buildingId)
+	db.Raw("select room_id,room_type,room_number from location natural join " +
+			"room natural join building where building_id = ?",buildingInt).Scan(&rooms)
+
+
+	//encode the rooms to a slice of bytes in json form
+	data , err := json.Marshal(rooms)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	//write those bytes to the response
+	w.Write(data)
+	fmt.Println(data)
+}
+
+func GetDepartmentsForSections(w http.ResponseWriter, r *http.Request){
+	vars := mux.Vars(r)
+	departmentID := vars["id"]
+	courses := []model.Course{}
+	fmt.Println(departmentID)
+	if departmentID == "*"{
+		db.Raw("SELECT course_name,course_id FROM course NATURAL JOIN department").Scan(&courses)
+
+	}else {
+		departmentInt, _ := strconv.Atoi(departmentID)
+		db.Raw("SELECT course_name,course_id FROM course NATURAL JOIN department WHERE department_id = ?", departmentInt).Scan(&courses)
+
+	}
+
+
+	data, err := json.Marshal(courses)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	w.Write(data)
+	fmt.Println(data)
+
+}
+
+type SectionInfo struct {
+	Year int
+	Season string
+	Day string
+}
+
+type RawTime []byte
+
+func (t RawTime) Time() (time.Time, error) {
+	return time.Parse("15:04:05", string(t))
+}
+
+func AdminAddSection(w http.ResponseWriter, r *http.Request){
+
+	sectionNum := r.FormValue("section-number")
+	courseSubject := r.FormValue("course-subject")
+	courseName := r.FormValue("course")
+	faculty := r.FormValue("faculty-name")
+	time := r.FormValue("time")
+	buildingNum := r.FormValue("building")
+	roomNum := r.FormValue("room")
+	semester := r.FormValue("semester")
+	day := r.FormValue("day")
+
+	fmt.Println("Section Num:",sectionNum)
+	fmt.Println("Course Name:",courseName)
+	fmt.Println("Course Subject:",courseSubject)
+	fmt.Println("Faculty",faculty)
+	fmt.Println("Time",time)
+	fmt.Println("Building",buildingNum)
+	fmt.Println("Room Num:",roomNum)
+	fmt.Println("Semester:",semester)
+	fmt.Println("Day",day)
+
+
+	//section := SectionInfo{}
+
+	//time period object
+	//section := SectionInfo{}
+
+	//inserting creating a period because there are to many possibilities
+
+	/*
+	db.Raw(`SELECT year,season,meeting_day FROM time_slot
+	 JOIN semester on semester.semester_id = ?
+	 JOIN day on day.day_id = ?`, semester,day).Scan(&section)
+	 */
+	//room := model.Room{RoomNumber:roomNum,RoomType:roomType}
+	//db.Create(&room)
+	semesterInt, _ := strconv.Atoi(semester)
+	dayInt , _ := strconv.Atoi(day)
+	timeInt , _ := strconv.Atoi(time)
+	//TODO should be reading not creating
+	timeSlot := model.TimeSlot{PeriodID:uint(timeInt),SemesterID:uint(semesterInt),DayID:uint(dayInt)}
+	buildingInt , _ := strconv.Atoi(buildingNum)
+	roomInt, _ := strconv.Atoi(roomNum)
+
+
+	db.Create(&timeSlot)
+	location := model.Location{}
+	db.Where(model.Location{BuildingID:uint(buildingInt),RoomID:uint(roomInt)}).First(&location)
+	timeSlotID := timeSlot.TimeSlotID
+
+	sectionInt, _ := strconv.Atoi(sectionNum)
+	courseInt, _ := strconv.Atoi(courseName)
+	facultyID, _ := strconv.Atoi(faculty)
+
+	newCourseSection := model.Section{CourseSectionNumber:sectionInt,CourseID:uint(courseInt), FacultyID:uint(facultyID),
+	TimeSlotID:timeSlotID,LocationID:location.LocationID}
+
+	//TODO: Make sure room is not already occupied at that time slot
+	//TODO: Make sure faculty is not teaching at same period
+
+	db.Create(&newCourseSection)
+
+
+
 }

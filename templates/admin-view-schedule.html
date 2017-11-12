@@ -2,7 +2,8 @@
 {{template "head"}}
 <div class="container">
 
-    <h1>Welcome {{.FirstName}}</h1>
+          <h1>Welcome {{ .FirstName}}</h1>
+
     <!--
     <ul class="nav nav-pills center-nav">
         <li role="presentation" class="active"><a href="index.html">Add Course</a></li>
@@ -62,10 +63,10 @@
                     <form action="/admin/student/{student}" id="requestData" class="form-horizontal" method="GET">
 
                         <label class="form-group">Id</label>
-                        <input type="text" class="form-control" name="id" placeholder="" required=""><br />
+                        <input type="text" class="form-control" name="id"><br />
 
-                        <label class="form-group">Name</label>
-                        <input type="text" class="form-control" name="name" placeholder=""><br />
+                        <label class="form-group">Email</label>
+                        <input type="email" class="form-control" name="email"><br />
 
 
                         <label class="form-group">Major</label>
@@ -79,6 +80,11 @@
 
             </div>
         </div>
+        {{if .NoUser}}
+            <h2>No results for that user</h2>
+        {{else}}
+            <h2>Try searching for a user</h2>
+        {{end}}
         <br/>
         <div class="container">
 
