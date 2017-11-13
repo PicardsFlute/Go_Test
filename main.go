@@ -123,6 +123,8 @@ func main() {
 	routes.Handle("/admin/course",checkSessionWrapper(AdminAddCoursePage))
 	routes.HandleFunc("/admin/course/{course}",AdminAddCourse).Methods("POST")
 	routes.HandleFunc("/admin/course/search", AdminSearchCoursePage).Methods("GET")
+	routes.HandleFunc("/admin/course/search/{course}", AdminSearchCourse).Methods("GET")
+
 	//routes.HandleFunc("/admin/course/", AdminDeleteCourse)
 	routes.HandleFunc("/admin/section", AdminAddSectionPage)
 	routes.HandleFunc("/admin/section/{section}", AdminAddSection)

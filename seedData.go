@@ -8,7 +8,7 @@ import (
 	"fmt"
 	//"time"
 )
-func main(){
+func main() {
 	dbPassword := os.Getenv("PG_DATABASE_PW")
 	db, err := gorm.Open("postgres", "host=127.0.0.1 dbname=Starfleet sslmode=disable password="+dbPassword)
 	if err != nil {
@@ -55,7 +55,6 @@ func main(){
 	db.DropTable(&model.Admin{})
 	db.DropTable(&model.MainUser{})
 	db.DropTable(&model.Department{})
-
 
 	db.AutoMigrate(
 		&model.MainUser{},
@@ -152,18 +151,21 @@ func main(){
 
 	db.Model(&model.Reports{}).AddForeignKey("researcher_id", "researcher(researcher_id)", "RESTRICT", "RESTRICT")
 
+	user1 := model.MainUser{FirstName: "Pat", LastName: "Lagat", UserEmail: "plagat@yahoo.com", UserPassword: "pl12345", UserType: 1}
+	user2 := model.MainUser{FirstName: "Irish", LastName: "James", UserEmail: "jirish@yahoo.com", UserPassword: "ij12345", UserType: 1}
+	user3 := model.MainUser{FirstName: "Trey", LastName: "Gorkin", UserEmail: "gork@yahoo.com", UserPassword: "tg12345", UserType: 1}
+	user4 := model.MainUser{FirstName: "Testy", LastName: "McTest", UserEmail: "test@test.test", UserPassword: "testPW", UserType: 1}
+	user5 := model.MainUser{FirstName: "Faculty", LastName: "McFaculton", UserEmail: "faculty@test.test", UserPassword: "testPW", UserType: 2}
+	user6 := model.MainUser{FirstName: "Aymen", LastName: "Johnson", UserEmail: "ifaculty@starfleet.edu", UserPassword: "testPW", UserType: 2}
+	user7 := model.MainUser{FirstName: "Jordi", LastName: "LaForge", UserEmail: "laforge@starfleet.edu", UserPassword: "testPW", UserType: 2}
+	user8 := model.MainUser{FirstName: "Admin", LastName: "McAdminton", UserEmail: "admin@test.test", UserPassword: "testPW", UserType: 3}
+	user9 := model.MainUser{FirstName: "George", LastName: "Admintonson", UserEmail: "adminson@starfleet.edu", UserPassword: "testPW", UserType: 3}
+	user10 := model.MainUser{FirstName: "Lesdo", LastName: "SomeResearch", UserEmail: "research@starfleet.edu", UserPassword: "testPW", UserType: 4}
+	facultyUser4 := model.MainUser{FirstName: "Brandon", LastName: "Sanderson", UserEmail: "sanderson@gmail.com", UserPassword: "testPW", UserType: 2}
+	facultyUser5 := model.MainUser{FirstName: "Mike", LastName: "Tyson", UserEmail: "tyson@gmail.com", UserPassword: "testPW", UserType: 2}
+	facultyUser6 := model.MainUser{FirstName: "Eddard", LastName: "Stark", UserEmail: "estark@winterfell.com", UserPassword: "testPW", UserType: 2}
 
-	user1 := model.MainUser{FirstName: "Pat", LastName:"Lagat", UserEmail:"plagat@yahoo.com", UserPassword:"pl12345", UserType:1}
-	user2 := model.MainUser{FirstName: "Irish", LastName:"James", UserEmail:"jirish@yahoo.com", UserPassword:"ij12345", UserType:1}
-	user3 := model.MainUser{FirstName: "Trey", LastName:"Gorkin", UserEmail:"gork@yahoo.com", UserPassword:"tg12345", UserType:1}
-	user4 := model.MainUser{FirstName: "Testy", LastName:"McTest", UserEmail:"test@test.test", UserPassword:"testPW", UserType:1}
-	user5 := model.MainUser{FirstName: "Faculty", LastName:"McFaculton", UserEmail:"faculty@test.test", UserPassword:"testPW", UserType:2}
-	user6 := model.MainUser{FirstName: "Ima", LastName:"Faculty", UserEmail:"ifaculty@starfleet.edu", UserPassword:"testPW", UserType:2}
-	user7 := model.MainUser{FirstName: "Jordi", LastName:"LaForge", UserEmail:"laforge@starfleet.edu", UserPassword:"testPW", UserType:2}
-	user8 := model.MainUser{FirstName: "Admin", LastName:"McAdminton", UserEmail:"admin@test.test", UserPassword:"testPW", UserType:3}
-	user9 := model.MainUser{FirstName: "George", LastName:"Admintonson", UserEmail:"adminson@starfleet.edu", UserPassword:"testPW", UserType:3}
-	user10 := model.MainUser{FirstName: "Lesdo", LastName:"SomeResearch", UserEmail:"research@starfleet.edu", UserPassword:"testPW", UserType:4}
-
+	fmt.Println("Creating users")
 	db.Create(&user1)
 	db.Create(&user2)
 	db.Create(&user3)
@@ -174,11 +176,14 @@ func main(){
 	db.Create(&user8)
 	db.Create(&user9)
 	db.Create(&user10)
+	db.Create(&facultyUser4)
+	db.Create(&facultyUser5)
+	db.Create(&facultyUser6)
 
-	student2 := model.Student{StudentID: user2.UserID, StudentType:1}
-	student1 := model.Student{StudentID: user1.UserID, StudentType:1}
-	student3 := model.Student{StudentID: user3.UserID, StudentType:2}
-	student4 := model.Student{StudentID: user4.UserID, StudentType:2}
+	student2 := model.Student{StudentID: user2.UserID, StudentType: 1}
+	student1 := model.Student{StudentID: user1.UserID, StudentType: 1}
+	student3 := model.Student{StudentID: user3.UserID, StudentType: 2}
+	student4 := model.Student{StudentID: user4.UserID, StudentType: 2}
 	db.Create(&student1)
 	db.Create(&student2)
 	db.Create(&student3)
@@ -189,12 +194,12 @@ func main(){
 	db.Model(&student2).Association("MainUser").Find(&u)
 	fmt.Println("For the student2, the user email is: ", u.UserEmail)
 
-	fullTimeStudent1 := model.FullTimeStudent{FullTimeStudentID: student1.StudentID, NumCredits:16}
-	fullTimeStudent2 := model.FullTimeStudent{FullTimeStudentID: student2.StudentID, NumCredits:18}
+	fullTimeStudent1 := model.FullTimeStudent{FullTimeStudentID: student1.StudentID, NumCredits: 16}
+	fullTimeStudent2 := model.FullTimeStudent{FullTimeStudentID: student2.StudentID, NumCredits: 18}
 	db.Create(&fullTimeStudent1)
 	db.Create(&fullTimeStudent2)
-	partTimeStudent1 := model.PartTimeStudent{PartTimeStudentID: student3.StudentID, NumCredits:12}
-	partTimeStudent2 := model.PartTimeStudent{PartTimeStudentID: student4.StudentID, NumCredits:8}
+	partTimeStudent1 := model.PartTimeStudent{PartTimeStudentID: student3.StudentID, NumCredits: 12}
+	partTimeStudent2 := model.PartTimeStudent{PartTimeStudentID: student4.StudentID, NumCredits: 8}
 	db.Create(&partTimeStudent1)
 	db.Create(&partTimeStudent2)
 
@@ -205,17 +210,35 @@ func main(){
 	db.Model(&stuLookup).Association("MainUser").Find(&uLookup)
 	fmt.Println("For the partTimeStudent1, the user email is: ", uLookup.UserEmail)
 
-	department1 := model.Department{DepartmentName:"Math", DepartmentBuilding:"MathBuilding", DepartmentRoomNumber:"302", DepartmentChair:"Mr Math", DepartmentPhoneNumber:"111-222-3333"}
-	department2 := model.Department{DepartmentName:"Computer Science", DepartmentBuilding:"CSBuilding", DepartmentRoomNumber:"100", DepartmentChair:"Mr Computer", DepartmentPhoneNumber:"123-456-7899"}
+	department1 := model.Department{DepartmentName: "Math", DepartmentBuilding: "MathBuilding", DepartmentRoomNumber: "302", DepartmentChair: "Techanie, Geta", DepartmentPhoneNumber: "111-222-3333"}
+	department2 := model.Department{DepartmentName: "Computer Science", DepartmentBuilding: "CSBuilding", DepartmentRoomNumber: "100", DepartmentChair: "Skiena, Steven", DepartmentPhoneNumber: "123-456-7899"}
+	department3 := model.Department{DepartmentName: "History", DepartmentBuilding: "HistoryBuilding", DepartmentRoomNumber: "200", DepartmentChair: "Smith, Jackson", DepartmentPhoneNumber: "516-553-3291"}
+	department4 := model.Department{DepartmentName: "Liberal Arts", DepartmentBuilding: "ArtsBuilding", DepartmentRoomNumber: "200", DepartmentChair: "Johnson, Allan", DepartmentPhoneNumber: "516-553-3291"}
+	department5 := model.Department{DepartmentName: "Business", DepartmentBuilding: "BusinessBuilding", DepartmentRoomNumber: "400", DepartmentChair: "Seymour, Roswalt", DepartmentPhoneNumber: "516-553-3291"}
+
+	fmt.Println("Creating departments")
+
 	db.Create(&department1)
 	db.Create(&department2)
+	db.Create(&department3)
+	db.Create(&department4)
+	db.Create(&department5)
 
-	faculty1 := model.Faculty{FacultyID:user5.UserID, FacultyType:1, DepartmentID:department1.DepartmentID}
-	faculty2 := model.Faculty{FacultyID:user6.UserID, FacultyType:2, DepartmentID:department2.DepartmentID}
-	faculty3 := model.Faculty{FacultyID:user7.UserID, FacultyType:1, DepartmentID:department1.DepartmentID}
+	faculty1 := model.Faculty{FacultyID: user5.UserID, FacultyType: 1, DepartmentID: department1.DepartmentID}
+	faculty2 := model.Faculty{FacultyID: user6.UserID, FacultyType: 2, DepartmentID: department2.DepartmentID}
+	faculty3 := model.Faculty{FacultyID: user7.UserID, FacultyType: 1, DepartmentID: department1.DepartmentID}
+
+	faculty4 := model.Faculty{FacultyID: facultyUser4.UserID, FacultyType: 1, DepartmentID: department3.DepartmentID}
+	faculty5 := model.Faculty{FacultyID: facultyUser5.UserID, FacultyType: 1, DepartmentID: department4.DepartmentID}
+	faculty6 := model.Faculty{FacultyID: facultyUser6.UserID, FacultyType: 1, DepartmentID: department5.DepartmentID}
+
+
 	db.Create(&faculty1)
 	db.Create(&faculty2)
 	db.Create(&faculty3)
+	db.Create(&faculty4)
+	db.Create(&faculty5)
+	db.Create(&faculty6)
 
 	// example of finding a many-one lookup
 	dep := model.Department{}
@@ -230,103 +253,98 @@ func main(){
 		fmt.Println("FacultyID", v.FacultyID)
 	}
 
-
-	admin1 := model.Admin{AdminID:user8.UserID}
-	admin2 := model.Admin{AdminID:user9.UserID}
+	admin1 := model.Admin{AdminID: user8.UserID}
+	admin2 := model.Admin{AdminID: user9.UserID}
 	db.Create(&admin1)
 	db.Create(&admin2)
 
-	researcher1 := model.Researcher{ResearcherID:user10.UserID}
-	db.Create(researcher1)
+	researcher1 := model.Researcher{ResearcherID: user10.UserID}
+	db.Create(&researcher1)
 
-
-	major1 := model.Major{DepartmentID: department1.DepartmentID, MajorName:"MATH"}
-	major2 := model.Major{DepartmentID: department1.DepartmentID, MajorName:"SUPERMATH"}
-	major3 := model.Major{DepartmentID: department2.DepartmentID, MajorName:"CIS"}
-	major4 := model.Major{DepartmentID: department2.DepartmentID, MajorName:"MIS"}
+	major1 := model.Major{DepartmentID: department1.DepartmentID, MajorName: "MATH"}
+	major2 := model.Major{DepartmentID: department1.DepartmentID, MajorName: "SUPERMATH"}
+	major3 := model.Major{DepartmentID: department2.DepartmentID, MajorName: "CIS"}
+	major4 := model.Major{DepartmentID: department2.DepartmentID, MajorName: "MIS"}
 	db.Create(&major1)
 	db.Create(&major2)
 	db.Create(&major3)
 	db.Create(&major4)
 
-	minor1 := model.Minor{DepartmentID: department1.DepartmentID, MinorName:"APPLIED MATH"}
-	minor2 := model.Minor{DepartmentID: department1.DepartmentID, MinorName:"MINOR MATH"}
-	minor3 := model.Minor{DepartmentID: department2.DepartmentID, MinorName:"LITTLE COMPUTERS"}
-	minor4 := model.Minor{DepartmentID: department2.DepartmentID, MinorName:"COMPUTER STUFF"}
+	minor1 := model.Minor{DepartmentID: department1.DepartmentID, MinorName: "APPLIED MATH"}
+	minor2 := model.Minor{DepartmentID: department1.DepartmentID, MinorName: "MINOR MATH"}
+	minor3 := model.Minor{DepartmentID: department2.DepartmentID, MinorName: "LITTLE COMPUTERS"}
+	minor4 := model.Minor{DepartmentID: department2.DepartmentID, MinorName: "COMPUTER STUFF"}
 	db.Create(&minor1)
 	db.Create(&minor2)
 	db.Create(&minor3)
 	db.Create(&minor4)
 
-	hold1 := model.Hold{HoldName:"Unpaid Bill"}
-	hold2 := model.Hold{HoldName:"Un-submitted Health Forms"}
-	hold3 := model.Hold{HoldName:"Unpaid Parking Ticket"}
-	hold4 := model.Hold{HoldName:"Unpaid Speeding Ticket"}
-
+	hold1 := model.Hold{HoldName: "Unpaid Bill"}
+	hold2 := model.Hold{HoldName: "Un-submitted Health Forms"}
+	hold3 := model.Hold{HoldName: "Unpaid Parking Ticket"}
+	hold4 := model.Hold{HoldName: "Unpaid Speeding Ticket"}
 
 	db.Create(&hold1)
 	db.Create(&hold2)
 	db.Create(&hold3)
 	db.Create(&hold4)
 
-	studenthold1 := model.StudentHolds{StudentID:student1.StudentID, HoldID:hold1.HoldID}
-	studenthold2 := model.StudentHolds{StudentID:student1.StudentID, HoldID:hold2.HoldID}
-	studenthold3 := model.StudentHolds{StudentID:student2.StudentID, HoldID:hold3.HoldID}
-	studenthold4 := model.StudentHolds{StudentID:student1.StudentID, HoldID:hold4.HoldID}
+	studenthold1 := model.StudentHolds{StudentID: student1.StudentID, HoldID: hold1.HoldID}
+	studenthold2 := model.StudentHolds{StudentID: student1.StudentID, HoldID: hold2.HoldID}
+	studenthold3 := model.StudentHolds{StudentID: student2.StudentID, HoldID: hold3.HoldID}
+	studenthold4 := model.StudentHolds{StudentID: student1.StudentID, HoldID: hold4.HoldID}
 
 	db.Create(&studenthold1)
 	db.Create(&studenthold2)
 	db.Create(&studenthold3)
 	db.Create(&studenthold4)
 
-	course1 := model.Course{CourseName:"Warp Field Mechanics", CourseCredits:4, DepartmentID:department1.DepartmentID,
-		CourseDescription:"An introduction to the theory behind faster than light space travel."}
+	course1 := model.Course{CourseName: "Warp Field Mechanics", CourseCredits: 4, DepartmentID: department1.DepartmentID,
+		CourseDescription:          "An introduction to the theory behind faster than light space travel."}
 
-	course2 := model.Course{CourseName:"History of Space Travel", CourseCredits:4, DepartmentID:department1.DepartmentID,
-		CourseDescription:"A survey of humanity's entry into the age of space exploration, from the first artificial satellite to first contact with the Vulcans. "}
+	course2 := model.Course{CourseName: "History of Space Travel", CourseCredits: 4, DepartmentID: department1.DepartmentID,
+		CourseDescription:          "A survey of humanity's entry into the age of space exploration, from the first artificial satellite to first contact with the Vulcans. "}
 
-	course3 := model.Course{CourseName:"Contemporary Holography", CourseCredits:4, DepartmentID:department1.DepartmentID,
-		CourseDescription:"An introduction to Holography."}
+	course3 := model.Course{CourseName: "Contemporary Holography", CourseCredits: 4, DepartmentID: department1.DepartmentID,
+		CourseDescription:          "An introduction to Holography."}
 
-	course4 := model.Course{CourseName:"Newtonian Physics I", CourseCredits:4, DepartmentID:department2.DepartmentID, CourseDescription:"The basic building blocks of Newtonain physics icluding kinetics, force, rotation, and harmonic motion"}
-	course5 := model.Course{CourseName:"Newtonian Physics II", CourseCredits:4, DepartmentID:department2.DepartmentID, CourseDescription:"The fundamentals of optics, electricity and magnetism"}
-
+	course4 := model.Course{CourseName: "Newtonian Physics I", CourseCredits: 4, DepartmentID: department2.DepartmentID, CourseDescription: "The basic building blocks of Newtonain physics icluding kinetics, force, rotation, and harmonic motion"}
+	course5 := model.Course{CourseName: "Newtonian Physics II", CourseCredits: 4, DepartmentID: department2.DepartmentID, CourseDescription: "The fundamentals of optics, electricity and magnetism"}
 	db.Create(&course1)
 	db.Create(&course2)
 	db.Create(&course3)
 	db.Create(&course4)
 	db.Create(&course5)
 
-	preReq1 := model.Prerequisite{CourseRequiredBy:course5.CourseID, CourseRequirement: course4.CourseID}
-	preReq2 := model.Prerequisite{CourseRequiredBy:course1.CourseID, CourseRequirement: course2.CourseID}
+	preReq1 := model.Prerequisite{CourseRequiredBy: course5.CourseID, CourseRequirement: course4.CourseID}
+	preReq2 := model.Prerequisite{CourseRequiredBy: course1.CourseID, CourseRequirement: course2.CourseID}
 	db.Create(&preReq1)
 	db.Create(&preReq2)
 
-	building := model.Building{BuildingName:"The Academy", BuildingAddress:"5 Shawsington Road"}
-	building2 := model.Building{BuildingName:"Riften Building", BuildingAddress:"115 Shawsington Road"}
+	building := model.Building{BuildingName: "The Academy", BuildingAddress: "5 Shawsington Road"}
+	building2 := model.Building{BuildingName: "Riften Building", BuildingAddress: "115 Shawsington Road"}
 
 	db.Create(&building)
 	db.Create(&building2)
 
 	//building 1
-	room1 := model.Room{RoomNumber:"B100", RoomType:"Lecture Hall", RoomCapacity:100}
-	room2 := model.Room{RoomNumber:"C200", RoomType: "LAB",RoomCapacity:10}
-	room3 := model.Room{RoomNumber:"C210", RoomType: "Classroom",RoomCapacity:30}
-	room4 := model.Room{RoomNumber:"C220", RoomType: "Classroom",RoomCapacity:30}
-	room5 := model.Room{RoomNumber:"C230", RoomType: "Classroom", RoomCapacity:40}
-	room6 := model.Room{RoomNumber:"C240", RoomType: "Classroom", RoomCapacity:25}
+	room1 := model.Room{RoomNumber: "B100", RoomType: "Lecture Hall", RoomCapacity: 100}
+	room2 := model.Room{RoomNumber: "C200", RoomType: "LAB", RoomCapacity: 10}
+	room3 := model.Room{RoomNumber: "C210", RoomType: "Classroom", RoomCapacity: 30}
+	room4 := model.Room{RoomNumber: "C220", RoomType: "Classroom", RoomCapacity: 30}
+	room5 := model.Room{RoomNumber: "C230", RoomType: "Classroom", RoomCapacity: 40}
+	room6 := model.Room{RoomNumber: "C240", RoomType: "Classroom", RoomCapacity: 25}
 
 	//building 2
-	b2room1 := model.Room{RoomNumber:"P100", RoomType:"Classroom",RoomCapacity:25}
-	b2room2 := model.Room{RoomNumber:"P150", RoomType:"Classroom",RoomCapacity:25}
-	b2room3 := model.Room{RoomNumber:"P180", RoomType:"Classroom",RoomCapacity:30}
-	b2room4 := model.Room{RoomNumber:"H100", RoomType:"Lecture Hall", RoomCapacity:125}
+	b2room1 := model.Room{RoomNumber: "P100", RoomType: "Classroom", RoomCapacity: 25}
+	b2room2 := model.Room{RoomNumber: "P150", RoomType: "Classroom", RoomCapacity: 25}
+	b2room3 := model.Room{RoomNumber: "P180", RoomType: "Classroom", RoomCapacity: 30}
+	b2room4 := model.Room{RoomNumber: "H100", RoomType: "Lecture Hall", RoomCapacity: 125}
 
 	db.Create(&b2room1)
 	db.Create(&b2room2)
 	db.Create(&b2room3)
 	db.Create(&b2room4)
-
 
 	db.Create(&room1)
 	db.Create(&room2)
@@ -335,17 +353,20 @@ func main(){
 	db.Create(&room5)
 	db.Create(&room6)
 
-	location1 := model.Location{BuildingID:building.BuildingID, RoomID:room1.RoomID}
-	location2 := model.Location{BuildingID:building.BuildingID, RoomID:room2.RoomID}
-	location3 := model.Location{BuildingID:building.BuildingID, RoomID:room3.RoomID}
-	location4 := model.Location{BuildingID:building.BuildingID, RoomID:room4.RoomID}
-	location5 := model.Location{BuildingID:building.BuildingID, RoomID:room5.RoomID}
-	location6 := model.Location{BuildingID:building.BuildingID, RoomID:room6.RoomID}
+	fmt.Println("Creating locations")
 
-	location7 := model.Location{BuildingID:building2.BuildingID, RoomID:b2room1.RoomID}
-	location8 := model.Location{BuildingID:building2.BuildingID, RoomID:b2room2.RoomID}
-	location9 := model.Location{BuildingID:building2.BuildingID, RoomID:b2room3.RoomID}
-	location10 := model.Location{BuildingID:building2.BuildingID, RoomID:b2room4.RoomID}
+
+	location1 := model.Location{BuildingID: building.BuildingID, RoomID: room1.RoomID}
+	location2 := model.Location{BuildingID: building.BuildingID, RoomID: room2.RoomID}
+	location3 := model.Location{BuildingID: building.BuildingID, RoomID: room3.RoomID}
+	location4 := model.Location{BuildingID: building.BuildingID, RoomID: room4.RoomID}
+	location5 := model.Location{BuildingID: building.BuildingID, RoomID: room5.RoomID}
+	location6 := model.Location{BuildingID: building.BuildingID, RoomID: room6.RoomID}
+
+	location7 := model.Location{BuildingID: building2.BuildingID, RoomID: b2room1.RoomID}
+	location8 := model.Location{BuildingID: building2.BuildingID, RoomID: b2room2.RoomID}
+	location9 := model.Location{BuildingID: building2.BuildingID, RoomID: b2room3.RoomID}
+	location10 := model.Location{BuildingID: building2.BuildingID, RoomID: b2room4.RoomID}
 
 	db.Create(&location1)
 	db.Create(&location2)
@@ -359,15 +380,44 @@ func main(){
 	db.Create(&location9)
 	db.Create(&location10)
 
-	day1 := model.Day{MeetingDay:"MW"}
-	day2 := model.Day{MeetingDay:"TR"}
+	day1 := model.Day{MeetingDay: "MW"}
+	day2 := model.Day{MeetingDay: "TR"}
 	db.Create(&day1)
 	db.Create(&day2)
 
-	semester1 := model.Semester{Year:2018, Season:"Spring"}
-	semester2 := model.Semester{Year: 2018, Season:"Fall"}
+	semester1 := model.Semester{Year: 2018, Season: "Spring"}
+	semester2 := model.Semester{Year: 2018, Season: "Fall"}
+	winterSemester := model.Semester{Year:2018, Season:"Winter"}
+	summerSemester := model.Semester{Year:2018, Season:"Summer"}
+
+	fallLastYear := model.Semester{Year:2017, Season:"Fall"}
+	springLastYear := model.Semester{Year:2017, Season:"Spring"}
+	winterLastYear := model.Semester{Year:2017, Season:"Winter"}
+	summerLastYear := model.Semester{Year:2017, Season:"Summer"}
+
+	fallLastLastYear := model.Semester{Year:2016, Season:"Fall"}
+	springLastLastYear := model.Semester{Year:2016, Season:"Spring"}
+
+	fallLastLastLastYear := model.Semester{Year:2015, Season:"Fall"}
+	springLastLastLastYear := model.Semester{Year:2015, Season:"Spring"}
+
+	fmt.Println("Creating semesters")
+
 	db.Create(&semester1)
 	db.Create(&semester2)
+	db.Create(&winterSemester)
+	db.Create(&summerSemester)
+	db.Create(&fallLastYear)
+	db.Create(&springLastYear)
+
+	db.Create(&winterLastYear)
+	db.Create(&summerLastYear)
+	db.Create(&fallLastLastYear)
+	db.Create(&springLastLastYear)
+	db.Create(&fallLastLastLastYear)
+	db.Create(&springLastLastLastYear)
+
+
 	/*
 	timeform := "Jan 2, 2006 at 3:04pm (MST)"
 	t1, _ := time.Parse(timeform, "Jan 2, 2006 at 1:00pm (MST)")
@@ -377,8 +427,8 @@ func main(){
 	period1 := model.Period{Star	tTime: t1, EndTime: t2}
 	period2 := model.Period{StartTime: t3, EndTime: t4}
 	*/
-
 /*
+
 	period0 := model.Period{Time:"9:40 AM - 11:10 AM"}
 	period1 := model.Period{Time:"11:20 AM - 12:50 PM"}
 	period2 := model.Period{Time:"3:50 PM - 5:20 PM"}
@@ -390,14 +440,39 @@ func main(){
 	db.Create(&period3)
 	db.Create(&period4)
 
+	//all 5 periods for MW
 	timeslot1 := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day1.DayID, PeriodID:period1.PeriodID}
 	timeslot2 := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day1.DayID, PeriodID:period2.PeriodID}
+	timeslota := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day1.DayID, PeriodID:period3.PeriodID}
+	timeslotb := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day1.DayID, PeriodID:period4.PeriodID}
+	timeslotc := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day1.DayID, PeriodID:period0.PeriodID}
+
+	//all 5 periods for TR
+	timeslot11 := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day2.DayID, PeriodID:period1.PeriodID}
+	timeslot21 := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day2.DayID, PeriodID:period2.PeriodID}
+	timeslota1 := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day2.DayID, PeriodID:period3.PeriodID}
+	timeslotb2 := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day2.DayID, PeriodID:period4.PeriodID}
+	timeslotc3 := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day2.DayID, PeriodID:period0.PeriodID}
+
 	timeslot3 := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day2.DayID, PeriodID:period1.PeriodID}
 	timeslot4 := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day2.DayID, PeriodID:period2.PeriodID}
+
+	fmt.Println("Creating timeslots")
+
 	db.Create(&timeslot1)
 	db.Create(&timeslot2)
 	db.Create(&timeslot3)
 	db.Create(&timeslot4)
+
+	db.Create(&timeslota)
+	db.Create(&timeslotb)
+	db.Create(&timeslotc)
+
+	db.Create(&timeslot11)
+	db.Create(&timeslot21)
+	db.Create(&timeslota1)
+	db.Create(&timeslotb2)
+	db.Create(&timeslotc3)
 
 	section1 := model.Section{CourseSectionNumber:001, CourseID:course1.CourseID, FacultyID:faculty1.FacultyID, TimeSlotID:timeslot1.TimeSlotID, LocationID:location1.LocationID}
 	section2 := model.Section{CourseSectionNumber:002, CourseID:course1.CourseID, FacultyID:faculty1.FacultyID, TimeSlotID:timeslot2.TimeSlotID, LocationID:location1.LocationID}
@@ -466,5 +541,6 @@ func main(){
 	db.Create(&history11)
 	db.Create(&history12)
 }
+
 
 */

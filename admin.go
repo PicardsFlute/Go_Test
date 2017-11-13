@@ -250,10 +250,25 @@ func AdminAddCourse(w http.ResponseWriter, r *http.Request){
 }
 
 func AdminSearchCoursePage(w http.ResponseWriter, r *http.Request){
-	isLogged, user := CheckLoginStatus(w,r)
-	if isLogged && user.UserType == 3 {
-		global.Tpl.ExecuteTemplate(w, "addCourseAdmin", user)
-	}
+	departments := []model.Department{}
+	db.Table("department").Select("*").Scan(&departments)
+
+	//isLogged, user := CheckLoginStatus(w,r)
+	//if isLogged && user.UserType == 3 {
+		global.Tpl.ExecuteTemplate(w, "searchCourseAdmin", departments)
+	//}
+}
+
+func AdminSearchCourse(w http.ResponseWriter, r *http.Request){
+	//TODO: Load courses into a table, if you click one, it shows the sections that course
+	//todo display department info
+	departments := []model.Department{}
+	db.Table("department").Select("*").Scan(&departments)
+
+	//isLogged, user := CheckLoginStatus(w,r)
+	//if isLogged && user.UserType == 3 {
+	global.Tpl.ExecuteTemplate(w, "searchCourseAdmin", departments)
+	//}
 }
 
 type CourseOptions struct {
@@ -272,7 +287,8 @@ func AdminAddSectionPage(w http.ResponseWriter, r *http.Request){
 	//timeSlot := []model.TimeSlot{}
 
 	//db.Raw("SELECT user_id,first_name,last_name FROM main_user WHERE user_type= ?", 2).Scan(&fac)
-
+	//TODO: see if we can do all this with 1 query and place into multiple structs
+	//TODO: or parse through a custom struct
 	db.Table("course").Select("course_name, course_id").Scan(&courses)
 
 	db.Table("main_user").Select("*").Where("user_type = ?",2).Scan(&fac)
@@ -383,32 +399,19 @@ func AdminAddSection(w http.ResponseWriter, r *http.Request){
 	fmt.Println("Day",day)
 
 
-	//section := SectionInfo{}
-
-	//time period object
-	//section := SectionInfo{}
-
-	//inserting creating a period because there are to many possibilities
-
-	/*
-	db.Raw(`SELECT year,season,meeting_day FROM time_slot
-	 JOIN semester on semester.semester_id = ?
-	 JOIN day on day.day_id = ?`, semester,day).Scan(&section)
-	 */
-	//room := model.Room{RoomNumber:roomNum,RoomType:roomType}
-	//db.Create(&room)
 	semesterInt, _ := strconv.Atoi(semester)
 	dayInt , _ := strconv.Atoi(day)
 	timeInt , _ := strconv.Atoi(time)
-	//TODO should be reading not creating
 	timeSlot := model.TimeSlot{PeriodID:uint(timeInt),SemesterID:uint(semesterInt),DayID:uint(dayInt)}
 	buildingInt , _ := strconv.Atoi(buildingNum)
 	roomInt, _ := strconv.Atoi(roomNum)
 
-
+	//TODO: Rework this, shouldn't be creating, should be searching
 	db.Create(&timeSlot)
+
 	location := model.Location{}
 	db.Where(model.Location{BuildingID:uint(buildingInt),RoomID:uint(roomInt)}).First(&location)
+
 	timeSlotID := timeSlot.TimeSlotID
 
 	sectionInt, _ := strconv.Atoi(sectionNum)
@@ -419,7 +422,7 @@ func AdminAddSection(w http.ResponseWriter, r *http.Request){
 	TimeSlotID:timeSlotID,LocationID:location.LocationID}
 
 	//TODO: Make sure room is not already occupied at that time slot
-	//TODO: Make sure faculty is not teaching at same period
+	//TODO: Make sure faculty is not teaching at same period, could be MW and TR at same time
 
 	db.Create(&newCourseSection)
 
