@@ -55,7 +55,7 @@ func (u *MainUser)ValidateData()(bool, error){
 }
 
 
-type Student struct {
+	type Student struct {
 	StudentID uint `gorm:"primary_key"`
 	MainUser  MainUser `gorm:"ForeignKey:UserID;AssociationForeignKey:StudentID"`
 	StudentType int `gorm:"not null"`

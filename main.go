@@ -541,21 +541,117 @@ func createFaculty(w http.ResponseWriter, r *http.Request) {
 	formEmail := r.FormValue("email")
 	mu := model.MainUser{}
 	db.Where(&model.MainUser{UserEmail: formEmail}).First(&mu)
-	facultyType,_ := strconv.Atoi(r.FormValue("faculty-type"))
+	facultyType, _ := strconv.Atoi(r.FormValue("faculty-type"))
 	println("Faculty type num: ", facultyType)
-	department,_ := strconv.ParseUint(r.FormValue("department"),10,64)
-	faculty := model.Faculty{FacultyID:mu.UserID, FacultyType:facultyType, DepartmentID:uint(department)}
+	department, _ := strconv.ParseUint(r.FormValue("department"), 10, 64)
+	faculty := model.Faculty{FacultyID: mu.UserID, FacultyType: facultyType, DepartmentID: uint(department)}
 	db.Create(&faculty)
-	if (facultyType == 1){
-		facultyFT := model.FullTimeFaculty{FullTimeFacultyID: faculty.FacultyID }
+	if (facultyType == 1) {
+		facultyFT := model.FullTimeFaculty{FullTimeFacultyID: faculty.FacultyID}
 		db.Create(&facultyFT)
-	} else if (facultyType == 2){
-		facultyPT := model.PartTimeStudent{PartTimeStudentID: faculty.FacultyID }
+	} else if (facultyType == 2) {
+		facultyPT := model.PartTimeStudent{PartTimeStudentID: faculty.FacultyID}
 		db.Create(&facultyPT)
 	}
-	http.Redirect(w,r,"/admin", http.StatusFound)
-	displayAdmin(w,r)
+	http.Redirect(w, r, "/admin", http.StatusFound)
+	displayAdmin(w, r)
 
+}
+
+func deleteUser(w http.ResponseWriter, r *http.Request){
+	r.ParseForm()
+	formEmail := r.FormValue("email")
+	mu := model.MainUser{}
+	db.Where(&model.MainUser{UserEmail: formEmail}).First(&mu)
+	if mu.UserID != 0 {
+		userType := mu.UserType
+		if userType == 1 {
+			student := model.Student{}
+			db.First(&student, mu.UserID)
+			if student.StudentType == 1 && student.StudentID != 0{
+				studentFT := model.FullTimeStudent{}
+				db.First(&studentFT, student.StudentID)
+				if studentFT.FullTimeStudentID != 0{
+					println("Deleting Full Time Student")
+					db.Delete(&studentFT)
+				} else {
+					println("FT student not found")
+				}
+				println("Deleting Student")
+				db.Delete(&student)
+			} else if student.StudentType == 2 && student.StudentID != 0{
+				studentPT := model.PartTimeStudent{}
+				db.First(&studentPT, student.StudentID)
+				if studentPT.PartTimeStudentID != 0{
+					println("Deleting Part Time Student")
+					db.Delete(&studentPT)
+				} else {
+					println("Part time student not found")
+				}
+				println("Deleting Student")
+				db.Delete(&student)
+			} else {
+				println("Student not found")
+			}
+
+		} else if userType == 2{
+			faculty := model.Faculty{}
+			db.First(&faculty, mu.UserID)
+			if faculty.FacultyType == 1 && faculty.FacultyID != 0{
+				studentFT := model.FullTimeStudent{}
+				db.First(&studentFT, faculty.FacultyID)
+				if studentFT.FullTimeStudentID != 0{
+					println("Deleting Full Time Faculty")
+					db.Delete(&studentFT)
+				} else {
+					println("FT faculty not found")
+				}
+				println("Deleting faculty")
+				db.Delete(&faculty)
+			} else if faculty.FacultyType == 2 && faculty.FacultyID != 0{
+				facultyPT := model.PartTimeFaculty{}
+				db.First(&facultyPT, faculty.FacultyID)
+				if facultyPT.PartTimeFacultyID != 0{
+					println("Deleting Part Time Student")
+					db.Delete(&facultyPT)
+				} else {
+					println("Part time faculty not found")
+				}
+				println("Deleting faculty")
+				db.Delete(&faculty)
+			} else {
+				println("Faculty not found")
+			}
+
+		} else if userType == 3 {
+			admin := model.Admin{}
+			db.First(&admin, mu.UserID)
+
+			if admin.AdminID != 0 {
+				db.Delete(&admin)
+			} else {
+				println("Admin not found")
+			}
+			println("Deleting msin ser")
+		} else if userType == 4{
+			researcher := model.Researcher{}
+			db.First(&researcher, mu.UserID)
+
+			if researcher.ResearcherID != 0 {
+				db.Delete(&researcher)
+			} else {
+				println("Researcher not found")
+			}
+		}
+
+	}
+		println("Deleting main user")
+		db.Delete(&mu)
+
+}
+
+} else {
+println("Main user not found")
 func SearchMasterSchedule(w http.ResponseWriter, r *http.Request){
 	global.Tpl.ExecuteTemplate(w, "masterSchedule", nil)
 }
