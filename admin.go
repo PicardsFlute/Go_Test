@@ -213,10 +213,15 @@ func AdminDeleteHold(w http.ResponseWriter, r *http.Request){
 
 
 func AdminAddCoursePage(w http.ResponseWriter, r *http.Request){
-	isLogged, user := CheckLoginStatus(w,r)
-	if isLogged && user.UserType == 3 {
-		global.Tpl.ExecuteTemplate(w, "addCourseAdmin", user)
-	}
+	//isLogged, user := CheckLoginStatus(w,r)
+	//if isLogged && user.UserType == 3 {
+	departments := []model.Department{}
+
+		db.Table("department").Select("*").Scan(&departments)
+		err :=global.Tpl.ExecuteTemplate(w, "addCourseAdmin", departments)
+		if err != nil{
+			fmt.Println(err.Error())
+		}
 }
 
 func AdminAddCourse(w http.ResponseWriter, r *http.Request){
@@ -245,7 +250,22 @@ func AdminAddCourse(w http.ResponseWriter, r *http.Request){
 	CourseDescription:courseDescription, DepartmentID:uint(intDepartment)}
 
 	fmt.Println("Course info is", course)
-	db.Create(&course)
+	errors := db.Create(&course)
+	if errors.Error != nil {
+		fmt.Println(errors.Error)
+		return
+	}
+
+	courses := []model.Course{}
+	db.Table("course").Select("course_name, course_id").Scan(&courses)
+
+
+	m := map[string]interface{}{
+		"Courses": courses,
+		"CurrentCourse":course,
+	}
+
+	global.Tpl.ExecuteTemplate(w, "coursePreReq", m)
 
 }
 
