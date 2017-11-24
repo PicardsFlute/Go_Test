@@ -116,6 +116,9 @@ func main() {
 	//routes.HandleFunc("/admin/student/holds/{student}", ViewStudentHolds)
 	routes.Handle("/admin/course",checkSessionWrapper(AdminAddCoursePage))
 	routes.HandleFunc("/admin/course/{course}",AdminAddCourse).Methods("POST")
+	//routes.HandleFunc("/admin/course/{course}/{pre-req}/",AddCoursePreRequisit).Methods("POST")
+	routes.HandleFunc("/admin/courses/prereq",AddCoursePreRequisit).Methods("POST")
+
 	routes.HandleFunc("/admin/course/search", AdminSearchCoursePage).Methods("GET")
 	routes.HandleFunc("/admin/course/search/{course}", AdminSearchCourse).Methods("GET")
 

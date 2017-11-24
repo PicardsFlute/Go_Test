@@ -198,7 +198,6 @@ func AdminDeleteHold(w http.ResponseWriter, r *http.Request){
 	}
 
 		fmt.Println("StudentID =", userInt, "HoldID =", holdInt, "User =", user)
-	//TODO: use ajax to delete the hold, get the id of the hold, and get the student id from a different portion of the page by using attribute
 	studentHold := model.StudentHolds{}
 	//db.Where("student_id = ? AND hold_id = ?", userInt,holdInt).First(&studentHold)
 	//db.Delete(&hold)
@@ -266,6 +265,45 @@ func AdminAddCourse(w http.ResponseWriter, r *http.Request){
 	}
 
 	global.Tpl.ExecuteTemplate(w, "coursePreReq", m)
+
+}
+
+type Course struct {
+	Id string `json:"id"`
+	Name string `json:"name"`
+}
+
+func AddCoursePreRequisit(w http.ResponseWriter, r *http.Request){
+	fmt.Println("inside admin add course pre-req")
+
+	jsonVal := r.FormValue("prereqs")
+	courseID := r.FormValue("course")
+
+	courseIDint,_ := strconv.Atoi(courseID)
+
+	fmt.Println("Course prereqs are",jsonVal)
+	fmt.Println("Course id is",courseID)
+
+	courses := []Course{}
+
+	bytes := []byte(jsonVal)
+	err := json.Unmarshal(bytes,&courses)
+	if err != nil{
+		fmt.Print(err.Error())
+	}
+
+	fmt.Println("JSON data is",courses)
+
+
+	for _, course := range courses {
+		courseRequirementIDint, _ := strconv.Atoi(course.Id)
+		prereq := model.Prerequisite{CourseRequiredBy:uint(courseIDint), CourseRequirement:uint(courseRequirementIDint)}
+		db.Create(&prereq)
+		fmt.Println("Course added", prereq)
+	}
+
+	//TODO: correctly adds course prereqs
+	//TODO: JUst add success page
 
 }
 
