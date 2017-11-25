@@ -1,4 +1,4 @@
-{{define "adminViewCourseSection"}}
+{{define "ViewStudentScheduleDetails"}}
 {{template "head"}}
 
 <!--
@@ -24,7 +24,7 @@
     </ul>
     -->
 
-    {{template "admin-navbar"}}
+    {{template "student-navbar"}}
 
     {{if .}}
     {{range .}}
@@ -39,7 +39,7 @@
     <hr>
     {{end}}
     {{else}}
-    <h1>This user has no schedule</h1>
+    <h1>Error loading course details</h1>
     {{end}}
 
 

@@ -98,14 +98,14 @@ func main() {
 	routes.HandleFunc("/login", loginPage).Methods("GET")
 	routes.HandleFunc("/login", loginUser).Methods("POST")
 	//routes.Handle("/user",  checkSessionWrapper(displayStudent)).Methods("GET")
-	routes.Handle("/student",  checkSessionWrapper(displayStudent)).Methods("GET")
-	routes.Handle("/admin",  checkSessionWrapper(displayAdmin)).Methods("GET")
 	routes.Handle("/faculty",  checkSessionWrapper(displayFaculty)).Methods("GET")
 	routes.Handle("/researcher", checkSessionWrapper(displayResearcher)).Methods("GET")
 
 	routes.HandleFunc("/course/search", SearchMasterSchedule).Methods("GET")
 
+	/*Admin routes */
 
+	routes.Handle("/admin",  checkSessionWrapper(displayAdmin)).Methods("GET")
 	routes.Handle("/admin/student" , checkSessionWrapper(ViewStudentSchedulePage)).Methods("GET")
 	routes.HandleFunc("/admin/student/{student}", ViewStudentSchedule).Methods("GET")
 
@@ -128,8 +128,9 @@ func main() {
 	routes.HandleFunc("/admin/section/room/{id}", GetRoomsForBuilding)
 	routes.HandleFunc("/admin/section/department/{id}", GetDepartmentsForSections).Methods("GET")
 
-	//routes.Handle("/admin/course/{course}",checkSessionWrapper(AdminAddCoursePage))
-
+	/* Student Routes*/
+	routes.Handle("/student",  checkSessionWrapper(displayStudent)).Methods("GET")
+	routes.HandleFunc("/student/schedule/{id}", ViewSchedule).Methods("GET")
 	//routes.HandleFunc("/unauthorized", unauthorized)
 
 	routes.HandleFunc("/logout", logout)
