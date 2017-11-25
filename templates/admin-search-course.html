@@ -52,6 +52,7 @@
     <table class="table table-striped" id="table">
         <thead>
             <tr>
+                <th>Course ID</th>
                 <th>Course Name</th>
             </tr>
         </thead>
@@ -78,14 +79,31 @@
                 results.empty();
 
                 jsonData.forEach(function(value){
-                    var option = $("<tr> value="+value.CourseID +"<td>" +value.CourseName + "</td>"+"</tr>");
+                    var option = $("<tr id="+value.CourseID +">"  + "<td>"+value.CourseID+"</td>"+"<td>" +value.CourseName + "</td>"+"</tr>");
                     // option.add('value',value.RoomID);
                     results.append(option);
                 });
                 console.log(jsonData)
             }
         })
-    })
+    });
+
+
+    $('#course-results').on('click', function(event) {
+            var id = $(event.target).closest("tr").attr('id');
+            //var id = this.id;
+            console.log("Found id " + id);
+
+        $.ajax({
+            url:"/admin/course/search/" + id,
+            type:"GET",
+            success:function(){
+                console.log("Ajax sent");
+            }
+        });
+
+    });
+
 </script>
 
 {{template "end"}}

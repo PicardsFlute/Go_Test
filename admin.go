@@ -32,7 +32,7 @@ func ViewStudentSchedulePage(w http.ResponseWriter, r *http.Request){
 		}
 	}
 }
-
+/*
 type StudentSchedule struct {
 	CourseName string
 	CourseCredits string
@@ -40,6 +40,16 @@ type StudentSchedule struct {
 	BuildingName string
 	StartTime time.Time
 	EndTime time.Time
+	MeetingDay string
+}
+*/
+
+type StudentSchedule struct {
+	CourseName string
+	CourseCredits string
+	RoomNumber string
+	BuildingName string
+	Time string
 	MeetingDay string
 }
 
@@ -106,7 +116,7 @@ func ViewStudentSchedule(w http.ResponseWriter, r *http.Request){
 	}
 	*/
 	ss := []StudentSchedule{}
-	db.Raw(`SELECT course_name,course_credits,building_name,room_number,meeting_day,start_time,end_time
+	db.Raw(`SELECT course_name,course_credits,building_name,room_number,meeting_day,time
 	FROM enrollment
 	NATURAL JOIN Section
 	NATURAL JOIN time_slot
@@ -317,16 +327,34 @@ func AdminSearchCoursePage(w http.ResponseWriter, r *http.Request){
 	//}
 }
 
+type AdminViewSection struct {
+	Name string
+	Description string
+
+}
+
 func AdminSearchCourse(w http.ResponseWriter, r *http.Request){
 	//TODO: Load courses into a table, if you click one, it shows the sections that course
 	//todo display department info
-	departments := []model.Department{}
-	db.Table("department").Select("*").Scan(&departments)
+	vars := mux.Vars(r)
+	id := vars["course"]
 
-	//isLogged, user := CheckLoginStatus(w,r)
-	//if isLogged && user.UserType == 3 {
-	global.Tpl.ExecuteTemplate(w, "searchCourseAdmin", departments)
-	//}
+	ss := []StudentSchedule{}
+	db.Raw(`SELECT course_name,course_credits,building_name,room_number,meeting_day,time
+	FROM enrollment
+	NATURAL JOIN Section
+	NATURAL JOIN time_slot
+	NATURAL JOIN course
+	NATURAL JOIN period
+	NATURAL JOIN day NATURAL
+	JOIN location NATURAL JOIN building
+	NATURAL JOIN room WHERE course.course_id =?`,id).Scan(&ss)
+
+	fmt.Println(ss)
+
+	global.Tpl.ExecuteTemplate(w, "adminViewCourseSections", ss)
+
+
 }
 
 type CourseOptions struct {
@@ -418,7 +446,7 @@ func GetDepartmentsForSections(w http.ResponseWriter, r *http.Request){
 	}
 
 	w.Write(data)
-	fmt.Println(data)
+	fmt.Println(string(data))
 
 }
 
