@@ -130,7 +130,8 @@ func main() {
 
 	/* Student Routes*/
 	routes.Handle("/student",  checkSessionWrapper(displayStudent)).Methods("GET")
-	routes.HandleFunc("/student/schedule/{id}", ViewSchedule).Methods("GET")
+	routes.HandleFunc("/student/schedule", ViewSchedule).Methods("GET")
+	routes.HandleFunc("/student/holds", ViewHolds).Methods("GET")
 	//routes.HandleFunc("/unauthorized", unauthorized)
 
 	routes.HandleFunc("/logout", logout)
@@ -388,18 +389,6 @@ func generateHTML(writer http.ResponseWriter, data interface{}, filenames ...str
 }
 */
 
-//func AuthHandler(w http.ResponseWriter, r *http.Request) http.Handler {
-//	http.Handler* h
-//	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-//		loggedIn, _ := checkLoginUser(w,r)
-//		if !loggedIn {
-//			http.Redirect(w,r,"/login", 200)
-//		} else {
-//
-//			h.ServeHTTP(w, r)
-//		}
-//	})
-//}
 
 func logout(w http.ResponseWriter, r *http.Request){
 	sess := globalSessions.SessionStart(w, r)
