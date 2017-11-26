@@ -140,6 +140,8 @@ func main() {
 	routes.Handle("/admin/user/faculty", checkSessionWrapper(createFaculty)).Methods("POST")
 	//routes.HandleFunc("/unauthorized", unauthorized)
 
+	routes.Handle("/admin/user/search" , checkSessionWrapper(searchUser)).Methods("GET")
+
 	routes.HandleFunc("/logout", logout)
 	//routes.HandleFunc("/student", AuthHandler(displayUser))
 
@@ -416,7 +418,6 @@ func logout(w http.ResponseWriter, r *http.Request){
 	http.Redirect(w,r,"/login", http.StatusSeeOther)
 }
 
-<<<<<<< HEAD
 
 /* CRUD for users */
 
@@ -560,7 +561,49 @@ func createFaculty(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func deleteUser(w http.ResponseWriter, r *http.Request){
+func searchUser(w http.ResponseWriter, r *http.Request) {
+	queryVals := r.URL.Query()
+	emailQuery, _ := queryVals["email"]
+	firstNameQuery, _ := queryVals["first-name"]
+	lastNameQuery, _ := queryVals["last-name"]
+
+	email := ""
+	firstName := ""
+	lastName := ""
+
+	if len(emailQuery) < 1 {
+		println("No email given")
+		email = "-"
+	} else {
+		email = emailQuery[0]
+	}
+
+	if len(firstNameQuery) < 1 {
+		println("No FirstNae given")
+		firstName = "-"
+	} else {
+		firstName = firstNameQuery[0]
+	}
+
+	if len(lastNameQuery) < 1 {
+		println("No lastName given")
+		lastName = "-"
+	} else {
+		lastName = lastNameQuery[0]
+	}
+
+	println("Email: ", email, " FName: ", firstName, " LName: ", lastName)
+	users := []model.MainUser{}
+	db.Where("first_name LIKE ? AND last_name LIKE ?",firstName, lastName).Or(model.MainUser{UserEmail: email}).Find(&users)
+	for _, v := range users {
+		fmt.Println("UserEmail", v.UserEmail)
+	}
+
+	global.Tpl.ExecuteTemplate(w, "searchUsersAdmin", users)
+}
+
+
+func deleteUser(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	formEmail := r.FormValue("email")
 	mu := model.MainUser{}
@@ -570,10 +613,10 @@ func deleteUser(w http.ResponseWriter, r *http.Request){
 		if userType == 1 {
 			student := model.Student{}
 			db.First(&student, mu.UserID)
-			if student.StudentType == 1 && student.StudentID != 0{
+			if student.StudentType == 1 && student.StudentID != 0 {
 				studentFT := model.FullTimeStudent{}
 				db.First(&studentFT, student.StudentID)
-				if studentFT.FullTimeStudentID != 0{
+				if studentFT.FullTimeStudentID != 0 {
 					println("Deleting Full Time Student")
 					db.Delete(&studentFT)
 				} else {
@@ -581,10 +624,10 @@ func deleteUser(w http.ResponseWriter, r *http.Request){
 				}
 				println("Deleting Student")
 				db.Delete(&student)
-			} else if student.StudentType == 2 && student.StudentID != 0{
+			} else if student.StudentType == 2 && student.StudentID != 0 {
 				studentPT := model.PartTimeStudent{}
 				db.First(&studentPT, student.StudentID)
-				if studentPT.PartTimeStudentID != 0{
+				if studentPT.PartTimeStudentID != 0 {
 					println("Deleting Part Time Student")
 					db.Delete(&studentPT)
 				} else {
@@ -596,13 +639,13 @@ func deleteUser(w http.ResponseWriter, r *http.Request){
 				println("Student not found")
 			}
 
-		} else if userType == 2{
+		} else if userType == 2 {
 			faculty := model.Faculty{}
 			db.First(&faculty, mu.UserID)
-			if faculty.FacultyType == 1 && faculty.FacultyID != 0{
+			if faculty.FacultyType == 1 && faculty.FacultyID != 0 {
 				studentFT := model.FullTimeStudent{}
 				db.First(&studentFT, faculty.FacultyID)
-				if studentFT.FullTimeStudentID != 0{
+				if studentFT.FullTimeStudentID != 0 {
 					println("Deleting Full Time Faculty")
 					db.Delete(&studentFT)
 				} else {
@@ -610,10 +653,10 @@ func deleteUser(w http.ResponseWriter, r *http.Request){
 				}
 				println("Deleting faculty")
 				db.Delete(&faculty)
-			} else if faculty.FacultyType == 2 && faculty.FacultyID != 0{
+			} else if faculty.FacultyType == 2 && faculty.FacultyID != 0 {
 				facultyPT := model.PartTimeFaculty{}
 				db.First(&facultyPT, faculty.FacultyID)
-				if facultyPT.PartTimeFacultyID != 0{
+				if facultyPT.PartTimeFacultyID != 0 {
 					println("Deleting Part Time Student")
 					db.Delete(&facultyPT)
 				} else {
@@ -635,7 +678,7 @@ func deleteUser(w http.ResponseWriter, r *http.Request){
 				println("Admin not found")
 			}
 			println("Deleting msin ser")
-		} else if userType == 4{
+		} else if userType == 4 {
 			researcher := model.Researcher{}
 			db.First(&researcher, mu.UserID)
 
@@ -646,14 +689,14 @@ func deleteUser(w http.ResponseWriter, r *http.Request){
 			}
 		}
 
-	}
 		println("Deleting main user")
 		db.Delete(&mu)
-
+	} else {
+		println("Main user not found")
+	}
 }
 
-} else {
-println("Main user not found")
+
 func SearchMasterSchedule(w http.ResponseWriter, r *http.Request){
 	global.Tpl.ExecuteTemplate(w, "masterSchedule", nil)
 }

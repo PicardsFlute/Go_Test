@@ -4,16 +4,16 @@
     <form action="/admin/user/student" id="requestData" class="form-horizontal" method="POST">
 
         <label class="form-group">Email</label>
-        <input  contenteditable="false" type="email" class="form-control" name="email" placeholder="{{.User.UserEmail}}"  value="{{.User.UserEmail}}"><br />
+        <input  contenteditable="false" type="email" class="form-control" name="email" placeholder="{{.User.UserEmail}}"  value="{{.User.UserEmail}}" readonly ><br />
 
         <!--<label class="form-group">Password</label>-->
         <!--<input contenteditable="false" type="email" class="form-control" name="id" placeholder="" required=""><br />-->
 
         <label class="form-group">First Name</label>
-        <input contenteditable="false" type="text" class="form-control" name="first-name" placeholder="{{.User.FirstName }}" value="{{.User.FirstName }}"><br />
+        <input contenteditable="false" type="text" class="form-control" name="first-name" placeholder="{{.User.FirstName }}" value="{{.User.FirstName }}" readonly><br />
 
         <label class="form-group">Last Name</label>
-        <input contenteditable="false" type="text" class="form-control" name="last-name" placeholder="{{.User.LastName }}" value="{{.User.LastName }}"><br />
+        <input contenteditable="false" type="text" class="form-control" name="last-name" placeholder="{{.User.LastName }}" value="{{.User.LastName }}" readonly><br />
 
         <!--<label class="form-group">User Type</label>-->
         <!--<input type="text" class="form-control" name="major" placeholder=""><br />-->
