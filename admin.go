@@ -337,7 +337,7 @@ type AdminViewSection struct {
 
 func AdminSearchCourse(w http.ResponseWriter, r *http.Request){
 	//TODO: Load courses into a table, if you click one, it shows the sections that course
-	//todo display department info
+
 	fmt.Println("Inside admin search course")
 	vars := mux.Vars(r)
 	id := vars["course"]
@@ -357,6 +357,7 @@ func AdminSearchCourse(w http.ResponseWriter, r *http.Request){
 
 	//http.Redirect(w, r, "/admin", http.StatusSeeOther)
 	//Todo:: must render view on client side if you send an ajax request
+	//TODO: just show the course with all the pre-requisits
 	err := global.Tpl.ExecuteTemplate(w, "adminViewCourseSection", ss)
 	if err != nil {
 		fmt.Println(err.Error())
