@@ -32,7 +32,7 @@ func ViewStudentSchedulePage(w http.ResponseWriter, r *http.Request){
 		}
 	}
 }
-
+/*
 type StudentSchedule struct {
 	CourseName string
 	CourseCredits string
@@ -40,6 +40,16 @@ type StudentSchedule struct {
 	BuildingName string
 	StartTime time.Time
 	EndTime time.Time
+	MeetingDay string
+}
+*/
+
+type StudentSchedule struct {
+	CourseName string
+	CourseCredits string
+	RoomNumber string
+	BuildingName string
+	Time string
 	MeetingDay string
 }
 
@@ -106,7 +116,7 @@ func ViewStudentSchedule(w http.ResponseWriter, r *http.Request){
 	}
 	*/
 	ss := []StudentSchedule{}
-	db.Raw(`SELECT course_name,course_credits,building_name,room_number,meeting_day,start_time,end_time
+	db.Raw(`SELECT course_name,course_credits,building_name,room_number,meeting_day,time
 	FROM enrollment
 	NATURAL JOIN Section
 	NATURAL JOIN time_slot
@@ -198,7 +208,6 @@ func AdminDeleteHold(w http.ResponseWriter, r *http.Request){
 	}
 
 		fmt.Println("StudentID =", userInt, "HoldID =", holdInt, "User =", user)
-	//TODO: use ajax to delete the hold, get the id of the hold, and get the student id from a different portion of the page by using attribute
 	studentHold := model.StudentHolds{}
 	//db.Where("student_id = ? AND hold_id = ?", userInt,holdInt).First(&studentHold)
 	//db.Delete(&hold)
@@ -213,10 +222,15 @@ func AdminDeleteHold(w http.ResponseWriter, r *http.Request){
 
 
 func AdminAddCoursePage(w http.ResponseWriter, r *http.Request){
-	isLogged, user := CheckLoginStatus(w,r)
-	if isLogged && user.UserType == 3 {
-		global.Tpl.ExecuteTemplate(w, "addCourseAdmin", user)
-	}
+	//isLogged, user := CheckLoginStatus(w,r)
+	//if isLogged && user.UserType == 3 {
+	departments := []model.Department{}
+
+		db.Table("department").Select("*").Scan(&departments)
+		err :=global.Tpl.ExecuteTemplate(w, "addCourseAdmin", departments)
+		if err != nil{
+			fmt.Println(err.Error())
+		}
 }
 
 func AdminAddCourse(w http.ResponseWriter, r *http.Request){
@@ -245,7 +259,63 @@ func AdminAddCourse(w http.ResponseWriter, r *http.Request){
 	CourseDescription:courseDescription, DepartmentID:uint(intDepartment)}
 
 	fmt.Println("Course info is", course)
-	db.Create(&course)
+	errors := db.Create(&course)
+	if errors.Error != nil {
+		fmt.Println(errors.Error)
+		return
+	}
+
+	courses := []model.Course{}
+	db.Table("course").Select("course_name, course_id").Scan(&courses)
+
+
+	m := map[string]interface{}{
+		"Courses": courses,
+		"CurrentCourse":course,
+	}
+
+	global.Tpl.ExecuteTemplate(w, "coursePreReq", m)
+
+}
+
+type Course struct {
+	Id string `json:"id"`
+	Name string `json:"name"`
+}
+
+func AddCoursePreRequisit(w http.ResponseWriter, r *http.Request){
+	fmt.Println("inside admin add course pre-req")
+
+	jsonVal := r.FormValue("prereqs")
+	courseID := r.FormValue("course")
+
+	courseIDint,_ := strconv.Atoi(courseID)
+
+	fmt.Println("Course prereqs are",jsonVal)
+	fmt.Println("Course id is",courseID)
+
+	courses := []Course{}
+
+	bytes := []byte(jsonVal)
+	err := json.Unmarshal(bytes,&courses)
+	if err != nil{
+		fmt.Print(err.Error())
+	}
+
+	fmt.Println("JSON data is",courses)
+
+
+	for _, course := range courses {
+		courseRequirementIDint, _ := strconv.Atoi(course.Id)
+		prereq := model.Prerequisite{CourseRequiredBy:uint(courseIDint), CourseRequirement:uint(courseRequirementIDint)}
+		db.Create(&prereq)
+		fmt.Println("Course added", prereq)
+	}
+
+	//TODO: JUst add success page, must change view with js after ajax call
+	//TODO other options involve using a form instead of ajax
+
+	global.Tpl.ExecuteTemplate(w, "adminSuccess", nil)
 
 }
 
@@ -259,16 +329,40 @@ func AdminSearchCoursePage(w http.ResponseWriter, r *http.Request){
 	//}
 }
 
+type AdminViewSection struct {
+	Name string
+	Description string
+
+}
+
 func AdminSearchCourse(w http.ResponseWriter, r *http.Request){
 	//TODO: Load courses into a table, if you click one, it shows the sections that course
-	//todo display department info
-	departments := []model.Department{}
-	db.Table("department").Select("*").Scan(&departments)
 
-	//isLogged, user := CheckLoginStatus(w,r)
-	//if isLogged && user.UserType == 3 {
-	global.Tpl.ExecuteTemplate(w, "searchCourseAdmin", departments)
-	//}
+	fmt.Println("Inside admin search course")
+	vars := mux.Vars(r)
+	id := vars["course"]
+
+	ss := []StudentSchedule{}
+	db.Raw(`SELECT course_name,course_credits,building_name,room_number,meeting_day,time
+	FROM enrollment
+	NATURAL JOIN section
+	NATURAL JOIN time_slot
+	NATURAL JOIN course
+	NATURAL JOIN period
+	NATURAL JOIN day NATURAL
+	JOIN location NATURAL JOIN building
+	NATURAL JOIN room WHERE course.course_id =?`,id).Scan(&ss)
+
+	fmt.Println(ss)
+
+	//http.Redirect(w, r, "/admin", http.StatusSeeOther)
+	//Todo:: must render view on client side if you send an ajax request
+	//TODO: just show the course with all the pre-requisits
+	err := global.Tpl.ExecuteTemplate(w, "adminViewCourseSection", ss)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	//return
 }
 
 type CourseOptions struct {
@@ -310,6 +404,8 @@ func AdminAddSectionPage(w http.ResponseWriter, r *http.Request){
 		"Building":buildings,
 		"Department":departments,
 	}
+
+	//TODO: error rendering template from server side after an ajax call,try to render with javascript
 	errTpl := global.Tpl.ExecuteTemplate(w, "addSectionAdmin", m)
 	if errTpl != nil {
 		fmt.Println(errTpl.Error())
@@ -361,7 +457,7 @@ func GetDepartmentsForSections(w http.ResponseWriter, r *http.Request){
 	}
 
 	w.Write(data)
-	fmt.Println(data)
+	fmt.Println(string(data))
 
 }
 
@@ -375,6 +471,15 @@ type RawTime []byte
 
 func (t RawTime) Time() (time.Time, error) {
 	return time.Parse("15:04:05", string(t))
+}
+
+type CourseCheck struct {
+	Period_id int
+	Time string
+	Room_id int
+	Room_number string
+	Day_id int
+	Meeting_day string
 }
 
 func AdminAddSection(w http.ResponseWriter, r *http.Request){
@@ -423,10 +528,26 @@ func AdminAddSection(w http.ResponseWriter, r *http.Request){
 	TimeSlotID:timeSlotID,LocationID:location.LocationID}
 
 	//TODO: Make sure room is not already occupied at that time slot
+	cc := []CourseCheck{}
+	db.Raw(`select period_id,time,room_id,room_number,day_id,meeting_day
+	from section
+	natural join time_slot
+	natural join period
+	natural join day
+	natural join location
+	natural join building
+	natural join room
+	WHERE room_id = ? AND period_id =? AND day_id = ?`,location.RoomID, time, day).Scan(&cc)
+
+	fmt.Println(cc)
+
+	if len(cc) > 0{
+		fmt.Println("Cant add course, exit function")
+	}
 	//TODO: Make sure faculty is not teaching at same period, could be MW and TR at same time
 
 	db.Create(&newCourseSection)
-
+	global.Tpl.ExecuteTemplate(w, "admin", nil)
 
 
 }

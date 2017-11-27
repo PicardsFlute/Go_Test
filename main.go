@@ -103,17 +103,22 @@ func main() {
 	routes.HandleFunc("/login", loginPage).Methods("GET")
 	routes.HandleFunc("/login", loginUser).Methods("POST")
 	//routes.Handle("/user",  checkSessionWrapper(displayStudent)).Methods("GET")
-	routes.Handle("/student",  checkSessionWrapper(displayStudent)).Methods("GET")
-	routes.Handle("/admin",  checkSessionWrapper(displayAdmin)).Methods("GET")
 	routes.Handle("/faculty",  checkSessionWrapper(displayFaculty)).Methods("GET")
 	routes.Handle("/researcher", checkSessionWrapper(displayResearcher)).Methods("GET")
 
 	routes.HandleFunc("/course/search", SearchMasterSchedule).Methods("GET")
 
+	/*Admin routes */
+
 
 	//routes.Handle("/admin/student" , checkSessionWrapper(ViewStudentSchedulePage)).Methods("GET")
 	//routes.HandleFunc("/a	dmin/student/{student}", ViewStudentSchedule).Methods("GET")
 
+
+
+	routes.Handle("/admin",  checkSessionWrapper(displayAdmin)).Methods("GET")
+	routes.Handle("/admin/student" , checkSessionWrapper(ViewStudentSchedulePage)).Methods("GET")
+	routes.HandleFunc("/admin/student/{student}", ViewStudentSchedule).Methods("GET")
 
 
 	routes.HandleFunc("/admin/holds", ViewStudentHoldsPage)
@@ -123,6 +128,9 @@ func main() {
 	//routes.HandleFunc("/admin/student/holds/{student}", ViewStudentHolds)
 	routes.Handle("/admin/course",checkSessionWrapper(AdminAddCoursePage))
 	routes.HandleFunc("/admin/course/{course}",AdminAddCourse).Methods("POST")
+	//routes.HandleFunc("/admin/course/{course}/{pre-req}/",AddCoursePreRequisit).Methods("POST")
+	routes.HandleFunc("/admin/courses/prereq",AddCoursePreRequisit).Methods("POST")
+
 	routes.HandleFunc("/admin/course/search", AdminSearchCoursePage).Methods("GET")
 	routes.HandleFunc("/admin/course/search/{course}", AdminSearchCourse).Methods("GET")
 
@@ -132,13 +140,18 @@ func main() {
 	routes.HandleFunc("/admin/section/room/{id}", GetRoomsForBuilding)
 	routes.HandleFunc("/admin/section/department/{id}", GetDepartmentsForSections).Methods("GET")
 
-
 	//routes.Handle("/admin/course/{course}",checkSessionWrapper(AdminAddCoursePage))
 
 	routes.Handle("/admin/user", checkSessionWrapper(newUserForm)).Methods("GET")
 	routes.Handle("/admin/user", checkSessionWrapper(createUser)).Methods("POST")
 	routes.Handle("/admin/user/student", checkSessionWrapper(createStudent)).Methods("POST")
 	routes.Handle("/admin/user/faculty", checkSessionWrapper(createFaculty)).Methods("POST")
+
+	/* Student Routes*/
+	routes.Handle("/student",  checkSessionWrapper(displayStudent)).Methods("GET")
+	routes.HandleFunc("/student/schedule", ViewSchedule).Methods("GET")
+	routes.HandleFunc("/student/holds", ViewHolds).Methods("GET")
+
 	//routes.HandleFunc("/unauthorized", unauthorized)
 
 	routes.Handle("/admin/user/search" , checkSessionWrapper(searchUser)).Methods("GET")
@@ -399,18 +412,6 @@ func generateHTML(writer http.ResponseWriter, data interface{}, filenames ...str
 }
 */
 
-//func AuthHandler(w http.ResponseWriter, r *http.Request) http.Handler {
-//	http.Handler* h
-//	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-//		loggedIn, _ := checkLoginUser(w,r)
-//		if !loggedIn {
-//			http.Redirect(w,r,"/login", 200)
-//		} else {
-//
-//			h.ServeHTTP(w, r)
-//		}
-//	})
-//}
 
 func logout(w http.ResponseWriter, r *http.Request){
 	sess := globalSessions.SessionStart(w, r)

@@ -1,4 +1,4 @@
-{{define "adminViewStudentScheduleDetails"}}
+{{define "adminViewCourseSection"}}
 {{template "head"}}
 
 <!--
@@ -27,20 +27,20 @@
     {{template "admin-navbar"}}
 
     {{if .}}
-        {{range .}}
-            <div class="course_details">
-                <p>Course Name: {{.CourseName}}</p>
-                <p>Course Credits: {{.CourseCredits}}</p>
-                <p>Room Number: {{.RoomNumber}}</p>
-                <p>Building Name: {{.BuildingName}}</p>
-                <p>Time: {{.Time}}</p>
-                <p>Meeting Days: {{.MeetingDay}}</p>
-            </div>
-            <hr>
-        {{end}}
-        {{else}}
-            <h1>Error loading course details</h1>
-        {{end}}
+    {{range .}}
+    <div class="course_details">
+        <p>Course Name: {{.CourseName}}</p>
+        <p>Course Credits: {{.CourseCredits}}</p>
+        <p>Room Number: {{.RoomNumber}}</p>
+        <p>Building Name: {{.BuildingName}}</p>
+        <p>Time: {{.Time}}</p>
+        <p>Meeting Days: {{.MeetingDay}}</p>
+    </div>
+    <hr>
+    {{end}}
+    {{else}}
+    <h1>This user has no schedule</h1>
+    {{end}}
 
 
 

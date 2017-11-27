@@ -68,9 +68,11 @@
                 <textarea type="text"  class="form-control" name="description" placeholder="" required id="sid"></textarea>
 
                 <label class="form-group">Department Name</label>
-                <select name="department" required class="form-control">
-                    <option value="2">Computer Science</option>
-                    <option value="1">Math</option>
+
+                <select name="department" id="department-select" required class="form-control">
+                    {{range .}}
+                        <option value="{{.DepartmentID}}">{{.DepartmentName}}</option>
+                    {{end}}
                 </select>
                 <br />
 

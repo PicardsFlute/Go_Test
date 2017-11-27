@@ -1,0 +1,120 @@
+{{define "coursePreReq"}}
+{{template "head"}}
+
+{{template "admin-navbar"}}
+
+<div class="contact-w3-agileits" id="contact" >
+    <div class="container">
+        <div class="col-md-12 contact-left-w3l" >
+            <h3>Add Course</h3>
+            <div class="visit">
+
+                <div class="clearfix"></div>
+            </div>
+            <!--
+            <form action="/admin/course/prereq/{course}" id="requestData" class="form-horizontal" method="POST">
+            -->
+
+                <div class="col-md-8 contact-left-w3l">
+
+
+                    <label class="form-group">Course Name</label>
+                    <input type="text" class="form-control" name="course-name" readonly value="{{.CurrentCourse.CourseName}}">
+
+                    <input type="text" class="form-control" id="course" name="course-id" value="{{.CurrentCourse.CourseID}}" style="display: none;">
+
+                    <label class="form-group">Course Pre-Reqs</label>
+                    <select name="course" id="courses" required class="form-control">
+                        {{range .Courses}}
+                            <option value="{{.CourseID}}" >{{.CourseName}}</option>
+                        {{end}}
+                    </select>
+
+                    <input type="button" id="select-course" value="Add Course" class="btn btn-default pull-right">
+                    <input type="button" id="reset-courses" value="Reset" class="btn btn-default pull-right">
+
+
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <td>Course ID</td>
+                                <td>Course Name</td>
+                            </tr>
+                        </thead>
+                        <tbody id="course-results">
+                        </tbody>
+                    </table>
+
+                        <input type="submit" value="submit" id="submit" class="btn btn-default pull-right">
+
+
+                </div>
+
+        </div>
+    </div>
+
+</div>
+<script>
+
+        $('#select-course').on('click',function(){
+            var results = $('#course-results');
+            var course = $('select :selected');
+            if(course.text() === ""){
+                return
+            }else {
+                results.append("<tr><td>" + course.val() +"</td><td>" + course.text() + "</td></tr>")
+            }
+
+        });
+
+        $('#reset-courses').on('click',function () {
+            var results = $('#course-results');
+            results.empty()
+        });
+
+        var butt = document.getElementById("submit");
+        butt.addEventListener('click', getCourses);
+
+
+        function getCourses(){
+            var table = document.getElementById('course-results');
+            var arrObjects = [];
+            var courseIDs = [];
+
+            for (var r = 0; r < table.rows.length; r++) {
+                var course = new Object();
+                course.id = table.rows[r].cells[0].textContent;
+                course.name = table.rows[r].cells[1].textContent;
+                arrObjects.push(course); //push each course object to an array
+                console.log("Course info is" + course.id+ course.name);
+                courseIDs.push(course.id)
+            }
+
+            var jsonString = JSON.stringify(arrObjects); //stringify those objects
+            console.log(jsonString);
+            console.log("Course Preq ID's are", courseIDs)
+            var courseID = document.getElementById('course').value; //value of current course
+
+
+            $.ajax({
+                //url:"/admin/course/"+ courseID +"/"+courseIDs,
+                type:"POST",
+                url:"/admin/courses/prereq",
+
+                 data: {
+                     prereqs: jsonString,
+                     course: courseID
+                 },
+
+                success:function () {
+                    console.log("Ajax sent")
+                }
+            });
+        }
+
+
+
+
+
+</script>
+{{end}}
