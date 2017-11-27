@@ -17,6 +17,7 @@ import (
 
 
 	"strconv"
+	//"strings"
 
 	"io/ioutil"
 
@@ -141,6 +142,7 @@ func main() {
 	//routes.HandleFunc("/unauthorized", unauthorized)
 
 	routes.Handle("/admin/user/search" , checkSessionWrapper(searchUser)).Methods("GET")
+	routes.Handle("/admin/user/{userID}/delete", checkSessionWrapper(deleteUser)).Methods("POST")
 
 	routes.HandleFunc("/logout", logout)
 	//routes.HandleFunc("/student", AuthHandler(displayUser))
@@ -567,9 +569,9 @@ func searchUser(w http.ResponseWriter, r *http.Request) {
 	firstNameQuery, _ := queryVals["first-name"]
 	lastNameQuery, _ := queryVals["last-name"]
 
-	email := ""
-	firstName := ""
-	lastName := ""
+	email := "N"
+	firstName := "N"
+	lastName := "N"
 
 	if len(emailQuery) < 1 {
 		println("No email given")
@@ -592,22 +594,29 @@ func searchUser(w http.ResponseWriter, r *http.Request) {
 		lastName = lastNameQuery[0]
 	}
 
-	println("Email: ", email, " FName: ", firstName, " LName: ", lastName)
+	println("Query From Form- Email: ", email, " FName: ", firstName, " LName: ", lastName)
 	users := []model.MainUser{}
-	db.Where("first_name LIKE ? AND last_name LIKE ?",firstName, lastName).Or(model.MainUser{UserEmail: email}).Find(&users)
+	db.Where("first_name LIKE ? OR last_name LIKE ?",firstName, lastName).Or(model.MainUser{UserEmail: email}).Find(&users)
 	for _, v := range users {
 		fmt.Println("UserEmail", v.UserEmail)
 	}
 
-	global.Tpl.ExecuteTemplate(w, "searchUsersAdmin", users)
+	data :=  map[string]interface{}{
+		"Users": users,
+	}
+	global.Tpl.ExecuteTemplate(w, "searchUsersAdmin", data)
 }
 
 
 func deleteUser(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
-	formEmail := r.FormValue("email")
+	//r.ParseForm()
+	params := mux.Vars(r)
+	formEmail,_ := strconv.Atoi(params["userID"])
+	//formEmail := r.URL.Query().Get("userID")
+	println("UserID coming in is--" + params["userID"])
 	mu := model.MainUser{}
-	db.Where(&model.MainUser{UserEmail: formEmail}).First(&mu)
+	db.Where(&model.MainUser{UserID: uint(formEmail)}).First(&mu)
+	println("Fropm DB found user email: " + mu.UserEmail)
 	if mu.UserID != 0 {
 		userType := mu.UserType
 		if userType == 1 {
@@ -694,6 +703,10 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 	} else {
 		println("Main user not found")
 	}
+	data :=  map[string]interface{}{
+		"deleted": mu,
+	}
+	global.Tpl.ExecuteTemplate(w, "searchUsersAdmin", data)
 }
 
 

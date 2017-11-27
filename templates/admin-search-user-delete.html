@@ -1,4 +1,4 @@
-{{define "searchUsersAdmin"}}
+{{ define "searchUsersAdmin" }}
 {{template "head"}}
 <div class="container">
 
@@ -17,7 +17,7 @@
             <form action="/admin/user/search" id="requestData" class="form-horizontal" method="GET">
 
                 <label class="form-group">Email</label>
-                <input type="email" class="form-control" name="email" placeholder="" required=""><br />
+                <input  class="form-control" name="email" placeholder="" ><br />
 
                 <label class="form-group">First Name</label>
                 <input type="text" class="form-control" name="first-name" placeholder=""><br />
@@ -36,13 +36,57 @@
 
         <div class="col-md-12 contact-left-w3l" >
             <ul>
-                {{ range $index, $user := . }}
-                    <li>
-                        <strong>{{ $index }}</strong>: <h4>Email: {{ $user.UserEmail }} </h4>
-                        <span>First Name: {{ $user.FirstName }}   Last Name: {{ $user.LastName }}</span>
-                    </li>
+                {{ if .Users }}
+                    {{ range .Users }}
+                        <li>
+                            <div>
+                                <h4>Email: {{ .UserEmail }} </h4>
+                                <span>First Name: {{ .FirstName }},  Last Name: {{ .LastName }}</span>
+
+                                <button id="delete-{{ .UserID }}" UserEmail="{{ .UserEmail }}" UserID="{{ .UserID }}" btnAction="delete"> Delete User
+                                    <form action="/admin/user/{{ .UserID }}/delete" method="POST" id="{{.UserID}}">
+                                        <input type="submit" value="Remove User"
+                                               class="btn btn-default pull-right">
+                                    </form>
+
+                                </button>
+
+                                <br/>
+                            </div>
+
+                        </li>
+                        <br/>
+                    {{ end }}
+                {{ else }}
+                    {{ if .deleted }}
+                        {{ .deleted.UserEmail }} Has been deleted.
+                    {{ else }}
+                        <h3> No Results Found </h3>
+                    {{ end }}
                 {{ end }}
             </ul>
+            <!--<script>-->
+                <!--var buttons = $("button[btnAction='delete']")-->
+                <!--buttons.each( function(idx){-->
+                    <!--var email = $(this).attr("UserEmail")-->
+                    <!--var uID= $(this).attr("UserID")-->
+                    <!--$(this).click( function(){-->
+                        <!--console.log("Button clicked for " + email)-->
+                        <!--$.ajax({-->
+                            <!--url: '/admin/user',-->
+                            <!--type: 'DELETE',-->
+                            <!--data: {-->
+                                <!--UserID: uID,-->
+                                <!--email: email-->
+                            <!--},-->
+                            <!--success: function(result) {-->
+
+                            <!--}-->
+                        <!--});-->
+                    <!--})-->
+                <!--})-->
+
+            <!--</script>-->
         </div>
     <br/>
 
@@ -58,4 +102,4 @@
 
 
 {{template "end"}}
-{{end}}
+{{ end }}
