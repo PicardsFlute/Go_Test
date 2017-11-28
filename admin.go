@@ -342,7 +342,7 @@ func AdminSearchCourse(w http.ResponseWriter, r *http.Request){
 	vars := mux.Vars(r)
 	id := vars["course"]
 
-	ss := []StudentSchedule{}
+	ss := StudentSchedule{}
 	db.Raw(`SELECT course_name,course_credits,building_name,room_number,meeting_day,time
 	FROM enrollment
 	NATURAL JOIN section
@@ -472,11 +472,22 @@ func (t RawTime) Time() (time.Time, error) {
 	return time.Parse("15:04:05", string(t))
 }
 
-type CourseCheck struct {
-	Period_id int
-	Time string
+type RoomCheck struct{
+	Section_id int
+	Location_id int
+	Building_id int
+	Building_name string
 	Room_id int
 	Room_number string
+}
+
+type ProfessorCheck struct {
+	UserID int
+	UserEmail string
+	FirstName string
+	section_id int
+	Period_id int
+	Time string
 	Day_id int
 	Meeting_day string
 }
@@ -510,6 +521,7 @@ func AdminAddSection(w http.ResponseWriter, r *http.Request){
 	timeSlot := model.TimeSlot{PeriodID:uint(timeInt),SemesterID:uint(semesterInt),DayID:uint(dayInt)}
 	buildingInt , _ := strconv.Atoi(buildingNum)
 	roomInt, _ := strconv.Atoi(roomNum)
+	facultyInt, _ := strconv.Atoi(faculty)
 
 	//TODO: Rework this, shouldn't be creating, should be searching
 	db.Create(&timeSlot)
@@ -526,25 +538,43 @@ func AdminAddSection(w http.ResponseWriter, r *http.Request){
 	newCourseSection := model.Section{CourseSectionNumber:sectionInt,CourseID:uint(courseInt), FacultyID:uint(facultyID),
 	TimeSlotID:timeSlotID,LocationID:location.LocationID}
 
-	//TODO: Make sure room is not already occupied at that time slot
-	cc := []CourseCheck{}
-	db.Raw(`select period_id,time,room_id,room_number,day_id,meeting_day
-	from section
-	natural join time_slot
-	natural join period
-	natural join day
-	natural join location
-	natural join building
-	natural join room
-	WHERE room_id = ? AND period_id =? AND day_id = ?`,location.RoomID, time, day).Scan(&cc)
+	//TODO: Complete, now test
+	rc := []RoomCheck{}
+	db.Raw(`
+		 SELECT section.section_id, location.location_id, building.building_id,room.room_id,room_number,building_name,period.period_id,time,day.day_id,meeting_day
+		 FROM section
+		 JOIN location ON section.location_id = location.location_id
+		 JOIN building ON building.building_id = location.building_id
+		 JOIN room ON room.room_id = location.room_id
+		 JOIN time_slot ON time_slot.time_slot_id = section.time_slot_id
+		 JOIN day ON time_slot.day_id = day.day_id
+		 JOIN period ON period.period_id = time_slot.period_id;
+	 	 WHERE location.room_id = ? AND building.building_id = ? AND period.period_id = ?
+	 	 AND day.day_id = ?`,location.RoomID, location.BuildingID,timeInt,dayInt).Scan(&rc)
+
+
+	if len(rc) > 0 {
+		fmt.Println("Cant add room, because is already ocupied at this time")
+		return
+	}
+
+	cc := []ProfessorCheck{}
+	//TODO: Complete, now test
+	db.Raw(`
+		SELECT user_id,user_email, first_name, section_id,period.period_id,time,day.day_id,meeting_day FROM main_user
+		 JOIN faculty ON main_user.user_id = faculty.faculty_id
+		 JOIN section ON faculty.faculty_id = section.section_id
+		 JOIN time_slot ON time_slot.time_slot_id = section.time_slot_id
+		 JOIN day ON time_slot.day_id = day.day_id
+		 JOIN period ON period.period_id = time_slot.period_id
+		 WHERE period.period_id = ? AND day.day_id = ? AND user_id = ?`, time,day,facultyInt).Scan(&cc)
 
 	fmt.Println(cc)
 
 	if len(cc) > 0{
-		fmt.Println("Cant add course, exit function")
+		fmt.Println("Cant add section,teacher is already teachinga  course at this time slot exit function")
+		return
 	}
-	//TODO: Make sure faculty is not teaching at same period, could be MW and TR at same time
-
 	db.Create(&newCourseSection)
 	global.Tpl.ExecuteTemplate(w, "admin", nil)
 

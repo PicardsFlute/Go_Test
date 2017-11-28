@@ -20,8 +20,6 @@ func ViewSchedule(w http.ResponseWriter, r *http.Request){
 
 	_, user := CheckLoginStatus(w,r)
 	ss := []StudentSchedule{}
-
-
 	db.Raw(`SELECT course_name,course_credits,building_name,room_number,meeting_day,time
 	FROM enrollment
 	NATURAL JOIN Section
