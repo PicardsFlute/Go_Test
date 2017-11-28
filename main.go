@@ -92,7 +92,7 @@ func init() {
 
 
 func main() {
-
+	
 	routes := mux.NewRouter()
 	global.Tpl = template.Must(template.ParseGlob("templates/*"))
 	routes.PathPrefix("/style").Handler(http.StripPrefix("/style/",http.FileServer(http.Dir("style"))))
@@ -169,6 +169,8 @@ func main() {
 	//defer db.Close(), want to keep db connectioT"), routes)
 
 	//USED FOR LOCAL, only use onen open
+
+
 }
 
 

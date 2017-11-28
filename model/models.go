@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"errors"
+	"github.com/jinzhu/gorm"
 )
 
 type MainUser struct {
@@ -166,6 +167,17 @@ type Course struct {
 	Department Department `gorm:"ForeignKey:DepartmentID; AssociationForeignKey:DepartmentID"`
 }
 
+func (c *Course)FindCoursePrerequisites(db *gorm.DB) []Course {
+	preReqs := []Prerequisite{}
+	requiredCourseIDs := make([]uint,0)
+	db.Where(&Prerequisite{CourseRequiredBy: c.CourseID}).Find(&preReqs)
+	for _,c := range preReqs {
+		requiredCourseIDs = append(requiredCourseIDs, c.CourseRequirement)
+	}
+	courses := []Course{}
+	db.Where(requiredCourseIDs).Find(&courses)
+	return courses
+}
 
 type Prerequisite struct {
 	CourseRequiredBy uint `gorm:"primary_key"`
