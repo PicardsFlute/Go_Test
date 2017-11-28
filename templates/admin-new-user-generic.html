@@ -1,0 +1,69 @@
+{{define "viewNewUserAdmin"}}
+{{template "head"}}
+<div class="container">
+
+    <h1>Welcome {{.FirstName}}</h1>
+    <!--
+    <ul class="nav nav-pills center-nav">
+        <li role="presentation" class="active"><a href="index.html">Add Course</a></li>
+        <li role="presentation"><a href="#">View Schedule</a></li>
+        <li role="presentation"><a href="#">View Holds</a></li>
+        <li role="presentation"><a href="#">View Transcript</a></li>
+        <li role="presentation"><a href="#">View Advisor</a></li>
+    </ul>
+    -->
+
+    {{template "admin-navbar"}}
+
+    <h1>Create New User</h1>
+
+
+
+    <div class="contact-w3-agileits" id="contact" >
+        <div class="col-md-12 contact-left-w3l" >
+            <h3>User Information</h3>
+            <div class="visit">
+
+                <div class="clearfix"></div>
+            </div>
+            <!--universal user info here-->
+            {{ if .error }}
+                {{ .error }}
+            {{ end }}
+
+            {{ if not .User }}
+                {{ template "adminUserDetail" }}
+
+            {{ else }}
+            <!--put detail for user types here..-->
+                {{ if .student }}
+                    {{ template "adminStudentDetail" . }}
+
+
+                {{ else if .faculty }}
+                    {{ template "adminFacultyDetail" . }}
+
+
+                {{ end }}
+            {{ end }}
+
+
+
+
+        </div>
+    </div>
+    <br/>
+
+
+    <div class="clearfix"></div>
+</div>
+<div class="footer-w3l">
+    <p> &copy; 2017 Starfleet . All Rights Reserved </a></p>
+</div>
+
+
+
+
+
+{{template "end"}}
+{{end}}

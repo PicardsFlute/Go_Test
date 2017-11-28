@@ -1,0 +1,105 @@
+{{ define "searchUsersAdmin" }}
+{{template "head"}}
+<div class="container">
+
+    <!--<h1>Welcome {{.FirstName}}</h1>-->
+
+
+    {{template "admin-navbar"}}
+
+    <h1>Select User</h1>
+
+
+
+    <div class="contact-w3-agileits" id="contact" >
+        <div class="col-md-12 contact-left-w3l" >
+
+            <form action="/admin/user/search" id="requestData" class="form-horizontal" method="GET">
+
+                <label class="form-group">Email</label>
+                <input  class="form-control" name="email" placeholder="" ><br />
+
+                <label class="form-group">First Name</label>
+                <input type="text" class="form-control" name="first-name" placeholder=""><br />
+
+                <label class="form-group">Last Name</label>
+                <input type="text" class="form-control" name="last-name" placeholder=""><br />
+
+
+                <div class="dropdown-divider"></div>
+
+                <input type="submit" value="submit" id="submit" class="btn btn-default pull-right">
+
+            </form>
+        </div>
+    </div>
+
+        <div class="col-md-12 contact-left-w3l" >
+            <ul>
+                {{ if .Users }}
+                    {{ range .Users }}
+                        <li>
+                            <div>
+                                <h4>Email: {{ .UserEmail }} </h4>
+                                <span>First Name: {{ .FirstName }},  Last Name: {{ .LastName }}</span>
+
+                                <button id="delete-{{ .UserID }}" UserEmail="{{ .UserEmail }}" UserID="{{ .UserID }}" btnAction="delete"> Delete User
+                                    <form action="/admin/user/{{ .UserID }}/delete" method="POST" id="{{.UserID}}">
+                                        <input type="submit" value="Remove User"
+                                               class="btn btn-default pull-right">
+                                    </form>
+
+                                </button>
+
+                                <br/>
+                            </div>
+
+                        </li>
+                        <br/>
+                    {{ end }}
+                {{ else }}
+                    {{ if .deleted }}
+                        {{ .deleted.UserEmail }} Has been deleted.
+                    {{ else }}
+                        <h3> No Results Found </h3>
+                    {{ end }}
+                {{ end }}
+            </ul>
+            <!--<script>-->
+                <!--var buttons = $("button[btnAction='delete']")-->
+                <!--buttons.each( function(idx){-->
+                    <!--var email = $(this).attr("UserEmail")-->
+                    <!--var uID= $(this).attr("UserID")-->
+                    <!--$(this).click( function(){-->
+                        <!--console.log("Button clicked for " + email)-->
+                        <!--$.ajax({-->
+                            <!--url: '/admin/user',-->
+                            <!--type: 'DELETE',-->
+                            <!--data: {-->
+                                <!--UserID: uID,-->
+                                <!--email: email-->
+                            <!--},-->
+                            <!--success: function(result) {-->
+
+                            <!--}-->
+                        <!--});-->
+                    <!--})-->
+                <!--})-->
+
+            <!--</script>-->
+        </div>
+    <br/>
+
+
+    <div class="clearfix"></div>
+</div>
+<div class="footer-w3l">
+    <p> &copy; 2017 Starfleet . All Rights Reserved </a></p>
+</div>
+
+
+
+
+
+{{template "end"}}
+{{ end }}

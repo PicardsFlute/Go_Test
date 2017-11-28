@@ -15,7 +15,12 @@ import (
 	"Starfleet/model"
 	"Starfleet/global"
 
+
+	"strconv"
+	//"strings"
+
 	"io/ioutil"
+
 )
 
 var (
@@ -87,7 +92,7 @@ func init() {
 
 
 func main() {
-
+	
 	routes := mux.NewRouter()
 	global.Tpl = template.Must(template.ParseGlob("templates/*"))
 	routes.PathPrefix("/style").Handler(http.StripPrefix("/style/",http.FileServer(http.Dir("style"))))
@@ -105,9 +110,16 @@ func main() {
 
 	/*Admin routes */
 
+
+	//routes.Handle("/admin/student" , checkSessionWrapper(ViewStudentSchedulePage)).Methods("GET")
+	//routes.HandleFunc("/a	dmin/student/{student}", ViewStudentSchedule).Methods("GET")
+
+
+
 	routes.Handle("/admin",  checkSessionWrapper(displayAdmin)).Methods("GET")
 	routes.Handle("/admin/student" , checkSessionWrapper(ViewStudentSchedulePage)).Methods("GET")
 	routes.HandleFunc("/admin/student/{student}", ViewStudentSchedule).Methods("GET")
+
 
 	routes.HandleFunc("/admin/holds", ViewStudentHoldsPage)
 	routes.HandleFunc("/admin/holds/{user}", ViewStudentHolds).Methods("GET")
@@ -128,11 +140,22 @@ func main() {
 	routes.HandleFunc("/admin/section/room/{id}", GetRoomsForBuilding)
 	routes.HandleFunc("/admin/section/department/{id}", GetDepartmentsForSections).Methods("GET")
 
+	//routes.Handle("/admin/course/{course}",checkSessionWrapper(AdminAddCoursePage))
+
+	routes.Handle("/admin/user", checkSessionWrapper(newUserForm)).Methods("GET")
+	routes.Handle("/admin/user", checkSessionWrapper(createUser)).Methods("POST")
+	routes.Handle("/admin/user/student", checkSessionWrapper(createStudent)).Methods("POST")
+	routes.Handle("/admin/user/faculty", checkSessionWrapper(createFaculty)).Methods("POST")
+
 	/* Student Routes*/
 	routes.Handle("/student",  checkSessionWrapper(displayStudent)).Methods("GET")
 	routes.HandleFunc("/student/schedule", ViewSchedule).Methods("GET")
 	routes.HandleFunc("/student/holds", ViewHolds).Methods("GET")
+
 	//routes.HandleFunc("/unauthorized", unauthorized)
+
+	routes.Handle("/admin/user/search" , checkSessionWrapper(searchUser)).Methods("GET")
+	routes.Handle("/admin/user/{userID}/delete", checkSessionWrapper(deleteUser)).Methods("POST")
 
 	routes.HandleFunc("/logout", logout)
 	//routes.HandleFunc("/student", AuthHandler(displayUser))
@@ -140,12 +163,14 @@ func main() {
 
 
 	// USED FOR HEROKU
-	//http.ListenAndServe(":" + os.Getenv("PORT"), routes)
-
-	//USED FOR LOCAL, only use one
+	//http.ListenAndServe(":" + os.Getenv("POR
 	http.ListenAndServe(":8080", handlers.LoggingHandler(os.Stdout,routes))
 
-	//defer db.Close(), want to keep db connection open
+	//defer db.Close(), want to keep db connectioT"), routes)
+
+	//USED FOR LOCAL, only use onen open
+
+
 }
 
 
@@ -246,7 +271,7 @@ func checkUserType(user model.MainUser, w http.ResponseWriter, r *http.Request){
 
 		// The data is lost after redirect because it's a new request,
 		// now I need to get the student data and render the template, which is a different request
-		//since http is stateless, you lose the data structure after the first request.
+		//since http is stateless, you l;ose the data structure after the first request.
 	case 2:
 		fmt.Println("Youre a faculty")
 		http.Redirect(w,r,"/faculty", http.StatusFound)
@@ -358,7 +383,7 @@ func displayResearcher(w http.ResponseWriter, r *http.Request){
 	_, user := CheckLoginStatus(w,r)
 
 	if user.UserType == 4 {
-		global.Tpl.ExecuteTemplate(w, "researcher", user)
+			global.Tpl.ExecuteTemplate(w, "researcher", user)
 	}else {
 		http.Redirect(w,r,"/", http.StatusForbidden)
 		index(w,r)
@@ -397,6 +422,296 @@ func logout(w http.ResponseWriter, r *http.Request){
 	sess.Delete("username")
 	http.Redirect(w,r,"/login", http.StatusSeeOther)
 }
+
+
+/* CRUD for users */
+
+func newUserForm(w http.ResponseWriter, r *http.Request) {
+	res := global.Tpl.ExecuteTemplate(w, "viewNewUserAdmin", nil)
+	if res != nil{
+		println("newUserForm: ", res.Error())
+	}
+}
+
+func createUser (w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	formEmail := r.FormValue("email")
+
+	userDB := model.MainUser{}
+	userDB.UserEmail = formEmail
+
+		//db.Where(&model.MainUser{UserEmail: formEmail}).First(&userDB)
+	count := 1
+	db.Model(&model.MainUser{}).Where("user_email = ?", formEmail).Count(&count)
+	if count == 0 {
+		userDB.FirstName = r.FormValue("first-name")
+		userDB.LastName = r.FormValue("last-name")
+		userDB.UserPassword = r.FormValue("password")
+		userType, _ := strconv.Atoi(r.FormValue("user-type"))
+		userDB.UserType = userType
+		valid, err := userDB.ValidateData()
+		if valid {
+			db.Create(&userDB)
+
+			switch userDB.UserType {
+
+			case 1:
+				fmt.Println("You're a student")
+				student := model.Student{}
+				m := map[string]interface{}{
+					"User":    userDB,
+					"student": student,
+				}
+				res := global.Tpl.ExecuteTemplate(w, "viewNewUserAdmin", m)
+				if res != nil{
+					println("newUserForm: ", res.Error())
+				}
+				//return
+
+
+			case 2:
+				fmt.Println("Youre a faculty")
+				faculty := model.Faculty{}
+				m := map[string]interface{}{
+					"User":    userDB,
+					"faculty": faculty,
+				}
+				global.Tpl.ExecuteTemplate(w, "viewNewUserAdmin", m)
+				//return
+
+
+			case 3:
+				fmt.Println("Youre an admin")
+				admin := model.Admin{AdminID: userDB.UserID}
+				db.Create(&admin)
+					//global.Tpl.ExecuteTemplate(w, "admin-new-user-generic", userDB)
+				http.Redirect(w, r, "/admin", http.StatusFound)
+				displayAdmin(w, r)
+
+			case 4:
+				fmt.Println("Youre a researcher")
+				researcher := model.Researcher{ResearcherID: userDB.UserID}
+				db.Create(&researcher)
+				//global.Tpl.ExecuteTemplate(w, "admin-new-user-generic", userDB)
+				http.Redirect(w, r, "/admin", http.StatusFound)
+				displayAdmin(w, r)
+
+			default:
+				fmt.Println("Not sure your type")
+				global.Tpl.ExecuteTemplate(w, "viewNewUserAdmin", userDB)
+			}
+
+		} else {
+			// validation failed
+			m := map[string]interface{}{
+				"error": err,
+			}
+			global.Tpl.ExecuteTemplate(w, "viewNewUserAdmin", m)
+			//return
+		}
+
+
+	} else {
+		// add to the err - email already taken
+		m := map[string]interface{}{
+			"error": "Email Already Taken",
+		}
+		global.Tpl.ExecuteTemplate(w, "viewNewUserAdmin", m)
+		//return
+	}
+
+
+}
+
+func createStudent(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	formEmail := r.FormValue("email")
+	credits,_ := strconv.Atoi(r.FormValue("credits"))
+	studentType, _ := strconv.Atoi(r.FormValue("student-type"))
+	mu := model.MainUser{}
+	db.Where(&model.MainUser{UserEmail: formEmail}).First(&mu)
+	stu := model.Student{StudentID:mu.UserID, StudentType:studentType}
+	db.Create(&stu)
+
+	if (studentType == 1){
+		stuFT := model.FullTimeStudent{FullTimeStudentID: stu.StudentID, NumCredits:credits}
+		db.Create(&stuFT)
+	} else {
+		stuPT := model.PartTimeStudent{PartTimeStudentID: stu.StudentID, NumCredits:credits}
+		db.Create(&stuPT)
+	}
+	http.Redirect(w,r,"/admin", http.StatusFound)
+	displayAdmin(w,r)
+}
+
+func createFaculty(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	formEmail := r.FormValue("email")
+	mu := model.MainUser{}
+	db.Where(&model.MainUser{UserEmail: formEmail}).First(&mu)
+	facultyType, _ := strconv.Atoi(r.FormValue("faculty-type"))
+	println("Faculty type num: ", facultyType)
+	department, _ := strconv.ParseUint(r.FormValue("department"), 10, 64)
+	faculty := model.Faculty{FacultyID: mu.UserID, FacultyType: facultyType, DepartmentID: uint(department)}
+	db.Create(&faculty)
+	if (facultyType == 1) {
+		facultyFT := model.FullTimeFaculty{FullTimeFacultyID: faculty.FacultyID}
+		db.Create(&facultyFT)
+	} else if (facultyType == 2) {
+		facultyPT := model.PartTimeStudent{PartTimeStudentID: faculty.FacultyID}
+		db.Create(&facultyPT)
+	}
+	http.Redirect(w, r, "/admin", http.StatusFound)
+	displayAdmin(w, r)
+
+}
+
+func searchUser(w http.ResponseWriter, r *http.Request) {
+	queryVals := r.URL.Query()
+	emailQuery, _ := queryVals["email"]
+	firstNameQuery, _ := queryVals["first-name"]
+	lastNameQuery, _ := queryVals["last-name"]
+
+	email := "N"
+	firstName := "N"
+	lastName := "N"
+
+	if len(emailQuery) < 1 {
+		println("No email given")
+		email = "-"
+	} else {
+		email = emailQuery[0]
+	}
+
+	if len(firstNameQuery) < 1 {
+		println("No FirstNae given")
+		firstName = "-"
+	} else {
+		firstName = firstNameQuery[0]
+	}
+
+	if len(lastNameQuery) < 1 {
+		println("No lastName given")
+		lastName = "-"
+	} else {
+		lastName = lastNameQuery[0]
+	}
+
+	println("Query From Form- Email: ", email, " FName: ", firstName, " LName: ", lastName)
+	users := []model.MainUser{}
+	db.Where("first_name LIKE ? OR last_name LIKE ?",firstName, lastName).Or(model.MainUser{UserEmail: email}).Find(&users)
+	for _, v := range users {
+		fmt.Println("UserEmail", v.UserEmail)
+	}
+
+	data :=  map[string]interface{}{
+		"Users": users,
+	}
+	global.Tpl.ExecuteTemplate(w, "searchUsersAdmin", data)
+}
+
+
+func deleteUser(w http.ResponseWriter, r *http.Request) {
+	//r.ParseForm()
+	params := mux.Vars(r)
+	formEmail,_ := strconv.Atoi(params["userID"])
+	//formEmail := r.URL.Query().Get("userID")
+	println("UserID coming in is--" + params["userID"])
+	mu := model.MainUser{}
+	db.Where(&model.MainUser{UserID: uint(formEmail)}).First(&mu)
+	println("Fropm DB found user email: " + mu.UserEmail)
+	if mu.UserID != 0 {
+		userType := mu.UserType
+		if userType == 1 {
+			student := model.Student{}
+			db.First(&student, mu.UserID)
+			if student.StudentType == 1 && student.StudentID != 0 {
+				studentFT := model.FullTimeStudent{}
+				db.First(&studentFT, student.StudentID)
+				if studentFT.FullTimeStudentID != 0 {
+					println("Deleting Full Time Student")
+					db.Delete(&studentFT)
+				} else {
+					println("FT student not found")
+				}
+				println("Deleting Student")
+				db.Delete(&student)
+			} else if student.StudentType == 2 && student.StudentID != 0 {
+				studentPT := model.PartTimeStudent{}
+				db.First(&studentPT, student.StudentID)
+				if studentPT.PartTimeStudentID != 0 {
+					println("Deleting Part Time Student")
+					db.Delete(&studentPT)
+				} else {
+					println("Part time student not found")
+				}
+				println("Deleting Student")
+				db.Delete(&student)
+			} else {
+				println("Student not found")
+			}
+
+		} else if userType == 2 {
+			faculty := model.Faculty{}
+			db.First(&faculty, mu.UserID)
+			if faculty.FacultyType == 1 && faculty.FacultyID != 0 {
+				studentFT := model.FullTimeStudent{}
+				db.First(&studentFT, faculty.FacultyID)
+				if studentFT.FullTimeStudentID != 0 {
+					println("Deleting Full Time Faculty")
+					db.Delete(&studentFT)
+				} else {
+					println("FT faculty not found")
+				}
+				println("Deleting faculty")
+				db.Delete(&faculty)
+			} else if faculty.FacultyType == 2 && faculty.FacultyID != 0 {
+				facultyPT := model.PartTimeFaculty{}
+				db.First(&facultyPT, faculty.FacultyID)
+				if facultyPT.PartTimeFacultyID != 0 {
+					println("Deleting Part Time Student")
+					db.Delete(&facultyPT)
+				} else {
+					println("Part time faculty not found")
+				}
+				println("Deleting faculty")
+				db.Delete(&faculty)
+			} else {
+				println("Faculty not found")
+			}
+
+		} else if userType == 3 {
+			admin := model.Admin{}
+			db.First(&admin, mu.UserID)
+
+			if admin.AdminID != 0 {
+				db.Delete(&admin)
+			} else {
+				println("Admin not found")
+			}
+			println("Deleting msin ser")
+		} else if userType == 4 {
+			researcher := model.Researcher{}
+			db.First(&researcher, mu.UserID)
+
+			if researcher.ResearcherID != 0 {
+				db.Delete(&researcher)
+			} else {
+				println("Researcher not found")
+			}
+		}
+
+		println("Deleting main user")
+		db.Delete(&mu)
+	} else {
+		println("Main user not found")
+	}
+	data :=  map[string]interface{}{
+		"deleted": mu,
+	}
+	global.Tpl.ExecuteTemplate(w, "searchUsersAdmin", data)
+}
+
 
 func SearchMasterSchedule(w http.ResponseWriter, r *http.Request){
 	global.Tpl.ExecuteTemplate(w, "masterSchedule", nil)

@@ -435,6 +435,7 @@ func GetRoomsForBuilding(w http.ResponseWriter, r *http.Request){
 	fmt.Println(data)
 }
 
+
 func GetDepartmentsForSections(w http.ResponseWriter, r *http.Request){
 	vars := mux.Vars(r)
 	departmentID := vars["id"]

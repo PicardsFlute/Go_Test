@@ -9,6 +9,8 @@ import (
 	"fmt"
 	"time"
 
+	"errors"
+	"github.com/jinzhu/gorm"
 )
 
 type MainUser struct {
@@ -17,7 +19,7 @@ type MainUser struct {
 	UserPassword string `gorm:"type:varchar(300)"`
 	FirstName string `gorm:"type:varchar(50)"`
 	LastName string `gorm:"type:varchar(50)"`
-	UserType int `gorm:"not null"`
+	UserType int `gorm:"not null";default:1"`
 }
 
 func (u *MainUser)BeforeCreate(){
@@ -30,7 +32,7 @@ func (u *MainUser)BeforeCreate(){
 	u.UserPassword = string(hashedPW)
 }
 
-func (u *MainUser)CheckPasswordMatch(plainTextPassword string)(bool){
+func (u *MainUser)CheckPasswordMatch(plainTextPassword string)(bool) {
 	// returns true is hashed plainTest matches hashed PW in database
 	dbPassword := u.UserPassword
 	check := bcrypt.CompareHashAndPassword([]byte(dbPassword), []byte(plainTextPassword))
@@ -40,11 +42,21 @@ func (u *MainUser)CheckPasswordMatch(plainTextPassword string)(bool){
 	} else {
 		return true
 	}
-
 }
 
 
-type Student struct {
+func (u *MainUser)ValidateData()(bool, error){
+
+	if (len(u.UserPassword) < 6 ){
+		return false, errors.New("Password must be at least 8 characters")
+	}
+
+
+	return true, nil
+}
+
+
+	type Student struct {
 	StudentID uint `gorm:"primary_key"`
 	MainUser  MainUser `gorm:"ForeignKey:UserID;AssociationForeignKey:StudentID"`
 	StudentType int `gorm:"not null"`
@@ -155,6 +167,17 @@ type Course struct {
 	Department Department `gorm:"ForeignKey:DepartmentID; AssociationForeignKey:DepartmentID"`
 }
 
+func (c *Course)FindCoursePrerequisites(db *gorm.DB) []Course {
+	preReqs := []Prerequisite{}
+	requiredCourseIDs := make([]uint,0)
+	db.Where(&Prerequisite{CourseRequiredBy: c.CourseID}).Find(&preReqs)
+	for _,c := range preReqs {
+		requiredCourseIDs = append(requiredCourseIDs, c.CourseRequirement)
+	}
+	courses := []Course{}
+	db.Where(requiredCourseIDs).Find(&courses)
+	return courses
+}
 
 type Prerequisite struct {
 	CourseRequiredBy uint `gorm:"primary_key"`
