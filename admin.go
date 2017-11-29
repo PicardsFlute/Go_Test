@@ -103,18 +103,6 @@ func ViewStudentSchedule(w http.ResponseWriter, r *http.Request){
 	}
 
 
-
-	//this correctly joins enrollment and section on section_id, could possible store all the data in an empty interface
-	/*
-	rows, err := db.Table("enrollment").Select("*").Joins("join section on section.section_id = enrollment.section_id  AND student_id = ?", id).Rows()
-	if err != nil{
-		fmt.Println(err.Error())
-	}else {
-		for rows.Next(){
-			fmt.Println("found rows", rows)
-		}
-	}
-	*/
 	ss := []StudentSchedule{}
 	db.Raw(`SELECT course_name,course_credits,building_name,room_number,meeting_day,time
 	FROM enrollment
@@ -336,13 +324,19 @@ type AdminViewSection struct {
 }
 
 func AdminSearchCourse(w http.ResponseWriter, r *http.Request){
-	//TODO: Load courses into a table, if you click one, it shows the sections that course
+	//TODO: Load courses into a table, if you click one, it shows the sections that course with its prereqs
 
 	fmt.Println("Inside admin search course")
 	vars := mux.Vars(r)
 	id := vars["course"]
+	idInt, _ := strconv.Atoi(id)
+	course := model.Course{}
+	//db.Table("course").Select("*").Where("course_id")
+	db.Where(model.Course{CourseID:uint(idInt)}).Scan(&course)
+	prereqs := course.FindCoursePrerequisites(db)
 
-	ss := StudentSchedule{}
+
+	courseDetail := StudentSchedule{}
 	db.Raw(`SELECT course_name,course_credits,building_name,room_number,meeting_day,time
 	FROM enrollment
 	NATURAL JOIN section
@@ -351,14 +345,20 @@ func AdminSearchCourse(w http.ResponseWriter, r *http.Request){
 	NATURAL JOIN period
 	NATURAL JOIN day NATURAL
 	JOIN location NATURAL JOIN building
-	NATURAL JOIN room WHERE course.course_id =?`,id).Scan(&ss)
+	NATURAL JOIN room WHERE course.course_id =?`,id).Scan(&courseDetail)
 
-	fmt.Println(ss)
+	fmt.Println(courseDetail)
 
 	//http.Redirect(w, r, "/admin", http.StatusSeeOther)
 	//Todo:: must render view on client side if you send an ajax request
 	//TODO: just show the course with all the pre-requisits
-	err := global.Tpl.ExecuteTemplate(w, "adminViewCourseSection", ss)
+
+	m := map[string]interface{}{
+		"Course": courseDetail,
+		"PreReqs": prereqs,
+	}
+
+	err := global.Tpl.ExecuteTemplate(w, "adminViewCourseSection", m)
 	if err != nil {
 		fmt.Println(err.Error())
 	}

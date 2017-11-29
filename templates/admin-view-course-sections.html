@@ -28,12 +28,15 @@
 
     {{if .}}
     <div class="course_details">
-        <p>Course Name: {{.CourseName}}</p>
-        <p>Course Credits: {{.CourseCredits}}</p>
-        <p>Room Number: {{.RoomNumber}}</p>
-        <p>Building Name: {{.BuildingName}}</p>
-        <p>Time: {{.Time}}</p>
-        <p>Meeting Days: {{.MeetingDay}}</p>
+        {{range .PreReqs}}
+            <p>Course Pre-Reqs {{.CourseName}}</p>
+        {{end}}
+        <p>Course Name: {{.Course.CourseName}}</p>
+        <p>Course Credits: {{.Course.CourseCredits}}</p>
+        <p>Room Number: {{.Course.RoomNumber}}</p>
+        <p>Building Name: {{.Course.BuildingName}}</p>
+        <p>Time: {{.Course.Time}}</p>
+        <p>Meeting Days: {{.Course.MeetingDay}}</p>
     </div>
     <hr>
     {{else}}

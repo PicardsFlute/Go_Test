@@ -249,7 +249,7 @@ func main() {
 	//db.Model(&department1).Association("Faculty").Find(&facMembers)
 	db.Where(model.Faculty{DepartmentID: department1.DepartmentID}).Find(&facMembers)
 	fmt.Println("For the departent1 (Math), the faculty is: ")
-	\
+
 	admin1 := model.Admin{AdminID: user8.UserID}
 	admin2 := model.Admin{AdminID: user9.UserID}
 	db.Create(&admin1)
