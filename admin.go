@@ -323,33 +323,29 @@ type AdminViewSection struct {
 
 }
 
+
+
 func AdminSearchCourse(w http.ResponseWriter, r *http.Request){
-	//TODO: Load courses into a table, if you click one, it shows the sections that course with its prereqs
 
 	fmt.Println("Inside admin search course")
 	vars := mux.Vars(r)
 	id := vars["course"]
 	idInt, _ := strconv.Atoi(id)
+	fmt.Println("the id is", idInt)
 	course := model.Course{}
 	//db.Table("course").Select("*").Where("course_id")
-	db.Where(model.Course{CourseID:uint(idInt)}).Scan(&course)
+	db.Where(model.Course{CourseID:uint(idInt)}).Find(&course)
 	prereqs := course.FindCoursePrerequisites(db)
+	fmt.Println("Course is", course)
+	fmt.Println("Pre-Reqs are", prereqs)
 
 
-	courseDetail := StudentSchedule{}
-	db.Raw(`SELECT course_name,course_credits,building_name,room_number,meeting_day,time
-	FROM enrollment
-	NATURAL JOIN section
-	NATURAL JOIN time_slot
-	NATURAL JOIN course
-	NATURAL JOIN period
-	NATURAL JOIN day NATURAL
-	JOIN location NATURAL JOIN building
-	NATURAL JOIN room WHERE course.course_id =?`,id).Scan(&courseDetail)
-
+	courseDetail := model.Course{}
+	db.Raw(`SELECT course_name,course_credits,course_description
+	FROM course
+	WHERE course.course_id =?`,id).Scan(&courseDetail)
 	fmt.Println(courseDetail)
 
-	//http.Redirect(w, r, "/admin", http.StatusSeeOther)
 	//Todo:: must render view on client side if you send an ajax request
 	//TODO: just show the course with all the pre-requisits
 

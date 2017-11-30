@@ -99,6 +99,7 @@
 
         $.ajax({
             type:"GET",
+            url:"/admin/course/search/"+id,
             success:function(){
                 $(location).attr('href','/admin/course/search/'+id);
             }
