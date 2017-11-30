@@ -437,14 +437,14 @@ func main() {
 	db.Create(&period4)
 
 	//Timeslot for spring 2018
-	//all 5 periods for MW
+		//all 5 periods for MW
 	timeslot1 := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day1.DayID, PeriodID:period1.PeriodID}
 	timeslot2 := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day1.DayID, PeriodID:period2.PeriodID}
 	timeslota := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day1.DayID, PeriodID:period3.PeriodID}
 	timeslotb := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day1.DayID, PeriodID:period4.PeriodID}
 	timeslotc := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day1.DayID, PeriodID:period0.PeriodID}
 
-	//all 5 periods for TR
+		//all 5 periods for TR
 	timeslot11 := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day2.DayID, PeriodID:period1.PeriodID}
 	timeslot21 := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day2.DayID, PeriodID:period2.PeriodID}
 	timeslota1 := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day2.DayID, PeriodID:period3.PeriodID}
@@ -454,8 +454,37 @@ func main() {
 	timeslot3 := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day2.DayID, PeriodID:period1.PeriodID}
 	timeslot4 := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day2.DayID, PeriodID:period2.PeriodID}
 
+
+	//Timeslot for Fall 2017
+		//MW
+	timeslotFall2017 := model.TimeSlot{SemesterID:fallLastYear.SemesterID, DayID:day1.DayID, PeriodID:period1.PeriodID}
+	timeslotFall12017 := model.TimeSlot{SemesterID:fallLastYear.SemesterID, DayID:day1.DayID, PeriodID:period2.PeriodID}
+	timeslotFall22017 := model.TimeSlot{SemesterID:fallLastYear.SemesterID, DayID:day1.DayID, PeriodID:period3.PeriodID}
+	timeslotFall32017 := model.TimeSlot{SemesterID:fallLastYear.SemesterID, DayID:day1.DayID, PeriodID:period4.PeriodID}
+	timeslotFall42017 := model.TimeSlot{SemesterID:fallLastYear.SemesterID, DayID:day1.DayID, PeriodID:period0.PeriodID}
+
+	db.Create(&timeslotFall2017)
+	db.Create(&timeslotFall12017)
+	db.Create(&timeslotFall22017)
+	db.Create(&timeslotFall32017)
+	db.Create(&timeslotFall42017)
+
+
+		//TR
+	timeslotFall2017tr := model.TimeSlot{SemesterID:fallLastYear.SemesterID, DayID:day2.DayID, PeriodID:period1.PeriodID}
+	timeslotFall12017tr := model.TimeSlot{SemesterID:fallLastYear.SemesterID, DayID:day2.DayID, PeriodID:period2.PeriodID}
+	timeslotFall22017tr := model.TimeSlot{SemesterID:fallLastYear.SemesterID, DayID:day2.DayID, PeriodID:period3.PeriodID}
+	timeslotFall32017tr := model.TimeSlot{SemesterID:fallLastYear.SemesterID, DayID:day2.DayID, PeriodID:period4.PeriodID}
+	timeslotFall42017tr := model.TimeSlot{SemesterID:fallLastYear.SemesterID, DayID:day2.DayID, PeriodID:period0.PeriodID}
+
+	db.Create(&timeslotFall2017tr)
+	db.Create(&timeslotFall12017tr)
+	db.Create(&timeslotFall22017tr)
+	db.Create(&timeslotFall32017tr)
+	db.Create(&timeslotFall42017tr)
+
 	// Timeslot for Spring 2017
-	//MW
+		//MW
 	timeslotSpring2017 := model.TimeSlot{SemesterID:springLastYear.SemesterID, DayID:day1.DayID, PeriodID:period1.PeriodID}
 	timeslotSpring12017 := model.TimeSlot{SemesterID:springLastYear.SemesterID, DayID:day1.DayID, PeriodID:period2.PeriodID}
 	timeslotSpring22017 := model.TimeSlot{SemesterID:springLastYear.SemesterID, DayID:day1.DayID, PeriodID:period3.PeriodID}
@@ -469,7 +498,7 @@ func main() {
 	db.Create(&timeslotSpring42017)
 
 
-	//TR
+		//TR
 	timeslotSpring2017tr := model.TimeSlot{SemesterID:springLastYear.SemesterID, DayID:day2.DayID, PeriodID:period1.PeriodID}
 	timeslotSpring12017tr := model.TimeSlot{SemesterID:springLastYear.SemesterID, DayID:day2.DayID, PeriodID:period2.PeriodID}
 	timeslotSpring22017tr := model.TimeSlot{SemesterID:springLastYear.SemesterID, DayID:day2.DayID, PeriodID:period3.PeriodID}
@@ -528,7 +557,7 @@ func main() {
 	db.Create(&timeslotc3)
 
 
-	//Spring 2018 Sections
+	//Spring 2018 Sections //These are wrong all these enrollments are for spring 2018, should not be in progress until the next semester
 	section1 := model.Section{CourseSectionNumber:001, CourseID:course1.CourseID, FacultyID:faculty1.FacultyID, TimeSlotID:timeslot1.TimeSlotID, LocationID:location1.LocationID}
 	section2 := model.Section{CourseSectionNumber:002, CourseID:course1.CourseID, FacultyID:faculty1.FacultyID, TimeSlotID:timeslot2.TimeSlotID, LocationID:location1.LocationID}
 	section3 := model.Section{CourseSectionNumber:001, CourseID:course2.CourseID, FacultyID:faculty2.FacultyID, TimeSlotID:timeslot1.TimeSlotID, LocationID:location2.LocationID}
@@ -547,6 +576,30 @@ func main() {
 	db.Create(&section8)
 
 	//Fall 2017 Sections
+	sectionFall2017a := model.Section{CourseSectionNumber:001, CourseID:course1.CourseID, FacultyID:faculty1.FacultyID,TimeSlotID:timeslotFall2017.TimeSlotID, LocationID:location4.LocationID}
+	sectionFall2017b := model.Section{CourseSectionNumber:002, CourseID:course2.CourseID, FacultyID:faculty2.FacultyID,TimeSlotID:timeslotFall12017.TimeSlotID, LocationID:location5.LocationID}
+	sectionFall2017c := model.Section{CourseSectionNumber:001, CourseID:course3.CourseID, FacultyID:faculty3.FacultyID,TimeSlotID:timeslotFall22017.TimeSlotID, LocationID:location6.LocationID}
+	sectionFall2017d := model.Section{CourseSectionNumber:002, CourseID:course4.CourseID, FacultyID:faculty4.FacultyID,TimeSlotID:timeslotFall32017.TimeSlotID, LocationID:location7.LocationID}
+	sectionFall2017e := model.Section{CourseSectionNumber:001, CourseID:course5.CourseID, FacultyID:faculty5.FacultyID,TimeSlotID:timeslotFall42017.TimeSlotID, LocationID:location8.LocationID}
+	sectionFall2017f := model.Section{CourseSectionNumber:003, CourseID:course1.CourseID, FacultyID:faculty6.FacultyID,TimeSlotID:timeslotFall2017tr.TimeSlotID, LocationID:location9.LocationID}
+	sectionFall2017g := model.Section{CourseSectionNumber:002, CourseID:course2.CourseID, FacultyID:faculty1.FacultyID,TimeSlotID:timeslotFall12017tr.TimeSlotID, LocationID:location10.LocationID}
+	sectionFall2017h := model.Section{CourseSectionNumber:001, CourseID:course3.CourseID, FacultyID:faculty2.FacultyID,TimeSlotID:timeslotFall22017tr.TimeSlotID, LocationID:location1.LocationID}
+	sectionFall2017i := model.Section{CourseSectionNumber:002, CourseID:course4.CourseID, FacultyID:faculty3.FacultyID,TimeSlotID:timeslotFall32017tr.TimeSlotID, LocationID:location2.LocationID}
+	sectionFall2017j := model.Section{CourseSectionNumber:003, CourseID:course5.CourseID, FacultyID:faculty4.FacultyID,TimeSlotID:timeslotFall42017tr.TimeSlotID, LocationID:location3.LocationID}
+	sectionFall2017k := model.Section{CourseSectionNumber:001, CourseID:course2.CourseID, FacultyID:faculty5.FacultyID,TimeSlotID:timeslotFall2017tr.TimeSlotID, LocationID:location4.LocationID}
+
+	db.Create(&sectionFall2017a)
+	db.Create(&sectionFall2017b)
+	db.Create(&sectionFall2017c)
+	db.Create(&sectionFall2017d)
+	db.Create(&sectionFall2017e)
+	db.Create(&sectionFall2017f)
+	db.Create(&sectionFall2017g)
+	db.Create(&sectionFall2017h)
+	db.Create(&sectionFall2017i)
+	db.Create(&sectionFall2017j)
+	db.Create(&sectionFall2017k)
+
 
 	//Spring 2017 sections
 	sectionSpring2017a := model.Section{CourseSectionNumber:001, CourseID:course1.CourseID, FacultyID:faculty1.FacultyID,TimeSlotID:timeslotSpring2017.TimeSlotID, LocationID:location4.LocationID}
