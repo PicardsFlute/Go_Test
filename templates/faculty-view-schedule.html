@@ -1,0 +1,35 @@
+{{define "ViewFacultyScheduleDetails"}}
+{{template "head"}}
+
+<div class="container">
+
+
+
+    <h1>Your schedule</h1>
+
+    {{template "student-navbar"}}
+
+    {{if .}}
+    {{range .}}
+    <div class="course_details">
+        <p>Course Name: {{.CourseName}}</p>
+        <p>Building Name: {{.BuildingName}}</p>
+        <p>Room Number: {{.RoomNumber}}</p>
+        <p>Time: {{.Time}}</p>
+        <p>Meeting Days: {{.MeetingDay}}</p>
+        <p>Semester {{.Year}}</p>
+        <p>Season {{.Season}}</p>
+    </div>
+    <hr>
+    {{end}}
+    {{else}}
+    <h1>Error loading course details</h1>
+    {{end}}
+
+
+
+</div>
+
+{{template "end"}}
+{{end}}
+

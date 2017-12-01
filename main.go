@@ -146,6 +146,8 @@ func main() {
 	routes.Handle("/admin/user", checkSessionWrapper(createUser)).Methods("POST")
 	routes.Handle("/admin/user/student", checkSessionWrapper(createStudent)).Methods("POST")
 	routes.Handle("/admin/user/faculty", checkSessionWrapper(createFaculty)).Methods("POST")
+	routes.Handle("/admin/user/search" , checkSessionWrapper(searchUser)).Methods("GET")
+	routes.Handle("/admin/user/{userID}/delete", checkSessionWrapper(deleteUser)).Methods("POST")
 
 	/* Student Routes*/
 	routes.Handle("/student",  checkSessionWrapper(displayStudent)).Methods("GET")
@@ -154,8 +156,8 @@ func main() {
 
 	//routes.HandleFunc("/unauthorized", unauthorized)
 
-	routes.Handle("/admin/user/search" , checkSessionWrapper(searchUser)).Methods("GET")
-	routes.Handle("/admin/user/{userID}/delete", checkSessionWrapper(deleteUser)).Methods("POST")
+	/*Faculty Routes */
+	routes.HandleFunc("/faculty/schedule", facultyViewSchedule).Methods("GET")
 
 	routes.HandleFunc("/logout", logout)
 	//routes.HandleFunc("/student", AuthHandler(displayUser))

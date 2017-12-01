@@ -20,7 +20,7 @@ func ViewSchedule(w http.ResponseWriter, r *http.Request){
 
 	_, user := CheckLoginStatus(w,r)
 	ss := []StudentSchedule{}
-	db.Raw(`SELECT student_history.student_id,course_name,course_credits,building_name,room_number,meeting_day,time,student_history.status
+	db.Raw(`SELECT student_history.student_id,course_name,course_credits,building_name,room_number,meeting_day, first_name, last_name, time,student_history.status
 	FROM student_history
 	JOIN enrollment ON student_history.enrollment_id = enrollment.enrollment_id
 	JOIN section ON enrollment.section_id = section.section_id
@@ -32,6 +32,8 @@ func ViewSchedule(w http.ResponseWriter, r *http.Request){
 	JOIN location ON section.location_id = location.location_id
 	JOIN building ON location.building_id = building.building_id
 	JOIN room ON location.room_id = room.room_id
+	JOIN faculty ON section.faculty_id = faculty.faculty_id
+	JOIN main_user ON faculty.faculty_id = main_user.user_id
 	WHERE enrollment.student_id = ? AND student_history.status = 'In progress'`, user.UserID).Scan(&ss)
 	fmt.Println(ss)
 
