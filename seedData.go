@@ -1,4 +1,6 @@
 package main
+/*
+
 import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -412,8 +414,7 @@ func main() {
 	db.Create(&springLastLastYear)
 	db.Create(&fallLastLastLastYear)
 	db.Create(&springLastLastLastYear)
-
-
+*/
 	/*
 	timeform := "Jan 2, 2006 at 3:04pm (MST)"
 	t1, _ := time.Parse(timeform, "Jan 2, 2006 at 1:00pm (MST)")
@@ -423,7 +424,7 @@ func main() {
 	period1 := model.Period{Star	tTime: t1, EndTime: t2}
 	period2 := model.Period{StartTime: t3, EndTime: t4}
 	*/
-
+/*
 
 	period0 := model.Period{Time:"9:40 AM - 11:10 AM"}
 	period1 := model.Period{Time:"11:20 AM - 12:50 PM"}
@@ -627,7 +628,7 @@ func main() {
 	db.Create(&sectionSpring2017k)
 
 
-
+	//enrollment for Spring 2018
 	enroll1 := model.Enrollment{StudentID:student1.StudentID, SectionID:section3.SectionID}
 	enroll2 := model.Enrollment{StudentID:student2.StudentID, SectionID:section3.SectionID}
 	enroll3 := model.Enrollment{StudentID:student3.StudentID, SectionID:section4.SectionID}
@@ -652,6 +653,34 @@ func main() {
 	db.Create(&enroll10)
 	db.Create(&enroll11)
 	db.Create(&enroll12)
+
+
+
+	//history for Spring 2018
+	history1 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll1.EnrollmentID, Status:"In progress", Grade:"-"}
+	history2 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enroll2.EnrollmentID, Status:"In progress", Grade:"-"}
+	history3 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enroll3.EnrollmentID, Status:"In progress", Grade:"-"}
+	history4 := model.StudentHistory{StudentID:student4.StudentID, EnrollmentID:enroll4.EnrollmentID, Status:"In progress", Grade:"-"}
+	history5 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll5.EnrollmentID, Status:"In progress", Grade:"-"}
+	history6 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enroll6.EnrollmentID, Status:"In progress", Grade:"-"}
+	history7 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enroll7.EnrollmentID, Status:"In progress", Grade:"-"}
+	history8 := model.StudentHistory{StudentID:student4.StudentID, EnrollmentID:enroll8.EnrollmentID, Status:"In progress", Grade:"-"}
+	history9 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll9.EnrollmentID, Status:"In progress", Grade:"-"}
+	history10 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enroll10.EnrollmentID, Status:"In progress", Grade:"-"}
+	history11 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enroll11.EnrollmentID, Status:"In progress", Grade:"-"}
+	history12 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll12.EnrollmentID, Status:"In progress", Grade:"-"}
+	db.Create(&history1)
+	db.Create(&history2)
+	db.Create(&history3)
+	db.Create(&history4)
+	db.Create(&history5)
+	db.Create(&history6)
+	db.Create(&history7)
+	db.Create(&history8)
+	db.Create(&history9)
+	db.Create(&history10)
+	db.Create(&history11)
+	db.Create(&history12)
 
 	//enrollment for Spring 2017
 
@@ -681,32 +710,6 @@ func main() {
 	db.Create(&enroll1112)
 	db.Create(&enroll121)
 
-
-	history1 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll1.EnrollmentID, Status:"In progress", Grade:"-"}
-	history2 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enroll2.EnrollmentID, Status:"In progress", Grade:"-"}
-	history3 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enroll3.EnrollmentID, Status:"In progress", Grade:"-"}
-	history4 := model.StudentHistory{StudentID:student4.StudentID, EnrollmentID:enroll4.EnrollmentID, Status:"In progress", Grade:"-"}
-	history5 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll5.EnrollmentID, Status:"In progress", Grade:"-"}
-	history6 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enroll6.EnrollmentID, Status:"In progress", Grade:"-"}
-	history7 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enroll7.EnrollmentID, Status:"In progress", Grade:"-"}
-	history8 := model.StudentHistory{StudentID:student4.StudentID, EnrollmentID:enroll8.EnrollmentID, Status:"In progress", Grade:"-"}
-	history9 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll9.EnrollmentID, Status:"In progress", Grade:"-"}
-	history10 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enroll10.EnrollmentID, Status:"In progress", Grade:"-"}
-	history11 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enroll11.EnrollmentID, Status:"In progress", Grade:"-"}
-	history12 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll12.EnrollmentID, Status:"In progress", Grade:"-"}
-	db.Create(&history1)
-	db.Create(&history2)
-	db.Create(&history3)
-	db.Create(&history4)
-	db.Create(&history5)
-	db.Create(&history6)
-	db.Create(&history7)
-	db.Create(&history8)
-	db.Create(&history9)
-	db.Create(&history10)
-	db.Create(&history11)
-	db.Create(&history12)
-
 	//history Spring 2017
 	history11a := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll111.EnrollmentID, Status:"Complete", Grade:"A"}
 	history22 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enroll21.EnrollmentID, Status:"Complete", Grade:"A"}
@@ -735,5 +738,5 @@ func main() {
 	db.Create(&history122)
 
 }
-
+*/
 

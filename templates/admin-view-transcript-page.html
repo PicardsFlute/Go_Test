@@ -1,8 +1,8 @@
-{{define "viewStudentScheduleAdmin"}}
+{{define "viewStudentTranscriptAdmin"}}
 {{template "head"}}
 <div class="container">
 
-          <h1>Welcome {{ .FirstName}}</h1>
+    <h1>Welcome {{ .FirstName}}</h1>
 
     <!--
     <ul class="nav nav-pills center-nav">
@@ -49,48 +49,44 @@
 
 
     <div class="contact-w3-agileits" id="contact" >
-            <div class="col-md-12 contact-left-w3l" >
-                <h3>Student Action</h3>
-                <div class="visit">
+        <div class="col-md-12 contact-left-w3l" >
+            <h3>Student Action</h3>
+            <div class="visit">
 
-                    <div class="clearfix"></div>
-                </div>
+                <div class="clearfix"></div>
+            </div>
 
 
 
-                <div class="col-md-8 contact-left-w3l">
+            <div class="col-md-8 contact-left-w3l">
 
-                    <form action="/admin/student/{student}" id="requestData" class="form-horizontal" method="GET">
+                <form action="/admin/transcript/{student}" id="requestData" class="form-horizontal" method="GET">
 
-                        <label class="form-group">Id</label>
-                        <input type="text" class="form-control" name="id"><br />
+                    <label class="form-group">Id</label>
+                    <input type="text" class="form-control" name="id"><br />
 
-                        <label class="form-group">Email</label>
-                        <input type="email" class="form-control" name="email"><br />
+                    <label class="form-group">Email</label>
+                    <input type="email" class="form-control" name="email"><br />
 
-                        <!--
-                        <label class="form-group">Major</label>
-                        <input type="text" class="form-control" name="major" placeholder=""><br />
-                        -->
-                        <input type="submit" value="submit" id="submit" class="btn btn-default pull-right">
+                    <input type="submit" value="submit" id="submit" class="btn btn-default pull-right">
 
-                    </form>
-
-                </div>
+                </form>
 
             </div>
-        </div>
-        {{if .NoUser}}
-            <h2>No results for that user</h2>
-        {{else}}
-            <h2>Try searching for a user</h2>
-        {{end}}
-        <br/>
 
         </div>
-    <div class="footer-w3l">
-    <p> &copy; 2017 Starfleet . All Rights Reserved </a></p>
     </div>
+    {{if .NoUser}}
+    <h2>No results for that user</h2>
+    {{else}}
+    <h2>Try searching for a user</h2>
+    {{end}}
+    <br/>
+
+</div>
+<div class="footer-w3l">
+    <p> &copy; 2017 Starfleet . All Rights Reserved </a></p>
+</div>
 
 
 

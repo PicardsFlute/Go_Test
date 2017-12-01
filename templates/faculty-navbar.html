@@ -1,4 +1,4 @@
-{{define "admin-navbar"}}
+{{define "faculty-navbar"}}
 <div class="logo-navigation-w3layouts" style="border-bottom:double">
     <div class="container">
         <div class="logo-w3">
@@ -14,61 +14,47 @@
                         <span class="icon-bar agileits w3layouts"></span>
                     </button>
                 </div>
-                <div class="navbar navbar-inverse" style="margin-top:40px;margin-left:100px; background-color:transparent;border-style:none;">
+                <div class="navbar navbar-inverse" style="margin-top:40px;margin-left:335px; background-color:transparent;border-style:none;">
                     <div class="container-fluid">
                         <ul class="nav navbar-nav">
 
                             <li class="dropdown" style="background-color: black; margin: 5px">
                                 <a href="#" data-toggle="dropdown" class="dropdown-toggle">
-                                    Student Actions
+                                    Grading
                                     <span class="caret"></span>
                                 </a>
 
                                 <ul class="dropdown-menu" style="background-color: bisque;">
-                                    <li><a class="scroll" href="/admin/transcript">View Student Transcript</a>
-                                    <li><a class="scroll" href="/admin/holds">View Student Holds</a>
-                                    <li><a class="scroll" href="/admin/student">View Student Schedule</a>
+                                    <li style="color:wheat"><a class="scroll" href="FacultyAction.html">Submit Grades</a>
+
                                 </ul>
                             </li>
                             <li class="dropdown" style="background-color: black; margin: 5px">
                                 <a href="#" data-toggle="dropdown" class="dropdown-toggle">
-                                    Course Actions
+                                    View Student
                                     <span class="caret"></span>
                                 </a>
 
                                 <ul class="dropdown-menu" style="background-color: bisque; ">
-                                    <li><a class="scroll" href="/admin/course">Add a course</a>
-                                    <li><a class="scroll" href="/admin/course/search">Search course</a>
-                                    <li><a class="scroll" href="UpdateCourse.html">Update course</a>
-                                    <li><a class="scroll" href="/admin/section">Add Section</a>
-                                    <li><a class="scroll" href="UpdateSection.html">Update Section</a>
+                                    <li><a class="scroll" href="FacultyAction.html">View Schedule</a>
+                                    <li><a class="scroll" href="FacultyAction.html">View Transcript</a>
+
 
                                 </ul>
                             </li>
                             <li class="dropdown" style="background-color: black; margin: 5px">
                                 <a href="#" data-toggle="dropdown" class="dropdown-toggle">
-                                    User Actions
+                                    View Work Schedule
                                     <span class="caret"></span>
                                 </a>
 
                                 <ul class="dropdown-menu" style="background-color: bisque">
-                                    <li><a class="scroll" href="/admin/user ">Create User</a>
-                                    <li><a class="scroll" href="/admin/user/search ">Remove User</a>
-                                    <li><a class="scroll" href="#about">Update User</a>
+                                    <li><a class="scroll" href="#about">View Schedule</a>
+
 
                                 </ul>
                             </li>
-                            <li class="dropdown" style="background-color: black; margin: 5px">
-                                <a href="#" data-toggle="dropdown" class="dropdown-toggle">
-                                    Faculty Action
-                                    <span class="caret"></span>
-                                </a>
 
-                                <ul class="dropdown-menu" style="background-color: bisque">
-                                    <li><a class="scroll" href="#about">Open grading period</a>
-
-                                </ul>
-                            </li>
                         </ul>
                     </div>
                 </div>
@@ -77,4 +63,6 @@
         <div class="clearfix"></div>
     </div>
 </div>
+
+
 {{end}}

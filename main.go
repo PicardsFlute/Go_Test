@@ -17,10 +17,8 @@ import (
 
 
 	"strconv"
-	//"strings"
 
 	"io/ioutil"
-
 )
 
 var (
@@ -120,6 +118,8 @@ func main() {
 	routes.Handle("/admin/student" , checkSessionWrapper(ViewStudentSchedulePage)).Methods("GET")
 	routes.HandleFunc("/admin/student/{student}", ViewStudentSchedule).Methods("GET")
 
+	routes.HandleFunc("/admin/transcript", viewStudentTranscriptPage).Methods("GET")
+	routes.HandleFunc("/admin/transcript/{student}", viewStudentTranscript).Methods("GET")
 
 	routes.HandleFunc("/admin/holds", ViewStudentHoldsPage)
 	routes.HandleFunc("/admin/holds/{user}", ViewStudentHolds).Methods("GET")

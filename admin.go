@@ -53,12 +53,91 @@ type StudentSchedule struct {
 	MeetingDay string
 }
 
-type HoldDetail struct {
-	HoldName string
-}
 
 type NoUser struct {
 	ErrorMessage string
+}
+
+func viewStudentTranscriptPage(w http.ResponseWriter, r *http.Request){
+	isLogged, user := CheckLoginStatus(w,r)
+
+	if isLogged && user.UserType == 3 {
+		global.Tpl.ExecuteTemplate(w, "viewStudentTranscriptAdmin", user)
+	}else {
+		http.Redirect(w,r,"/",http.StatusForbidden)
+	}
+}
+
+
+
+func viewStudentTranscript(w http.ResponseWriter, r *http.Request){
+
+	user := model.MainUser{}
+
+	email := r.FormValue("email")
+	id := r.FormValue("id")
+	count := 0
+	//major := r.FormValue("major")
+
+	//db.Where("id = ?", id).Find(&model.Enrollment{})
+	intId, err := strconv.Atoi(id)
+	if err != nil {
+		err.Error()
+	}
+
+
+	//first check if they entered an ID
+	if id != "" {
+		db.Where(&model.MainUser{UserID: uint(intId)}).Find(&user).Count(&count)
+	}
+
+	if email != ""{
+		db.Where(&model.MainUser{UserEmail: email}).Find(&user).Count(&count)
+	}
+	//nu := NoUser{"Nobody found"}
+	if count > 0 {
+		fmt.Println("You have a user", user.FirstName)
+	} else {//TODO: Render error correctly, try passing in map with admin user
+
+		m := map[string]interface{}{
+			"NoUser": "Nobody Home",
+		}
+
+		fmt.Println("Showing no users found error")
+		global.Tpl.ExecuteTemplate(w,"viewStudentTranscriptAdmin", m)
+		return
+	}
+	type Transcript struct {
+		StudentID uint
+		Grade string
+		Status string
+		Year int
+		Season string
+		CourseName string
+		CourseCredits int
+	}
+
+	st := []Transcript{}
+	db.Raw(`
+ 	 SELECT enrollment.student_id,grade,status,year,season,course_name,course_credits
+	 FROM student_history
+	 JOIN enrollment ON student_history.enrollment_id = enrollment.enrollment_id
+	 JOIN section ON enrollment.section_id = section.section_id
+	 JOIN course on course.course_id = section.course_id
+	 JOIN time_slot ON time_slot.time_slot_id = section.time_slot_id
+	 JOIN semester ON time_slot.semester_id = semester.semester_id
+	 WHERE enrollment.student_id = ?`,user.UserID).Scan(&st)
+	fmt.Println(st)
+	m := map[string]interface{}{
+		"User":user,
+		"Transcript":st,
+	}
+
+	errTemp := global.Tpl.ExecuteTemplate(w, "adminViewStudentTranscriptDetails", m)
+	if errTemp != nil {
+		fmt.Println(errTemp.Error())
+	}
+
 }
 
 func ViewStudentSchedule(w http.ResponseWriter, r *http.Request){
@@ -104,15 +183,19 @@ func ViewStudentSchedule(w http.ResponseWriter, r *http.Request){
 
 
 	ss := []StudentSchedule{}
-	db.Raw(`SELECT course_name,course_credits,building_name,room_number,meeting_day,time
-	FROM enrollment
-	NATURAL JOIN Section
-	NATURAL JOIN time_slot
-	NATURAL JOIN course
-	NATURAL JOIN period
-	NATURAL JOIN day NATURAL
-	JOIN location NATURAL JOIN building
-	NATURAL JOIN room WHERE enrollment.student_id =?`,user.UserID).Scan(&ss)
+	db.Raw(`SELECT student_history.student_id,course_name,course_credits,building_name,room_number,meeting_day,time,student_history.status
+	FROM student_history
+	JOIN enrollment ON student_history.enrollment_id = enrollment.enrollment_id
+	JOIN section ON enrollment.section_id = section.section_id
+	JOIN course ON course.course_id = section.course_id
+	JOIN time_slot ON time_slot.time_slot_id = section.time_slot_id
+	JOIN semester ON time_slot.semester_id = semester.semester_id
+	JOIN period ON time_slot.period_id = period.period_id
+	JOIN day ON time_slot.day_id = day.day_id
+	JOIN location ON section.location_id = location.location_id
+	JOIN building ON location.building_id = building.building_id
+	JOIN room ON location.room_id = room.room_id
+	WHERE enrollment.student_id = ? AND student_history.status = 'In progress'`,user.UserID).Scan(&ss)
 	fmt.Println(ss)
 
 	global.Tpl.ExecuteTemplate(w, "adminViewStudentScheduleDetails", ss)
@@ -401,7 +484,6 @@ func AdminAddSectionPage(w http.ResponseWriter, r *http.Request){
 		"Department":departments,
 	}
 
-	//TODO: error rendering template from server side after an ajax call,try to render with javascript
 	errTpl := global.Tpl.ExecuteTemplate(w, "addSectionAdmin", m)
 	if errTpl != nil {
 		fmt.Println(errTpl.Error())
@@ -574,6 +656,4 @@ func AdminAddSection(w http.ResponseWriter, r *http.Request){
 	}
 	db.Create(&newCourseSection)
 	global.Tpl.ExecuteTemplate(w, "admin", nil)
-
-
 }
