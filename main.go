@@ -92,7 +92,7 @@ func init() {
 
 
 func main() {
-	
+
 	routes := mux.NewRouter()
 	global.Tpl = template.Must(template.ParseGlob("templates/*"))
 	routes.PathPrefix("/style").Handler(http.StripPrefix("/style/",http.FileServer(http.Dir("style"))))
@@ -106,7 +106,7 @@ func main() {
 	routes.Handle("/faculty",  checkSessionWrapper(displayFaculty)).Methods("GET")
 	routes.Handle("/researcher", checkSessionWrapper(displayResearcher)).Methods("GET")
 
-	routes.HandleFunc("/course/search", SearchMasterSchedule).Methods("GET")
+	routes.HandleFunc("/course/search", searchMasterSchedule).Methods("GET")
 
 	/*Admin routes */
 
@@ -156,6 +156,11 @@ func main() {
 
 	routes.Handle("/admin/user/search" , checkSessionWrapper(searchUser)).Methods("GET")
 	routes.Handle("/admin/user/{userID}/delete", checkSessionWrapper(deleteUser)).Methods("POST")
+
+	routes.Handle("/admin/schedule", checkSessionWrapper(searchMasterSchedule)).Methods(
+
+
+	)
 
 	routes.HandleFunc("/logout", logout)
 	//routes.HandleFunc("/student", AuthHandler(displayUser))
@@ -567,6 +572,7 @@ func createFaculty(w http.ResponseWriter, r *http.Request) {
 }
 
 func searchUser(w http.ResponseWriter, r *http.Request) {
+	// TODO: Include user type information with user search results
 	queryVals := r.URL.Query()
 	emailQuery, _ := queryVals["email"]
 	firstNameQuery, _ := queryVals["first-name"]
@@ -713,6 +719,41 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 }
 
 
-func SearchMasterSchedule(w http.ResponseWriter, r *http.Request){
-	global.Tpl.ExecuteTemplate(w, "masterSchedule", nil)
+func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
+	allDepartments := []model.Department{}
+	db.Find(&allDepartments)
+
+	queryVals := r.URL.Query()
+	depID := queryVals["department"][0]
+	//instructorName := queryVals["instructor"][0]
+	courseName := queryVals["course-name"][0]
+	//courseNumber, _ := queryVals["course-number"]
+
+	coursesFound := []model.Course{}
+	db.Where(model.Course{CourseName: courseName}).Or(model.Course{DepartmentID: uint(depID)}).Or(model.Course{CourseName: courseName}).Find(&coursesFound)
+
+	type CourseData struct {
+		CourseName string
+		CourseCredits int
+		CourseDescription string
+		DepartmentID uint
+		SectionID uint
+		CourseSectionNumber int
+		CourseID uint
+		FacultyID uint
+		TimeSlotID uint
+		LocationID uint
+	}
+
+	queryRes := []CourseData{}
+
+	rows, err := db.Table("section").Select("users.name, emails.email").Joins("JOIN section on section.course_id = course.course_id").Where("course.course_name = ? OR course.department_id = ?", courseName, depID ).Rows()
+
+	if err == nil{
+		rows.Scan(&queryRes)
+	}
+	m :=  map[string]interface{}{
+		"Departments": allDepartments,
+	}
+	global.Tpl.ExecuteTemplate(w, "masterSchedule", m)
 }
