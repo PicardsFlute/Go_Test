@@ -49,6 +49,9 @@
                 </form>
                 </div>
             </div>
+
+        <h2>Click on the course you want to view!</h2>&nbsp;&nbsp;
+
     <table class="table table-striped" id="table">
         <thead>
             <tr>
@@ -95,10 +98,10 @@
             console.log("Found id " + id);
 
         $.ajax({
-            url:"/admin/course/search/" + id,
             type:"GET",
+            url:"/admin/course/search/"+id,
             success:function(){
-                console.log("Ajax sent");
+                $(location).attr('href','/admin/course/search/'+id);
             }
         });
 

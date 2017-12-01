@@ -53,12 +53,91 @@ type StudentSchedule struct {
 	MeetingDay string
 }
 
-type HoldDetail struct {
-	HoldName string
-}
 
 type NoUser struct {
 	ErrorMessage string
+}
+
+func viewStudentTranscriptPage(w http.ResponseWriter, r *http.Request){
+	isLogged, user := CheckLoginStatus(w,r)
+
+	if isLogged && user.UserType == 3 {
+		global.Tpl.ExecuteTemplate(w, "viewStudentTranscriptAdmin", user)
+	}else {
+		http.Redirect(w,r,"/",http.StatusForbidden)
+	}
+}
+
+
+
+func viewStudentTranscript(w http.ResponseWriter, r *http.Request){
+
+	user := model.MainUser{}
+
+	email := r.FormValue("email")
+	id := r.FormValue("id")
+	count := 0
+	//major := r.FormValue("major")
+
+	//db.Where("id = ?", id).Find(&model.Enrollment{})
+	intId, err := strconv.Atoi(id)
+	if err != nil {
+		err.Error()
+	}
+
+
+	//first check if they entered an ID
+	if id != "" {
+		db.Where(&model.MainUser{UserID: uint(intId)}).Find(&user).Count(&count)
+	}
+
+	if email != ""{
+		db.Where(&model.MainUser{UserEmail: email}).Find(&user).Count(&count)
+	}
+	//nu := NoUser{"Nobody found"}
+	if count > 0 {
+		fmt.Println("You have a user", user.FirstName)
+	} else {//TODO: Render error correctly, try passing in map with admin user
+
+		m := map[string]interface{}{
+			"NoUser": "Nobody Home",
+		}
+
+		fmt.Println("Showing no users found error")
+		global.Tpl.ExecuteTemplate(w,"viewStudentTranscriptAdmin", m)
+		return
+	}
+	type Transcript struct {
+		StudentID uint
+		Grade string
+		Status string
+		Year int
+		Season string
+		CourseName string
+		CourseCredits int
+	}
+
+	st := []Transcript{}
+	db.Raw(`
+ 	 SELECT enrollment.student_id,grade,status,year,season,course_name,course_credits
+	 FROM student_history
+	 JOIN enrollment ON student_history.enrollment_id = enrollment.enrollment_id
+	 JOIN section ON enrollment.section_id = section.section_id
+	 JOIN course on course.course_id = section.course_id
+	 JOIN time_slot ON time_slot.time_slot_id = section.time_slot_id
+	 JOIN semester ON time_slot.semester_id = semester.semester_id
+	 WHERE enrollment.student_id = ?`,user.UserID).Scan(&st)
+	fmt.Println(st)
+	m := map[string]interface{}{
+		"User":user,
+		"Transcript":st,
+	}
+
+	errTemp := global.Tpl.ExecuteTemplate(w, "adminViewStudentTranscriptDetails", m)
+	if errTemp != nil {
+		fmt.Println(errTemp.Error())
+	}
+
 }
 
 func ViewStudentSchedule(w http.ResponseWriter, r *http.Request){
@@ -103,28 +182,20 @@ func ViewStudentSchedule(w http.ResponseWriter, r *http.Request){
 	}
 
 
-
-	//this correctly joins enrollment and section on section_id, could possible store all the data in an empty interface
-	/*
-	rows, err := db.Table("enrollment").Select("*").Joins("join section on section.section_id = enrollment.section_id  AND student_id = ?", id).Rows()
-	if err != nil{
-		fmt.Println(err.Error())
-	}else {
-		for rows.Next(){
-			fmt.Println("found rows", rows)
-		}
-	}
-	*/
 	ss := []StudentSchedule{}
-	db.Raw(`SELECT course_name,course_credits,building_name,room_number,meeting_day,time
-	FROM enrollment
-	NATURAL JOIN Section
-	NATURAL JOIN time_slot
-	NATURAL JOIN course
-	NATURAL JOIN period
-	NATURAL JOIN day NATURAL
-	JOIN location NATURAL JOIN building
-	NATURAL JOIN room WHERE enrollment.student_id =?`,user.UserID).Scan(&ss)
+	db.Raw(`SELECT student_history.student_id,course_name,course_credits,building_name,room_number,meeting_day,time,student_history.status
+	FROM student_history
+	JOIN enrollment ON student_history.enrollment_id = enrollment.enrollment_id
+	JOIN section ON enrollment.section_id = section.section_id
+	JOIN course ON course.course_id = section.course_id
+	JOIN time_slot ON time_slot.time_slot_id = section.time_slot_id
+	JOIN semester ON time_slot.semester_id = semester.semester_id
+	JOIN period ON time_slot.period_id = period.period_id
+	JOIN day ON time_slot.day_id = day.day_id
+	JOIN location ON section.location_id = location.location_id
+	JOIN building ON location.building_id = building.building_id
+	JOIN room ON location.room_id = room.room_id
+	WHERE enrollment.student_id = ? AND student_history.status = 'In progress'`,user.UserID).Scan(&ss)
 	fmt.Println(ss)
 
 	global.Tpl.ExecuteTemplate(w, "adminViewStudentScheduleDetails", ss)
@@ -335,30 +406,38 @@ type AdminViewSection struct {
 
 }
 
+
+
 func AdminSearchCourse(w http.ResponseWriter, r *http.Request){
-	//TODO: Load courses into a table, if you click one, it shows the sections that course
 
 	fmt.Println("Inside admin search course")
 	vars := mux.Vars(r)
 	id := vars["course"]
+	idInt, _ := strconv.Atoi(id)
+	fmt.Println("the id is", idInt)
+	course := model.Course{}
+	//db.Table("course").Select("*").Where("course_id")
+	db.Where(model.Course{CourseID:uint(idInt)}).Find(&course)
+	prereqs := course.FindCoursePrerequisites(db)
+	fmt.Println("Course is", course)
+	fmt.Println("Pre-Reqs are", prereqs)
 
-	ss := []StudentSchedule{}
-	db.Raw(`SELECT course_name,course_credits,building_name,room_number,meeting_day,time
-	FROM enrollment
-	NATURAL JOIN section
-	NATURAL JOIN time_slot
-	NATURAL JOIN course
-	NATURAL JOIN period
-	NATURAL JOIN day NATURAL
-	JOIN location NATURAL JOIN building
-	NATURAL JOIN room WHERE course.course_id =?`,id).Scan(&ss)
 
-	fmt.Println(ss)
+	courseDetail := model.Course{}
+	db.Raw(`SELECT course_name,course_credits,course_description
+	FROM course
+	WHERE course.course_id =?`,id).Scan(&courseDetail)
+	fmt.Println(courseDetail)
 
-	//http.Redirect(w, r, "/admin", http.StatusSeeOther)
 	//Todo:: must render view on client side if you send an ajax request
 	//TODO: just show the course with all the pre-requisits
-	err := global.Tpl.ExecuteTemplate(w, "adminViewCourseSection", ss)
+
+	m := map[string]interface{}{
+		"Course": courseDetail,
+		"PreReqs": prereqs,
+	}
+
+	err := global.Tpl.ExecuteTemplate(w, "adminViewCourseSection", m)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -405,7 +484,6 @@ func AdminAddSectionPage(w http.ResponseWriter, r *http.Request){
 		"Department":departments,
 	}
 
-	//TODO: error rendering template from server side after an ajax call,try to render with javascript
 	errTpl := global.Tpl.ExecuteTemplate(w, "addSectionAdmin", m)
 	if errTpl != nil {
 		fmt.Println(errTpl.Error())
@@ -473,11 +551,22 @@ func (t RawTime) Time() (time.Time, error) {
 	return time.Parse("15:04:05", string(t))
 }
 
-type CourseCheck struct {
-	Period_id int
-	Time string
+type RoomCheck struct{
+	Section_id int
+	Location_id int
+	Building_id int
+	Building_name string
 	Room_id int
 	Room_number string
+}
+
+type ProfessorCheck struct {
+	UserID int
+	UserEmail string
+	FirstName string
+	section_id int
+	Period_id int
+	Time string
 	Day_id int
 	Meeting_day string
 }
@@ -511,6 +600,7 @@ func AdminAddSection(w http.ResponseWriter, r *http.Request){
 	timeSlot := model.TimeSlot{PeriodID:uint(timeInt),SemesterID:uint(semesterInt),DayID:uint(dayInt)}
 	buildingInt , _ := strconv.Atoi(buildingNum)
 	roomInt, _ := strconv.Atoi(roomNum)
+	facultyInt, _ := strconv.Atoi(faculty)
 
 	//TODO: Rework this, shouldn't be creating, should be searching
 	db.Create(&timeSlot)
@@ -527,27 +617,43 @@ func AdminAddSection(w http.ResponseWriter, r *http.Request){
 	newCourseSection := model.Section{CourseSectionNumber:sectionInt,CourseID:uint(courseInt), FacultyID:uint(facultyID),
 	TimeSlotID:timeSlotID,LocationID:location.LocationID}
 
-	//TODO: Make sure room is not already occupied at that time slot
-	cc := []CourseCheck{}
-	db.Raw(`select period_id,time,room_id,room_number,day_id,meeting_day
-	from section
-	natural join time_slot
-	natural join period
-	natural join day
-	natural join location
-	natural join building
-	natural join room
-	WHERE room_id = ? AND period_id =? AND day_id = ?`,location.RoomID, time, day).Scan(&cc)
+	//TODO: Complete, now test
+	rc := []RoomCheck{}
+	db.Raw(`
+		 SELECT section.section_id, location.location_id, building.building_id,room.room_id,room_number,building_name,period.period_id,time,day.day_id,meeting_day
+		 FROM section
+		 JOIN location ON section.location_id = location.location_id
+		 JOIN building ON building.building_id = location.building_id
+		 JOIN room ON room.room_id = location.room_id
+		 JOIN time_slot ON time_slot.time_slot_id = section.time_slot_id
+		 JOIN day ON time_slot.day_id = day.day_id
+		 JOIN period ON period.period_id = time_slot.period_id;
+	 	 WHERE location.room_id = ? AND building.building_id = ? AND period.period_id = ?
+	 	 AND day.day_id = ?`,location.RoomID, location.BuildingID,timeInt,dayInt).Scan(&rc)
+
+
+	if len(rc) > 0 {
+		fmt.Println("Cant add room, because is already ocupied at this time")
+		return
+	}
+
+	cc := []ProfessorCheck{}
+	//TODO: Complete, now test
+	db.Raw(`
+		SELECT user_id,user_email, first_name, section_id,period.period_id,time,day.day_id,meeting_day FROM main_user
+		 JOIN faculty ON main_user.user_id = faculty.faculty_id
+		 JOIN section ON faculty.faculty_id = section.section_id
+		 JOIN time_slot ON time_slot.time_slot_id = section.time_slot_id
+		 JOIN day ON time_slot.day_id = day.day_id
+		 JOIN period ON period.period_id = time_slot.period_id
+		 WHERE period.period_id = ? AND day.day_id = ? AND user_id = ?`, time,day,facultyInt).Scan(&cc)
 
 	fmt.Println(cc)
 
 	if len(cc) > 0{
-		fmt.Println("Cant add course, exit function")
+		fmt.Println("Cant add section,teacher is already teachinga  course at this time slot exit function")
+		return
 	}
-	//TODO: Make sure faculty is not teaching at same period, could be MW and TR at same time
-
 	db.Create(&newCourseSection)
 	global.Tpl.ExecuteTemplate(w, "admin", nil)
-
-
 }

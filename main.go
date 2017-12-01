@@ -17,10 +17,8 @@ import (
 
 
 	"strconv"
-	//"strings"
 
 	"io/ioutil"
-
 )
 
 var (
@@ -96,7 +94,7 @@ func main() {
 	routes := mux.NewRouter()
 	global.Tpl = template.Must(template.ParseGlob("templates/*"))
 	routes.PathPrefix("/style").Handler(http.StripPrefix("/style/",http.FileServer(http.Dir("style"))))
-	routes.PathPrefix("/public").Handler(http.StripPrefix("/public", http.FileServer(http.Dir("./public"))))
+	routes.PathPrefix("/public").Handler(http.StripPrefix("/public", http.FileServer(http.Dir("public"))))
 
 	routes.HandleFunc("/",index)
 	//routes.HandleFunc("/about/{number}", about)
@@ -120,6 +118,8 @@ func main() {
 	routes.Handle("/admin/student" , checkSessionWrapper(ViewStudentSchedulePage)).Methods("GET")
 	routes.HandleFunc("/admin/student/{student}", ViewStudentSchedule).Methods("GET")
 
+	routes.HandleFunc("/admin/transcript", viewStudentTranscriptPage).Methods("GET")
+	routes.HandleFunc("/admin/transcript/{student}", viewStudentTranscript).Methods("GET")
 
 	routes.HandleFunc("/admin/holds", ViewStudentHoldsPage)
 	routes.HandleFunc("/admin/holds/{user}", ViewStudentHolds).Methods("GET")

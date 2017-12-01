@@ -265,7 +265,6 @@ type Section struct {
 
 type Enrollment struct {
 	EnrollmentID uint `gorm:"primary_key"`
-	Grade string `gorm:"type:varchar(5)"`
 	StudentID uint `gorm:"not null"`
 	SectionID uint `gorm:"not null"`
 	Student Student  `gorm:"ForeignKey:StudentID; AssociationForeignKey:StudentID"`
@@ -285,6 +284,7 @@ type StudentHistory struct {
 	StudentID uint `gorm:"primary_key"`
 	EnrollmentID uint `gorm:"primary_key"`
 	Status string `gorm:"primary_key"`
+	Grade string `gorm:"type:varchar(5)"`
 	Student Student  `gorm:"ForeignKey:StudentID; AssociationForeignKey:StudentID"`
 	Enrollment Enrollment  `gorm:"ForeignKey:EnrollmentID; AssociationForeignKey:EnrollmentID"`
 }
