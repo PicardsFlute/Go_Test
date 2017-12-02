@@ -158,6 +158,9 @@ func main() {
 
 	/*Faculty Routes */
 	routes.HandleFunc("/faculty/schedule", facultyViewSchedule).Methods("GET")
+	routes.HandleFunc("/faculty/grades", giveStudentGradesPage).Methods("GET")
+	routes.HandleFunc("/faculty/grades/{sectionID}", giveStudentGrades).Methods("GET")
+
 
 	routes.HandleFunc("/logout", logout)
 	//routes.HandleFunc("/student", AuthHandler(displayUser))

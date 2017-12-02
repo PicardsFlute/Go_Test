@@ -1,11 +1,11 @@
-{{define "ViewFacultyScheduleDetails"}}
+{{define "FacultyGiveGrades"}}
 {{template "head"}}
 
 <div class="container">
 
 
 
-    <h1>Your schedule</h1>
+    <h1>Select Current Course to Give Grades For</h1>
 
     {{template "faculty-navbar"}}
 
@@ -19,6 +19,11 @@
         <p>Meeting Days: {{.MeetingDay}}</p>
         <p>Semester {{.Year}}</p>
         <p>Season {{.Season}}</p>
+        <form action="/faculty/grades/{{.SectionID}}"
+            method="GET" id="{{.SectionID}}">
+            <input type="submit" value="Give Grades"
+                   class="btn btn-default pull-right">
+        </form>
     </div>
     <hr>
     {{end}}

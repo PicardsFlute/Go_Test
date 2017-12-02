@@ -1,0 +1,32 @@
+{{define "FacultyGiveGradesForm"}}
+{{template "head"}}
+
+<div class="container">
+
+
+    {{template "faculty-navbar"}}
+
+    <h1>Current Students in Course [TODO:: Template course name in here]</h1>
+
+    {{if .}}
+    <form action="" method="POST">
+        {{range .}}
+    <div class="course_details">
+            <label class="form-group">Student Info</label>
+            <input type="text" readonly value="{{.FirstName}}"><input type="text" readonly value="{{.LastName}}"><input type="text" readonly value="{{.Status}}">
+            <input type="text" placeholder="Enter Letter Grade Here" name="grade" maxlength="2" pattern="/^[-+ A-F]+$/">
+    </div>
+    <hr>
+    {{end}}
+    {{else}}
+    </form>
+    <h1>Error loading course details</h1>
+    {{end}}
+
+
+
+</div>
+
+{{template "end"}}
+{{end}}
+
