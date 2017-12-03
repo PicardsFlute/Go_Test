@@ -10,7 +10,6 @@ import (
 	"Starfleet/model"
 	"strconv"
 	"fmt"
-	"time"
 	"github.com/gorilla/mux"
 	"encoding/json"
 )
@@ -32,28 +31,8 @@ func ViewStudentSchedulePage(w http.ResponseWriter, r *http.Request){
 		}
 	}
 }
-/*
-type StudentSchedule struct {
-	CourseName string
-	CourseCredits string
-	RoomNumber string
-	BuildingName string
-	StartTime time.Time
-	EndTime time.Time
-	MeetingDay string
-}
-*/
 
-type StudentSchedule struct {
-	CourseName string
-	CourseCredits string
-	RoomNumber string
-	BuildingName string
-	Time string
-	MeetingDay string
-	FirstName string
-	LastName string
-}
+
 
 
 type NoUser struct {
@@ -183,6 +162,16 @@ func ViewStudentSchedule(w http.ResponseWriter, r *http.Request){
 		return
 	}
 
+	type StudentSchedule struct {
+		CourseName string
+		CourseCredits string
+		RoomNumber string
+		BuildingName string
+		Time string
+		MeetingDay string
+		FirstName string
+		LastName string
+	}
 
 	ss := []StudentSchedule{}
 	db.Raw(`SELECT student_history.student_id,course_name,course_credits,building_name,room_number,meeting_day, first_name, last_name, time,student_history.status
@@ -403,13 +392,13 @@ func AdminSearchCoursePage(w http.ResponseWriter, r *http.Request){
 		global.Tpl.ExecuteTemplate(w, "searchCourseAdmin", departments)
 	//}
 }
-
+/*
 type AdminViewSection struct {
 	Name string
 	Description string
 
 }
-
+*/
 
 
 func AdminSearchCourse(w http.ResponseWriter, r *http.Request){
@@ -448,14 +437,15 @@ func AdminSearchCourse(w http.ResponseWriter, r *http.Request){
 	//return
 }
 
-type CourseOptions struct {
-	CourseName string
-	CourseID uint
-}
+
 
 
 
 func AdminAddSectionPage(w http.ResponseWriter, r *http.Request){
+	type CourseOptions struct {
+		CourseName string
+		CourseID uint
+	}
 	courses := []CourseOptions{}
 	fac := []model.MainUser{}
 	periods := []model.Period{}
@@ -543,37 +533,15 @@ func GetDepartmentsForSections(w http.ResponseWriter, r *http.Request){
 
 }
 
+/*
 type SectionInfo struct {
 	Year int
 	Season string
 	Day string
 }
+*/
 
-type RawTime []byte
 
-func (t RawTime) Time() (time.Time, error) {
-	return time.Parse("15:04:05", string(t))
-}
-
-type RoomCheck struct{
-	Section_id int
-	Location_id int
-	Building_id int
-	Building_name string
-	Room_id int
-	Room_number string
-}
-
-type ProfessorCheck struct {
-	UserID int
-	UserEmail string
-	FirstName string
-	section_id int
-	Period_id int
-	Time string
-	Day_id int
-	Meeting_day string
-}
 
 func AdminAddSection(w http.ResponseWriter, r *http.Request){
 
@@ -622,6 +590,15 @@ func AdminAddSection(w http.ResponseWriter, r *http.Request){
 	TimeSlotID:timeSlotID,LocationID:location.LocationID}
 
 	//TODO: Complete, now test
+
+	type RoomCheck struct{
+		Section_id int
+		Location_id int
+		Building_id int
+		Building_name string
+		Room_id int
+		Room_number string
+	}
 	rc := []RoomCheck{}
 	db.Raw(`
 		 SELECT section.section_id, location.location_id, building.building_id,room.room_id,room_number,building_name,period.period_id,time,day.day_id,meeting_day
@@ -639,6 +616,18 @@ func AdminAddSection(w http.ResponseWriter, r *http.Request){
 	if len(rc) > 0 {
 		fmt.Println("Cant add room, because is already ocupied at this time")
 		return
+	}
+
+
+	type ProfessorCheck struct {
+		UserID int
+		UserEmail string
+		FirstName string
+		section_id int
+		Period_id int
+		Time string
+		Day_id int
+		Meeting_day string
 	}
 
 	cc := []ProfessorCheck{}
@@ -660,4 +649,9 @@ func AdminAddSection(w http.ResponseWriter, r *http.Request){
 	}
 	db.Create(&newCourseSection)
 	global.Tpl.ExecuteTemplate(w, "admin", nil)
+}
+
+func openGradingPeriod(w http.ResponseWriter, r *http.Request){
+
+
 }

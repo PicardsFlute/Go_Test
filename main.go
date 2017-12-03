@@ -159,7 +159,8 @@ func main() {
 	/*Faculty Routes */
 	routes.HandleFunc("/faculty/schedule", facultyViewSchedule).Methods("GET")
 	routes.HandleFunc("/faculty/grades", giveStudentGradesPage).Methods("GET")
-	routes.HandleFunc("/faculty/grades/{sectionID}", giveStudentGrades).Methods("GET")
+	routes.HandleFunc("/faculty/grades/{sectionID}", giveStudentGradesForm).Methods("GET")
+	routes.HandleFunc("/faculty/grades/{sectionID}", submitGrades).Methods("POST")
 
 
 	routes.HandleFunc("/logout", logout)
@@ -538,7 +539,7 @@ func createStudent(w http.ResponseWriter, r *http.Request) {
 	stu := model.Student{StudentID:mu.UserID, StudentType:studentType}
 	db.Create(&stu)
 
-	if (studentType == 1){
+	if studentType == 1{
 		stuFT := model.FullTimeStudent{FullTimeStudentID: stu.StudentID, NumCredits:credits}
 		db.Create(&stuFT)
 	} else {

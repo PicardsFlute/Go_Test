@@ -1,5 +1,5 @@
 package main
-/*
+
 
 import (
 	"github.com/jinzhu/gorm"
@@ -414,7 +414,7 @@ func main() {
 	db.Create(&springLastLastYear)
 	db.Create(&fallLastLastLastYear)
 	db.Create(&springLastLastLastYear)
-*/
+
 	/*
 	timeform := "Jan 2, 2006 at 3:04pm (MST)"
 	t1, _ := time.Parse(timeform, "Jan 2, 2006 at 1:00pm (MST)")
@@ -424,7 +424,7 @@ func main() {
 	period1 := model.Period{Star	tTime: t1, EndTime: t2}
 	period2 := model.Period{StartTime: t3, EndTime: t4}
 	*/
-/*
+
 
 	period0 := model.Period{Time:"9:40 AM - 11:10 AM"}
 	period1 := model.Period{Time:"11:20 AM - 12:50 PM"}
@@ -639,8 +639,11 @@ func main() {
 	enroll8 := model.Enrollment{StudentID:student4.StudentID, SectionID:section7.SectionID}
 	enroll9 := model.Enrollment{StudentID:student1.StudentID, SectionID:section5.SectionID}
 	enroll10 := model.Enrollment{StudentID:student2.StudentID, SectionID:section5.SectionID}
+	enroll1011 := model.Enrollment{StudentID:student3.StudentID, SectionID:section5.SectionID}
+	enroll1012 := model.Enrollment{StudentID:student4.StudentID, SectionID:section5.SectionID}
 	enroll11 := model.Enrollment{StudentID:student3.StudentID, SectionID:section1.SectionID}
 	enroll12 := model.Enrollment{StudentID:student1.StudentID, SectionID:section2.SectionID}
+
 	db.Create(&enroll1)
 	db.Create(&enroll2)
 	db.Create(&enroll3)
@@ -653,9 +656,12 @@ func main() {
 	db.Create(&enroll10)
 	db.Create(&enroll11)
 	db.Create(&enroll12)
+	db.Create(&enroll1011)
+	db.Create(&enroll1012)
 
 
 
+	//when student registers for a course, a history record must be created as well
 	//history for Spring 2018
 	history1 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll1.EnrollmentID, Status:"In progress", Grade:"-"}
 	history2 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enroll2.EnrollmentID, Status:"In progress", Grade:"-"}
@@ -669,6 +675,9 @@ func main() {
 	history10 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enroll10.EnrollmentID, Status:"In progress", Grade:"-"}
 	history11 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enroll11.EnrollmentID, Status:"In progress", Grade:"-"}
 	history12 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll12.EnrollmentID, Status:"In progress", Grade:"-"}
+	history1222 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enroll1011.EnrollmentID, Status:"In progress", Grade:"-"}
+	history1221 := model.StudentHistory{StudentID:student4.StudentID, EnrollmentID:enroll1012.EnrollmentID, Status:"In progress", Grade:"-"}
+
 	db.Create(&history1)
 	db.Create(&history2)
 	db.Create(&history3)
@@ -681,9 +690,11 @@ func main() {
 	db.Create(&history10)
 	db.Create(&history11)
 	db.Create(&history12)
+	db.Create(&history1222)
+	db.Create(&history1221)
+
 
 	//enrollment for Spring 2017
-
 	enroll111 := model.Enrollment{StudentID:student1.StudentID, SectionID:sectionSpring2017a.SectionID}
 	enroll21 := model.Enrollment{StudentID:student2.StudentID, SectionID:sectionSpring2017b.SectionID}
 	enroll31 := model.Enrollment{StudentID:student3.StudentID, SectionID:sectionSpring2017c.SectionID}
@@ -738,5 +749,5 @@ func main() {
 	db.Create(&history122)
 
 }
-*/
+
 

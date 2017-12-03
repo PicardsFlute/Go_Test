@@ -12,11 +12,19 @@ import (
 )
 
 func ViewSchedule(w http.ResponseWriter, r *http.Request){
-	/*
-	vars := mux.Vars(r)
-	id := vars["id"]
-	idInt , _ := strconv.Atoi(id)
-	*/
+
+
+	type StudentSchedule struct {
+		CourseName string
+		CourseCredits string
+		RoomNumber string
+		BuildingName string
+		Time string
+		MeetingDay string
+		FirstName string
+		LastName string
+	}
+
 
 	_, user := CheckLoginStatus(w,r)
 	ss := []StudentSchedule{}

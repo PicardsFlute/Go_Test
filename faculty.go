@@ -9,6 +9,7 @@ import (
 )
 
 func facultyViewSchedule(w http.ResponseWriter,r *http.Request){
+
 	_, user := CheckLoginStatus(w,r)
 	type FacultySchedule struct{
 		CourseName string
@@ -42,6 +43,7 @@ func facultyViewSchedule(w http.ResponseWriter,r *http.Request){
 }
 
 func giveStudentGradesPage(w http.ResponseWriter, r *http.Request){
+
 	_, user := CheckLoginStatus(w,r)
 	type FacultyScheduleGrade struct{
 		CourseName string
@@ -75,13 +77,29 @@ func giveStudentGradesPage(w http.ResponseWriter, r *http.Request){
 	}
 }
 
-func giveStudentGrades(w http.ResponseWriter, r *http.Request) {
+func giveStudentGradesForm(w http.ResponseWriter, r *http.Request) {
+
 	vars := mux.Vars(r)
 	sectionID := vars["sectionID"]
-	fmt.Println("Inside give student grades")
-	fmt.Println("section id is", sectionID)
 	sectionIDint,_ := strconv.Atoi(sectionID)
+
+	type CourseInfo struct{
+		CourseName string
+		SectionID uint
+	}
+
+	courseDetail := CourseInfo{}
+
+	db.Raw(`
+		SELECT course_name,section_id
+		FROM section
+		JOIN course ON course.course_id = section.course_id
+		WHERE section.section_id = ?`,sectionIDint).Scan(&courseDetail)
+
+	fmt.Println("Course Detail is", courseDetail)
+
 	type GradingForm struct{
+		StudentID uint
 		FirstName string
 		LastName string
 		Status string
@@ -100,12 +118,53 @@ func giveStudentGrades(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(gradeForm)
 
-	err := global.Tpl.ExecuteTemplate(w, "FacultyGiveGradesForm", gradeForm)
+	m := map[string]interface{}{
+		"Course":courseDetail,
+		"Roster":gradeForm,
+	}
+
+	err := global.Tpl.ExecuteTemplate(w, "FacultyGiveGradesForm", m)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
 
-	//on form submit, loop through and do an update for each row in the previous query on grade
+}
 
+func submitGrades(w http.ResponseWriter, r *http.Request){
+
+	vars := mux.Vars(r)
+	sectionID := vars["sectionID"]
+	sectionIDint,_ := strconv.Atoi(sectionID)
+	//grades := r.FormValue("grade")
+	r.ParseForm()
+	id := r.Form["studentId"]
+	grades := r.Form["grade"]
+
+	//fmt.Println("Student IDs are",id)
+	//fmt.Println("Grades are ", grades)
+	//fmt.Println("Section id is ", sectionIDint)
+	//fmt.Println("Number of grades is", len(grades))
+
+
+	type Err struct {
+		error string
+	}
+
+	e := Err{}
+
+	for k,_ := range grades{
+		db.Raw(`
+			UPDATE student_history
+			SET grade = ?,
+			status = 'Complete'
+			FROM enrollment
+			WHERE enrollment.enrollment_id = student_history.enrollment_id
+			AND enrollment.section_id = ?
+			AND student_history.student_id = ?
+		`,grades[k],sectionIDint,id[k]).Scan(&e)
+		fmt.Println("Updating grade with info sec, grade, stud_id", sectionIDint,grades[k], id[k])
+	}
+
+	fmt.Println(e)
 
 }
