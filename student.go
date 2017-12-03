@@ -69,3 +69,12 @@ func ViewHolds(w http.ResponseWriter, r *http.Request){
 	}
 
 }
+
+
+func ViewAdvisor(w http.ResponseWriter, r *http.Request){
+
+	//_ ,user := CheckLoginStatus(w,r)
+
+	//query is done
+
+}

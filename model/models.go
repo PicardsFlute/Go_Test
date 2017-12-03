@@ -56,7 +56,7 @@ func (u *MainUser)ValidateData()(bool, error){
 }
 
 
-	type Student struct {
+type Student struct {
 	StudentID uint `gorm:"primary_key"`
 	MainUser  MainUser `gorm:"ForeignKey:UserID;AssociationForeignKey:StudentID"`
 	StudentType int `gorm:"not null"`
@@ -89,6 +89,7 @@ type Department struct {
 type Faculty struct {
 	FacultyID uint `gorm:"primary_key" `
 	FacultyType int `gorm:"not null"`
+	RoomNumber string `gorm:"type:varchar(50)"`
 	MainUser  MainUser `gorm:"ForeignKey:UserID; AssociationForeignKey:FacultyID"`
 	DepartmentID uint `gorm:"not null"`
 	Department Department `gorm:"ForeignKey:DepartmentID; AssociationForeignKey:DepartmentID"`
@@ -105,6 +106,12 @@ type FullTimeFaculty struct {
 	Faculty Faculty `gorm:"ForeignKey:FacultyID; AssociationForeignKey:FullTimeFacultyID"`
 }
 
+type Advises struct {
+	FacultyID uint `gorm:"primary_key"`
+	StudentID uint `gorm:"primary_key"`
+	Student  Student `gorm:"ForeignKey:UserID; AssociationForeignKey:FacultyID"`
+	Faculty  Faculty `gorm:"ForeignKey:UserID;AssociationForeignKey:StudentID"`
+}
 
 type Admin struct {
 	AdminID uint `gorm:"primary_key"`

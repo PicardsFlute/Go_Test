@@ -68,6 +68,7 @@ func init() {
 		&model.Minor{},
 		&model.StudentMajor{},
 		&model.StudentMinor{},
+		&model.Advises{},
 
 		&model.Hold{},
 		&model.StudentHolds{},
