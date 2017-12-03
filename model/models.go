@@ -210,14 +210,9 @@ type Semester struct {
 	SemesterID uint `gorm:"primary_key"`
 	Year int `gorm:"type:integer"`
 	Season string `gorm:"type:varchar(50)"`
+	SemesterStatus string `gorm:"type:varchar(50);not null"`
 }
-/*
-type Period struct {
-	PeriodID uint `gorm:"primary_key"`
-	StartTime time.Time
-	EndTime time.Time
-}
-*/
+
 type Period struct {
 	PeriodID uint `gorm:"primary_key"`
 	Time string `gorm:"not null"`

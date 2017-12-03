@@ -78,7 +78,7 @@ func viewStudentTranscript(w http.ResponseWriter, r *http.Request){
 	//nu := NoUser{"Nobody found"}
 	if count > 0 {
 		fmt.Println("You have a user", user.FirstName)
-	} else {//TODO: Render error correctly, try passing in map with admin user
+	} else {
 
 		m := map[string]interface{}{
 			"NoUser": "Nobody Home",
@@ -151,7 +151,7 @@ func ViewStudentSchedule(w http.ResponseWriter, r *http.Request){
 	//nu := NoUser{"Nobody found"}
 	if count > 0 {
 		fmt.Println("You have a user", user.FirstName)
-	} else {//TODO: Render error correctly, try passing in map with admin user
+	} else {
 
 		m := map[string]interface{}{
 			"NoUser": "Nobody Home",
@@ -651,7 +651,14 @@ func AdminAddSection(w http.ResponseWriter, r *http.Request){
 	global.Tpl.ExecuteTemplate(w, "admin", nil)
 }
 
-func openGradingPeriod(w http.ResponseWriter, r *http.Request){
+func changeSemesterStatusForm(w http.ResponseWriter, r *http.Request){
 
+	semester := []model.Semester{}
+	db.Table("semester").Select("*").Scan(&semester)
+	global.Tpl.ExecuteTemplate(w, "ChangeSemesterStatusAdmin", semester)
+
+}
+
+func changeSemesterStatus(w http.ResponseWriter, r *http.Request) {
 
 }

@@ -28,7 +28,7 @@ func ViewSchedule(w http.ResponseWriter, r *http.Request){
 
 	_, user := CheckLoginStatus(w,r)
 	ss := []StudentSchedule{}
-	db.Raw(`SELECT student_history.student_id,course_name,course_credits,building_name,room_number,meeting_day, first_name, last_name, time,student_history.status
+	db.Raw(`SELECT student_history.student_id,course_name,course_credits,building_name,room.room_number,meeting_day, first_name, last_name, time,student_history.status
 	FROM student_history
 	JOIN enrollment ON student_history.enrollment_id = enrollment.enrollment_id
 	JOIN section ON enrollment.section_id = section.section_id
@@ -73,8 +73,66 @@ func ViewHolds(w http.ResponseWriter, r *http.Request){
 
 func ViewAdvisor(w http.ResponseWriter, r *http.Request){
 
-	//_ ,user := CheckLoginStatus(w,r)
+	_ ,user := CheckLoginStatus(w,r)
 
-	//query is done
+	type AdvisingData struct {
+		FacultyID uint
+		FirstName string
+		LastName string
+		RoomNumber string
+		DepartmentName string
+		DepartmentBuilding string
+		DepartmentPhoneNumber string
+	}
+
+	ad := AdvisingData{}
+
+	db.Raw(`
+		SELECT faculty.faculty_id, first_name, last_name, room_number,department_building,department_name,department_phone_number
+		FROM advises
+		JOIN faculty ON advises.faculty_id = faculty.faculty_id
+		JOIN main_user ON faculty.faculty_id = main_user.user_id
+		JOIN department ON department.department_id = faculty.department_id
+		WHERE advises.student_id = ?
+		`,user.UserID).Scan(&ad)
+
+
+	global.Tpl.ExecuteTemplate(w, "ViewAdvisor", ad)
+
+}
+
+func ViewTranscript(w http.ResponseWriter, r *http.Request){
+
+	_ ,user := CheckLoginStatus(w,r)
+
+
+	type Transcript struct {
+		StudentID uint
+		Grade string
+		Status string
+		Year int
+		Season string
+		CourseName string
+		CourseCredits int
+	}
+
+	st := []Transcript{}
+	db.Raw(`
+ 	 SELECT enrollment.student_id,grade,status,year,season,course_name,course_credits
+	 FROM student_history
+	 JOIN enrollment ON student_history.enrollment_id = enrollment.enrollment_id
+	 JOIN section ON enrollment.section_id = section.section_id
+	 JOIN course on course.course_id = section.course_id
+	 JOIN time_slot ON time_slot.time_slot_id = section.time_slot_id
+	 JOIN semester ON time_slot.semester_id = semester.semester_id
+	 WHERE enrollment.student_id = ?`,user.UserID).Scan(&st)
+
+	m := map[string]interface{}{
+		"User":user,
+		"Transcript":st,
+	}
+
+
+	global.Tpl.ExecuteTemplate(w, "ViewTranscript", m)
 
 }
