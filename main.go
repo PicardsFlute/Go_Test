@@ -157,10 +157,8 @@ func main() {
 	routes.Handle("/admin/user/search" , checkSessionWrapper(searchUser)).Methods("GET")
 	routes.Handle("/admin/user/{userID}/delete", checkSessionWrapper(deleteUser)).Methods("POST")
 
-	routes.Handle("/admin/schedule", checkSessionWrapper(searchMasterSchedule)).Methods(
-
-
-	)
+	routes.Handle("/course/search", checkSessionWrapper(searchMasterScheduleForm)).Methods("GET")
+	//routes.Handle("/course/searc																																																																																																																																																																																																																																																																																								}", checkSessionWrapper(searchMasterSchedule)).Methods("GET")
 
 	routes.HandleFunc("/logout", logout)
 	//routes.HandleFunc("/student", AuthHandler(displayUser))
@@ -719,41 +717,89 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 }
 
 
+func searchMasterScheduleForm(w http.ResponseWriter, r *http.Request){
+	//allDepartments := []model.Department{}
+	//db.Find(&allDepartments)
+	//m :=  map[string]interface{}{
+	//	"Departments": allDepartments,
+	//}
+	global.Tpl.ExecuteTemplate(w, "masterScheduleSearch", nil)
+}
+
 func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
-	allDepartments := []model.Department{}
-	db.Find(&allDepartments)
+
 
 	queryVals := r.URL.Query()
-	depID := queryVals["department"][0]
-	//instructorName := queryVals["instructor"][0]
-	courseName := queryVals["course-name"][0]
-	//courseNumber, _ := queryVals["course-number"]
 
-	coursesFound := []model.Course{}
-	db.Where(model.Course{CourseName: courseName}).Or(model.Course{DepartmentID: uint(depID)}).Or(model.Course{CourseName: courseName}).Find(&coursesFound)
+	departmentQuery,_ := queryVals["department"]
+	courseNameQuery,_ := queryVals["course-name"]
+	//courseNumQuery := queryVals["course-number"]
+	//professorQuery := queryVals["instructor"]
 
-	type CourseData struct {
-		CourseName string
-		CourseCredits int
-		CourseDescription string
-		DepartmentID uint
-		SectionID uint
-		CourseSectionNumber int
-		CourseID uint
-		FacultyID uint
-		TimeSlotID uint
-		LocationID uint
+
+
+	depID := departmentQuery[0]
+	courseName := courseNameQuery[0]
+
+	whereMap := map[string]interface{}{}
+
+
+	if depID != "" {
+		println("Department query present")
+		depID, _ := strconv.ParseUint(departmentQuery[0], 10, 64)
+		whereMap["department_id"] = depID
+
+
 	}
+
+	if courseName != "" {
+		whereMap["course_name"] = courseName
+	}
+
+
+
+
+
+
+
+		////instructorName := queryVals["instructor"][0]
+		//courseName := courseNameQuery[0]
+		////courseNumber, _ := queryVals["course-number"]
+		//
+		//
+		//
+
+		type CourseData struct {
+			CourseName string
+			CourseCredits int
+			CourseDescription string
+			DepartmentID uint
+			SectionID uint
+			CourseSectionNumber int
+			CourseID uint
+			FacultyID uint
+			TimeSlotID uint
+			LocationID uint
+		}
+	//coursesFound := []model.Course{}
+	//db.Where(model.Course{CourseName: courseName}).Or(model.Course{DepartmentID: uint(depID)}).Or(model.Course{CourseName: courseName}).Find(&coursesFound)
 
 	queryRes := []CourseData{}
 
-	rows, err := db.Table("section").Select("users.name, emails.email").Joins("JOIN section on section.course_id = course.course_id").Where("course.course_name = ? OR course.department_id = ?", courseName, depID ).Rows()
+	db.Joins("JOIN course ON course.course_id = section.course_id").Where(whereMap).Find(&queryRes)
+		//rows, err := db.Table("section").Select("users.name, emails.email").Joins("JOIN section on section.course_id = course.course_id").Where("course.course_name = ? OR course.department_id = ?", courseName, depID ).Rows()
+		//
+		//if err == nil{
+		//	rows.Scan(&queryRes)
+		//}
 
-	if err == nil{
-		rows.Scan(&queryRes)
+	data :=  map[string]interface{}{
+		"Results": queryRes,
 	}
-	m :=  map[string]interface{}{
-		"Departments": allDepartments,
-	}
-	global.Tpl.ExecuteTemplate(w, "masterSchedule", m)
+
+	global.Tpl.ExecuteTemplate(w, "masterScheduleSearch", data)
+
+
+
+
 }
