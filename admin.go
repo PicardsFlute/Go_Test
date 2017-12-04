@@ -660,5 +660,26 @@ func changeSemesterStatusForm(w http.ResponseWriter, r *http.Request){
 }
 
 func changeSemesterStatus(w http.ResponseWriter, r *http.Request) {
+	status := r.FormValue("status")
+	semester := r.FormValue("semester")
+
+	//sem := model.Semester{}
+
+	type err struct {
+		errormsg string
+	}
+
+	e := err{}
+
+	//db.Model(&sem).Select("semester").Updates(map[string]interface{}{"semester_status":status}).Where("semester_id = ?",semester).Scan(&e)
+
+
+	db.Raw(`
+		UPDATE SEMESTER
+		SET semester_status = ?
+		WHERE semester_id = ?;
+	`, status, semester).Scan(&e)
+
+	global.Tpl.ExecuteTemplate(w, "adminSuccess", "Semester Status Changed Successfully.")
 
 }

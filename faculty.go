@@ -6,6 +6,7 @@ import (
 	"Starfleet/global"
 	"github.com/gorilla/mux"
 	"strconv"
+	"strings"
 )
 
 func facultyViewSchedule(w http.ResponseWriter,r *http.Request){
@@ -83,6 +84,28 @@ func giveStudentGradesForm(w http.ResponseWriter, r *http.Request) {
 	sectionID := vars["sectionID"]
 	sectionIDint,_ := strconv.Atoi(sectionID)
 
+	type GradingPeriod struct {
+		SectionID uint
+		SemesterID uint
+		SemesterStatus string
+	}
+
+	gp := GradingPeriod{}
+
+	db.Raw(`
+		SELECT section.section_id, semester.semester_id, semester_status
+		FROM section
+		JOIN time_slot ON section.time_slot_id = time_slot.time_slot_id
+		JOIN semester ON time_slot.semester_id = semester.semester_id
+		WHERE section.section_id = ?
+	`, sectionIDint).Scan(&gp)
+
+	if strings.Compare(gp.SemesterStatus,"Grading") != 0 {
+		fmt.Println("Error it is not currently a grading period")
+		global.Tpl.ExecuteTemplate(w, "facultySuccess", "Error it is not currently a grading period")
+		return
+	}
+
 	type CourseInfo struct{
 		CourseName string
 		SectionID uint
@@ -140,11 +163,6 @@ func submitGrades(w http.ResponseWriter, r *http.Request){
 	id := r.Form["studentId"]
 	grades := r.Form["grade"]
 
-	//fmt.Println("Student IDs are",id)
-	//fmt.Println("Grades are ", grades)
-	//fmt.Println("Section id is ", sectionIDint)
-	//fmt.Println("Number of grades is", len(grades))
-
 
 	type Err struct {
 		error string
@@ -166,5 +184,8 @@ func submitGrades(w http.ResponseWriter, r *http.Request){
 	}
 
 	fmt.Println(e)
+
+	global.Tpl.ExecuteTemplate(w, "facultySuccess", "Grades sucessfully submitted")
+
 
 }

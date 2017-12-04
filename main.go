@@ -147,6 +147,7 @@ func main() {
 	routes.Handle("/admin/user/search" , checkSessionWrapper(searchUser)).Methods("GET")
 	routes.Handle("/admin/user/{userID}/delete", checkSessionWrapper(deleteUser)).Methods("POST")
 	routes.HandleFunc("/admin/semester" , changeSemesterStatusForm).Methods("GET")
+	routes.HandleFunc("/admin/semester" , changeSemesterStatus).Methods("POST")
 
 
 	/* Student Routes*/
