@@ -14,7 +14,7 @@
 
 
             <div class="col-md-8 contact-left-w3l">
-                <form action="/course/search" id="requestData" class="form-horizontal" method="GET">
+                <form action="/course/searchResult" id="requestData" class="form-horizontal" method="GET">
                     <label class="form-group">Department</label>
                     <select name="department" class="form-control">
 
@@ -37,8 +37,8 @@
                     <label class="form-group">Instructor</label><br />
                     <input type="text" class="form-control" name="instructor" placeholder="" ><br />
 
-e
-                    <input type="button" class="btn-success"  value="Class Search">
+
+                    <input type="submit" class="btn-success"  value="Search">
                     <!--<form>-->
                         <!---->
                     <!--</form>-->
@@ -49,22 +49,26 @@ e
             <div class="col-md-8 contact-left-w3l">
                 <ul>
                     {{ range .Results }}
-                    <div>
-                        <h3>
-                            {{ .CourseName }} Section {{ .SectionID }}
-                        </h3>
-                        <h4>
-                            Professor: {{ .FirstName }} {{ .LastName }}
-                        </h4>
-                        <h4>
-                            Credits: {{ .CourseCredits }}
-                        </h4>
-                        <h4>Time:</h4>
-                        <p>{{ .MeetingDay }} {{ .Time }} </p>
-                        <h4>Location:</h4>
-                        <p>{{ .RoomNumber }} {{ .BuildingName }}</p>
-                    </div>
+                    <li>
+                        <div>
+                            <h4>
+                                {{ .CourseName }} Section {{ .CourseSectionNumber }}
+                            </h4>
+                            <h4>
+                                Professor: {{ .FirstName }} {{ .LastName }}
+                            </h4>
+                            <h4>
+                                Credits: {{ .CourseCredits }}
+                            </h4>
+                            <h4>Time:{{ .MeetingDay }} {{ .Time }} </h4>
+
+                            <h4>Location:{{ .RoomNumber }} {{ .BuildingName }}</h4>
+
+                        </div>
+                        <br/>
+                    </li>
                     <br/>
+
                     {{  end }}
                 </ul>
 

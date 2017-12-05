@@ -19,6 +19,7 @@ import (
 	"strconv"
 
 	"io/ioutil"
+
 )
 
 var (
@@ -106,7 +107,7 @@ func main() {
 
 	/* Master schedule searching*/
 	routes.HandleFunc("/course/search", searchMasterScheduleForm).Methods("GET")
-	routes.HandleFunc("/course/search", searchMasterSchedule).Methods("GET")
+	routes.HandleFunc("/course/searchResult", searchMasterSchedule).Methods("GET")
 
 
 	/*Admin routes */
@@ -715,56 +716,54 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
 
 
 func searchMasterScheduleForm(w http.ResponseWriter, r *http.Request){
-	//allDepartments := []model.Department{}
-	//db.Find(&allDepartments)
-	//m :=  map[string]interface{}{
-	//	"Departments": allDepartments,
-	//}
-	global.Tpl.ExecuteTemplate(w, "masterScheduleSearch", nil)
-}
+	allDepartments := []model.Department{}
+	db.Find(&allDepartments)
+	m :=  map[string]interface{}{
+		"Departments": allDepartments,
+	}
+	global.Tpl.ExecuteTemplate(w, "masterScheduleSearch", m)
+	}
+
+
 
 func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
-
+	println("Inside searchMasterSchedule")
 
 	queryVals := r.URL.Query()
 
 	departmentQuery,_ := queryVals["department"]
 	courseNameQuery,_ := queryVals["course-name"]
-	//courseNumQuery := queryVals["course-number"]
+	courseNumQuery := queryVals["course-number"]
 	//professorQuery := queryVals["instructor"]
 
 
 
 	depID := departmentQuery[0]
 	courseName := courseNameQuery[0]
+	courseNum  := courseNumQuery[0]
 
-	whereMap := map[string]interface{}{}
+	whereMap := make(map[string]interface{})
 
+	whereStuff := "WHERE "
 
 	if depID != "" {
-		println("Department query present")
-		depID, _ := strconv.ParseUint(departmentQuery[0], 10, 64)
+		println("Department query present: " + depID)
+		//depID, _ := strconv.ParseUint(departmentQuery[0], 10, 64)
 		whereMap["department_id"] = depID
-
+		whereStuff += "department_id = " + depID
 
 	}
 
 	if courseName != "" {
 		whereMap["course_name"] = courseName
+		whereStuff += " AND course_name = " + courseName
 	}
 
+	if courseNum != "" {
+		whereStuff += " AND course_num = " + courseNum
+	}
 
-
-
-
-
-
-		////instructorName := queryVals["instructor"][0]
-		//courseName := courseNameQuery[0]
-		////courseNumber, _ := queryVals["course-number"]
-		//
-		//
-		//
+	whereStuff += " AND semester.year = ? AND semester.season = ?"
 
 		type CourseData struct {
 			CourseName string
@@ -775,28 +774,68 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 			CourseSectionNumber int
 			CourseID uint
 			FacultyID uint
+			FirstName string
+			LastName string
 			TimeSlotID uint
 			LocationID uint
+			DayID uint
+			MeetingDay string
+			RoomID uint
+			RoomNumber string
+			RoomType string
+			BuildingID uint
+			BuildingName string
+			Time string
 		}
+
 	//coursesFound := []model.Course{}
 	//db.Where(model.Course{CourseName: courseName}).Or(model.Course{DepartmentID: uint(depID)}).Or(model.Course{CourseName: courseName}).Find(&coursesFound)
 
 	queryRes := []CourseData{}
 
-	db.Joins("JOIN course ON course.course_id = section.course_id").Where(whereMap).Find(&queryRes)
-		//rows, err := db.Table("section").Select("users.name, emails.email").Joins("JOIN section on section.course_id = course.course_id").Where("course.course_name = ? OR course.department_id = ?", courseName, depID ).Rows()
-		//
+
+
+	//rows, err := db.Joins("JOIN course ON course.course_id = section.course_id").Where(whereMap).Rows()
+	sql := `SELECT course.course_name, course.course_credits, course.course_description, course.department_id, section.section_id, section.course_section_number,
+	section.course_id, section.faculty_id, section.time_slot_id, section.location_id, section.course_section_number,
+	main_user.first_name, main_user.last_name,
+	day.meeting_day, day.day_id,
+
+	building.building_name,
+	room.room_number, room.room_type
+	FROM section
+	JOIN course ON course.course_id = section.course_id
+	JOIN main_user ON main_user.user_id = section.faculty_id
+	JOIN location ON section.location_id = location.location_id
+	JOIN building ON building.building_id = location.building_id
+	JOIN room ON room.room_id = location.room_id
+	JOIN time_slot ON time_slot.time_slot_id = section.time_slot_id
+	JOIN semester ON time_slot.semester_id = semester.semester_id
+	JOIN day ON time_slot.day_id = day.day_id
+	JOIN period ON period.period_id = time_slot.period_id `
+
+	sql += whereStuff
+
+	db.Raw(sql, "2018", "Spring").Scan(&queryRes)
+
 		//if err == nil{
-		//	rows.Scan(&queryRes)
+		//	//rows.Scan(&queryRes)
+		//
+		//} else {
+		//	println(err.Error())
 		//}
+
+	for _, val := range queryRes{
+		println(val.CourseName)
+	}
+	allDepartments := []model.Department{}
+	db.Find(&allDepartments)
 
 	data :=  map[string]interface{}{
 		"Results": queryRes,
+		"Departments": allDepartments,
 	}
 
 	global.Tpl.ExecuteTemplate(w, "masterScheduleSearch", data)
-
-
-
 
 }
