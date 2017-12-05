@@ -140,20 +140,24 @@ func main() {
 	routes.HandleFunc("/admin/section/{section}", AdminAddSection)
 	routes.HandleFunc("/admin/section/room/{id}", GetRoomsForBuilding)
 	routes.HandleFunc("/admin/section/department/{id}", GetDepartmentsForSections).Methods("GET")
-
-	//routes.Handle("/admin/course/{course}",checkSessionWrapper(AdminAddCoursePage))
-
 	routes.Handle("/admin/user", checkSessionWrapper(newUserForm)).Methods("GET")
 	routes.Handle("/admin/user", checkSessionWrapper(createUser)).Methods("POST")
 	routes.Handle("/admin/user/student", checkSessionWrapper(createStudent)).Methods("POST")
 	routes.Handle("/admin/user/faculty", checkSessionWrapper(createFaculty)).Methods("POST")
 	routes.Handle("/admin/user/search" , checkSessionWrapper(searchUser)).Methods("GET")
 	routes.Handle("/admin/user/{userID}/delete", checkSessionWrapper(deleteUser)).Methods("POST")
+	routes.HandleFunc("/admin/semester" , changeSemesterStatusForm).Methods("GET")
+	routes.HandleFunc("/admin/semester" , changeSemesterStatus).Methods("POST")
+
 
 	/* Student Routes*/
 	routes.Handle("/student",  checkSessionWrapper(displayStudent)).Methods("GET")
 	routes.HandleFunc("/student/schedule", ViewSchedule).Methods("GET")
 	routes.HandleFunc("/student/holds", ViewHolds).Methods("GET")
+	routes.HandleFunc("/student/advisor", ViewAdvisor).Methods("GET")
+	routes.HandleFunc("/student/transcript", ViewTranscript).Methods("GET")
+
+
 
 	//routes.HandleFunc("/unauthorized", unauthorized)
 

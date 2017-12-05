@@ -1,0 +1,31 @@
+{{define "ViewAdvisor"}}
+{{template "head"}}
+
+
+<div class="container">
+
+
+    {{template "student-navbar"}}
+
+    <h1>Advising Data</h1>
+    &nbsp;&nbsp;
+    {{if .}}
+    <div class="course_details">
+        <p>Advisor Name {{.FirstName}} {{.LastName}}</p>
+        <p>Room Number: {{.RoomNumber}}</p>
+        <p>Department: {{.DepartmentName}}</p>
+        <p>Building Name: {{.DepartmentBuilding}}</p>
+        <p>Department Number: {{.DepartmentPhoneNumber}}</p>
+    </div>
+    <hr>
+    {{else}}
+    <h1>Error loading advisor.</h1>
+    {{end}}
+
+
+
+</div>
+
+{{template "end"}}
+{{end}}
+

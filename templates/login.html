@@ -1,5 +1,8 @@
 {{define "login"}}
 {{template "head"}}
+
+<!--
+
 <div class="container">
 
         <form action="/login" id="requestData" class="form-horizontal" method="POST">
@@ -20,10 +23,53 @@
 
         </form>
 
+-->
+    <body style="background-repeat: no-repeat;background-position: center;background-size:cover;
+    background-image: url(../public/pics/space.jpg); background-attachment: fixed;background-color:white">
 
-    <div class="login-error">{{.}}</div>
+    <section class="container" style="margin-top:100px">
+        <div class="col-xs-3">
 
-</div>
+        </div>
+        <div class="col-lg-5" style="background-color:white;height:340px;margin-left:35px">
+
+            <div class="row">
+                <div class="col-xs-12" style="background-color:white;height:110px">
+                    <div class="col-xs-3">
+
+
+                    </div>
+                    <div class="col-xs-9">
+
+                        <img style="width:59%;height:110px;" src="../public/pics/5.png" />
+                    </div>
+
+
+                </div>
+                <form action="/login" id="requestData" class="form-horizontal" method="POST">
+
+                <div class="col-xs-12" style="background-color:white;">
+                    <input type="email" class="form-control" name="email" placeholder="Email" style="margin-bottom:20px;margin-top:20px" />
+                    <input type="password" class="form-control" name="password" placeholder="Password" style="margin-bottom:20px;margin-top:20px" />
+                    <button type="submit" class="btn-warning" style="width: 100%; height: 30px; margin-bottom: 20px;margin-top:10px ">LOGIN</button>
+                </div>
+
+                </form>
+
+                <div class="login-error">{{.}}</div>
+                <!--
+                <div class="col-xs-12" style="height:20px">
+                    <a href="forget.html" style="color:green">Forget Password</a>
+
+                </div>
+                -->
+            </div>
+
+        </div>
+
+    </section>
+    </body>
+
 
 {{template "end"}}
 

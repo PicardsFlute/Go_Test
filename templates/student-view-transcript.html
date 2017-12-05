@@ -1,0 +1,35 @@
+{{define "ViewTranscript"}}
+{{template "head"}}
+
+
+<div class="container">
+
+
+    {{template "student-navbar"}}
+
+    {{if .}}
+    <h3>Transcript For {{.User.FirstName}} {{.User.LastName}}</h3>
+
+    {{range .Transcript}}
+    <div class="course_details">
+        <p>Course Name: {{.CourseName}}</p>
+        <p>Course Credits: {{.CourseCredits}}</p>
+        <p>Course Status: {{.Status}}</p>
+        <p>Semester Year: {{.Year}}</p>
+        <p>Semester Season: {{.Season}}</p>
+        <p>Grade Received: {{.Grade}}</p>
+        <hr>
+    </div>
+    <hr>
+    {{end}}
+    {{else}}
+    <h1>Error loading transcript details</h1>
+    {{end}}
+
+
+
+</div>
+
+{{template "end"}}
+{{end}}
+

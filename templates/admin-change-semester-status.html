@@ -1,0 +1,53 @@
+{{define "ChangeSemesterStatusAdmin"}}
+{{template "head"}}
+
+{{template "admin-navbar"}}
+
+
+<div class="contact-w3-agileits" id="contact" >
+    <div class="container">
+        <div class="col-md-12 contact-left-w3l" >
+            <h3>Change Semester Status</h3>
+            <div class="visit">
+
+                <div class="clearfix"></div>
+            </div>
+
+            <h3>Select Semester</h3>
+
+
+            <form action="/admin/semester" id="requestData" class="form-horizontal" method="POST">
+
+
+                <div class="col-md-8 contact-left-w3l">
+
+
+                    <label class="form-group">Semester</label>
+                    <select name="semester" id="semester-select" required class="form-control">
+                        {{range .}}
+                        <option value="{{.SemesterID}}">{{.Season}} - {{.Year}} -- Current Status: {{.SemesterStatus}}</option>
+                        {{end}}
+                    </select>
+
+                    <label class="form-group">Status</label>
+                    <select name="status" id="status-select" required class="form-control">
+                        <option value="Open">Open Course Registration</option>
+                        <option value="Grading">Open Grading Period</option>
+                        <option value="Closed">Close Grading & Registration Period</option>
+                    </select>
+
+
+                    <input type="submit" value="submit" id="submit" class="btn btn-default pull-right">
+
+
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+</div>
+<script>
+
+</script>
+{{end}}
