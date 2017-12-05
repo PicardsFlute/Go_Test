@@ -608,7 +608,7 @@ func AdminAddSection(w http.ResponseWriter, r *http.Request){
 		 JOIN room ON room.room_id = location.room_id
 		 JOIN time_slot ON time_slot.time_slot_id = section.time_slot_id
 		 JOIN day ON time_slot.day_id = day.day_id
-		 JOIN period ON period.period_id = time_slot.period_id;
+		 JOIN period ON period.period_id = time_slot.period_id
 	 	 WHERE location.room_id = ? AND building.building_id = ? AND period.period_id = ?
 	 	 AND day.day_id = ?`,location.RoomID, location.BuildingID,timeInt,dayInt).Scan(&rc)
 
