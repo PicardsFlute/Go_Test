@@ -104,16 +104,13 @@ func main() {
 	routes.Handle("/faculty",  checkSessionWrapper(displayFaculty)).Methods("GET")
 	routes.Handle("/researcher", checkSessionWrapper(displayResearcher)).Methods("GET")
 
+	/* Master schedule searching*/
+	routes.HandleFunc("/course/search", searchMasterScheduleForm).Methods("GET")
 	routes.HandleFunc("/course/search", searchMasterSchedule).Methods("GET")
 
+
 	/*Admin routes */
-
-
-	//routes.Handle("/admin/student" , checkSessionWrapper(ViewStudentSchedulePage)).Methods("GET")
-	//routes.HandleFunc("/a	dmin/student/{student}", ViewStudentSchedule).Methods("GET")
-
-
-
+	
 	routes.Handle("/admin",  checkSessionWrapper(displayAdmin)).Methods("GET")
 	routes.Handle("/admin/student" , checkSessionWrapper(ViewStudentSchedulePage)).Methods("GET")
 	routes.HandleFunc("/admin/student/{student}", ViewStudentSchedule).Methods("GET")
@@ -157,7 +154,7 @@ func main() {
 	routes.Handle("/admin/user/search" , checkSessionWrapper(searchUser)).Methods("GET")
 	routes.Handle("/admin/user/{userID}/delete", checkSessionWrapper(deleteUser)).Methods("POST")
 
-	routes.Handle("/course/search", checkSessionWrapper(searchMasterScheduleForm)).Methods("GET")
+	//routes.Handle("/course/search", checkSessionWrapper(searchMasterScheduleForm)).Methods("GET")
 	//routes.Handle("/course/searc																																																																																																																																																																																																																																																																																								}", checkSessionWrapper(searchMasterSchedule)).Methods("GET")
 
 	routes.HandleFunc("/logout", logout)
