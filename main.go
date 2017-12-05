@@ -20,6 +20,7 @@ import (
 
 	"io/ioutil"
 
+	"strings"
 )
 
 var (
@@ -734,13 +735,14 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 	departmentQuery,_ := queryVals["department"]
 	courseNameQuery,_ := queryVals["course-name"]
 	courseNumQuery := queryVals["course-number"]
-	//professorQuery := queryVals["instructor"]
+	professorQuery := queryVals["instructor"]
 
 
 
 	depID := departmentQuery[0]
 	courseName := courseNameQuery[0]
 	courseNum  := courseNumQuery[0]
+	professor := professorQuery[0]
 
 	whereMap := make(map[string]interface{})
 
@@ -756,14 +758,21 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 
 	if courseName != "" {
 		whereMap["course_name"] = courseName
-		whereStuff += " AND course_name = " + courseName
+		whereStuff += " AND course_name = '" + courseName + "'"
 	}
 
 	if courseNum != "" {
 		whereStuff += " AND course_num = " + courseNum
 	}
+	if professor != "" {
+		prof := strings.Split(professor, " ")
+		whereStuff += " AND first_name = '" + prof[0] + "'"
+		whereStuff += " AND last_name = '" + prof[1] + "'"
 
-	whereStuff += " AND semester.year = ? AND semester.season = ?"
+	}
+
+	//registering for next semester
+	whereStuff += " AND semester.year = 2018 AND semester.season = 'Spring'"
 
 		type CourseData struct {
 			CourseName string
@@ -816,7 +825,8 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 
 	sql += whereStuff
 
-	db.Raw(sql, "2018", "Spring").Scan(&queryRes)
+	fmt.Println("QUery to be run is", sql)
+	db.Raw(sql).Scan(&queryRes)
 
 		//if err == nil{
 		//	//rows.Scan(&queryRes)
