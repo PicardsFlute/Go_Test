@@ -5,15 +5,15 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"Starfleet/model"
-	//"os"
+	"os"
 	"fmt"
 	//"time"
 )
 func main() {
-	//dbPassword := os.Getenv("PG_DATABASE_PW")
-	//db, err := gorm.Open("postgres", "host=127.0.0.1 dbname=Starfleet sslmode=disable password="+dbPassword)
 
-	db, err := gorm.Open("postgres", "user=xwqinvingdmwtg password=05d063ad8798bef593a662246a30381a116e1360d263c98b5783eb794852f70a host=ec2-54-235-219-113.compute-1.amazonaws.com port=5432 dbname=dbeqmvguibbt0e sslmode=require")
+	dbPassword := os.Getenv("PG_DATABASE_PW")
+	db, err := gorm.Open("postgres", "host=127.0.0.1 dbname=Starfleet sslmode=disable password="+dbPassword)
+
 
 	if err != nil {
 		fmt.Println("Cannot connect to database...")
