@@ -74,5 +74,8 @@
 		}
 	],
 	"rootPath": "Starfleet",
-	"heroku.install":["./SeedData/seedData.go"]
+	"heroku":{
+		"install":["./SeedData/seedData.go"],
+		"goVersion" : "go1.9"
+	},
 }
