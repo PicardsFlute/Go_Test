@@ -45,8 +45,15 @@ func init() {
 	globalSessions, _ = session.NewManager("memory", "gosessionid", 3600)
 	go globalSessions.GC()
 
-	dbPassword := os.Getenv("PG_DATABASE_PW")
-	db, err = gorm.Open("postgres", "host=127.0.0.1 dbname=Starfleet sslmode=disable password="+dbPassword)
+	//dbPassword := os.Getenv("PG_DATABASE_PW")
+	//db, err = gorm.Open("postgres", "host=127.0.0.1 dbname=Starfleet sslmode=disable password="+dbPassword)
+
+	//for migration of data
+	//db, err = gorm.Open("postgres", "username=xwqinvingdmwtg password=05d063ad8798bef593a662246a30381a116e1360d263c98b5783eb794852f70a host=ec2-54-235-219-113.compute-1.amazonaws.com port=5432 dbname=dbeqmvguibbt0e sslmode=disable")
+
+	db, err = gorm.Open("postgres", os.Getenv("DATABASE_URL"))
+
+
 	if err != nil {
 		fmt.Println("Cannot connect to database...")
 		fmt.Println("DB Error: ", err)
