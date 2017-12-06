@@ -176,8 +176,8 @@ func main() {
 
 
 	// USED FOR HEROKU
-	//http.ListenAndServe(":" + os.Getenv("POR
-	http.ListenAndServe(":8080", handlers.LoggingHandler(os.Stdout,routes))
+	http.ListenAndServe(":" + os.Getenv("PORT"),handlers.LoggingHandler(os.Stdout,routes))
+	//http.ListenAndServe(":8080", handlers.LoggingHandler(os.Stdout,routes))
 
 	//defer db.Close(), want to keep db connectioT"), routes)
 
