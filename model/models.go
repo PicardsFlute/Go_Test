@@ -243,6 +243,7 @@ type Building struct {
 	BuildingAddress string `gorm:"type:varchar(200)"`
 }
 
+
 type Location struct {
 	LocationID uint `gorm:"primary_key"`
 	BuildingID uint `gorm:"not null"`
