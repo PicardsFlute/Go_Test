@@ -157,8 +157,8 @@ func main() {
 	routes.HandleFunc("/student/holds", ViewHolds).Methods("GET")
 	routes.HandleFunc("/student/advisor", ViewAdvisor).Methods("GET")
 	routes.HandleFunc("/student/transcript", ViewTranscript).Methods("GET")
-	routes.HandleFunc("/student/register", AddCoursePage).Methods("GET")
-	routes.HandleFunc("/student/register", AddCoursePage).Methods("POST")
+	routes.HandleFunc("/student/search", AddCoursePage).Methods("GET")
+	routes.HandleFunc("/student/register", StudentSearchCourseResults).Methods("GET")
 
 
 	//TODO: Custom auth middlewear for each user type

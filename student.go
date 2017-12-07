@@ -152,7 +152,7 @@ func AddCoursePage(w http.ResponseWriter, r *http.Request){
 
 }
 
-func StudentAddCourseResults(w http.ResponseWriter, r *http.Request){
+func StudentSearchCourseResults(w http.ResponseWriter, r *http.Request){
 
 	println("Inside searchMasterSchedule")
 
@@ -260,6 +260,10 @@ func StudentAddCourseResults(w http.ResponseWriter, r *http.Request){
 	}
 
 	global.Tpl.ExecuteTemplate(w, "studentRegisterCourse", data)
+
+}
+
+func RegisterForSection(w http.ResponseWriter, r *http.Request){
 
 }
 
