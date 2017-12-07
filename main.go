@@ -117,7 +117,7 @@ func main() {
 	/*Admin routes */
 	
 	routes.Handle("/admin",  checkSessionWrapper(displayAdmin)).Methods("GET")
-	routes.Handle("/admin/student" , checkSessionWrapper(ViewStudentSchedulePage)).Methods("GET")
+	routes.HandleFunc("/admin/student" , ViewStudentSchedulePage).Methods("GET")
 	routes.HandleFunc("/admin/student/{student}", ViewStudentSchedule).Methods("GET")
 
 	routes.HandleFunc("/admin/transcript", viewStudentTranscriptPage).Methods("GET")
@@ -157,8 +157,11 @@ func main() {
 	routes.HandleFunc("/student/holds", ViewHolds).Methods("GET")
 	routes.HandleFunc("/student/advisor", ViewAdvisor).Methods("GET")
 	routes.HandleFunc("/student/transcript", ViewTranscript).Methods("GET")
+	routes.HandleFunc("/student/register", AddCoursePage).Methods("GET")
+	routes.HandleFunc("/student/register", AddCoursePage).Methods("POST")
 
 
+	//TODO: Custom auth middlewear for each user type
 
 	//routes.HandleFunc("/unauthorized", unauthorized)
 
@@ -201,6 +204,7 @@ func unauthorized(w http.ResponseWriter, r *http.Request){
 }
 
 func loginPage(w http.ResponseWriter, r *http.Request){
+	//TODO if they are logged in, just redirect them to their correct navbar
 	global.Tpl.ExecuteTemplate(w,"login",nil)
 }
 

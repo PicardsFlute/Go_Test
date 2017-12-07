@@ -1,0 +1,85 @@
+{{define "studentRegisterCourse"}}
+{{template "head"}}
+
+
+<div class="contact-w3-agileits" id="contact" >
+    <div class="container">
+        <div class="col-md-12 contact-left-w3l" >
+            <h3>Class Shedule Search</h3>
+            <div class="visit">
+
+                <div class="clearfix"></div>
+            </div>
+
+            {{template "student-navbar"}}
+
+
+            <div class="col-md-8 contact-left-w3l">
+                <form action="/course/searchResult" id="requestData" class="form-horizontal" method="GET">
+                    <label class="form-group">Department</label>
+                    <select name="department" class="form-control">
+
+                        {{ range .Departments }}
+
+                        <option value="{{ .DepartmentID }}">{{ .DepartmentName }}</option>
+
+                        {{ end }}
+                    </select><br/>
+                    <label class="form-group">Course Number</label>
+                    <input type="text" class="form-control" name="course-number" placeholder="" ><br />
+
+                    <label class="form-group">Course Name</label>
+                    <input type="text" class="form-control" name="course-name" placeholder="" ><br />
+
+
+                    <br />
+
+
+                    <label class="form-group">Instructor</label><br />
+                    <input type="text" class="form-control" name="instructor" placeholder="" ><br />
+
+
+                    <input type="submit" class="btn-success"  value="Search">
+                    <!--<form>-->
+                    <!---->
+                    <!--</form>-->
+                    <!--<input type="button" class="btn-success" value="Reset">-->
+                </form>
+            </div>
+
+            <div class="col-md-8 contact-left-w3l">
+                &nbsp;
+                <ul>
+                    {{ range .Results }}
+                    <li>
+                        <div>
+                            <h3>
+                                {{ .CourseName }} Section {{ .CourseSectionNumber }}
+                            </h3>
+                            <h4>
+                                Professor: {{ .FirstName }} {{ .LastName }}
+                            </h4>
+                            <h4>
+                                Credits: {{ .CourseCredits }}
+                            </h4>
+                            <h4>Time:{{ .MeetingDay }} {{ .Time }} </h4>
+
+                            <h4>Location:{{ .RoomNumber }} {{ .BuildingName }}</h4>
+                            <hr>
+                        </div>
+                        <br/>
+                    </li>
+                    <br/>
+
+                    {{  end }}
+                </ul>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{{template "end"}}
+
+{{end}}
