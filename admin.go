@@ -411,7 +411,9 @@ func AdminSearchCourse(w http.ResponseWriter, r *http.Request){
 	course := model.Course{}
 	//db.Table("course").Select("*").Where("course_id")
 	db.Where(model.Course{CourseID:uint(idInt)}).Find(&course)
+
 	prereqs := course.FindCoursePrerequisites(db)
+
 	fmt.Println("Course is", course)
 	fmt.Println("Pre-Reqs are", prereqs)
 

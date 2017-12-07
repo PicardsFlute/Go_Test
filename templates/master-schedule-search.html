@@ -47,13 +47,14 @@
             </div>
 
             <div class="col-md-8 contact-left-w3l">
+                &nbsp;
                 <ul>
                     {{ range .Results }}
                     <li>
                         <div>
-                            <h4>
+                            <h3>
                                 {{ .CourseName }} Section {{ .CourseSectionNumber }}
-                            </h4>
+                            </h3>
                             <h4>
                                 Professor: {{ .FirstName }} {{ .LastName }}
                             </h4>
@@ -63,7 +64,7 @@
                             <h4>Time:{{ .MeetingDay }} {{ .Time }} </h4>
 
                             <h4>Location:{{ .RoomNumber }} {{ .BuildingName }}</h4>
-
+                            <hr>
                         </div>
                         <br/>
                     </li>

@@ -10,3 +10,8 @@ To get the project running
     
     create env. variable to store your postgres 
     db password named "PG_DATABASE_PW"
+    
+    run seed data command -
+    go run SeedData/seedData.go
+```  
+
