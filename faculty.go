@@ -43,6 +43,7 @@ func facultyViewSchedule(w http.ResponseWriter,r *http.Request){
 	}
 }
 
+
 func giveStudentGradesPage(w http.ResponseWriter, r *http.Request){
 
 	_, user := CheckLoginStatus(w,r)

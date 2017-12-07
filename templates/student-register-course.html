@@ -1,4 +1,4 @@
-{{define "masterScheduleSearch"}}
+{{define "studentRegisterCourse"}}
 {{template "head"}}
 
 
@@ -11,6 +11,7 @@
                 <div class="clearfix"></div>
             </div>
 
+            {{template "student-navbar"}}
 
 
             <div class="col-md-8 contact-left-w3l">
@@ -20,7 +21,7 @@
 
                         {{ range .Departments }}
 
-                            <option value="{{ .DepartmentID }}">{{ .DepartmentName }}</option>
+                        <option value="{{ .DepartmentID }}">{{ .DepartmentName }}</option>
 
                         {{ end }}
                     </select><br/>
@@ -40,7 +41,7 @@
 
                     <input type="submit" class="btn-success"  value="Search">
                     <!--<form>-->
-                        <!---->
+                    <!---->
                     <!--</form>-->
                     <!--<input type="button" class="btn-success" value="Reset">-->
                 </form>

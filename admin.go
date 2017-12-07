@@ -19,18 +19,18 @@ import (
 /* Student Actions */
 
 func ViewStudentSchedulePage(w http.ResponseWriter, r *http.Request){
-	isLogged, user := CheckLoginStatus(w,r)
-	if isLogged && user.UserType == 3 {
-		m := map[string]interface{}{
-			"User":user,
-		}
-		err := global.Tpl.ExecuteTemplate(w, "viewStudentScheduleAdmin", m)
+	//isLogged, user := CheckLoginStatus(w,r)
+	//if isLogged && user.UserType == 3 {
+	//	m := map[string]interface{}{
+	//		"User":user,
+	//	}
+		err := global.Tpl.ExecuteTemplate(w, "viewStudentScheduleAdmin", nil)
 		//err := global.Tpl.ExecuteTemplate(w, "viewStudentScheduleAdmin", user)
 		if err != nil {
 			fmt.Println(err.Error())
 		}
-	}
 }
+
 
 
 
@@ -40,13 +40,13 @@ type NoUser struct {
 }
 
 func viewStudentTranscriptPage(w http.ResponseWriter, r *http.Request){
-	isLogged, user := CheckLoginStatus(w,r)
-
-	if isLogged && user.UserType == 3 {
-		global.Tpl.ExecuteTemplate(w, "viewStudentTranscriptAdmin", user)
-	}else {
-		http.Redirect(w,r,"/",http.StatusForbidden)
-	}
+	//isLogged, user := CheckLoginStatus(w,r)
+	//
+	//if isLogged && user.UserType == 3 {
+		global.Tpl.ExecuteTemplate(w, "viewStudentTranscriptAdmin", nil)
+	//}else {
+	//	http.Redirect(w,r,"/",http.StatusForbidden)
+	//}
 }
 
 
@@ -209,27 +209,30 @@ func ViewStudentHoldsPage(w http.ResponseWriter, r *http.Request){
 
 func ViewStudentHolds (w http.ResponseWriter,r *http.Request) {
 
-
-
 	user := model.MainUser{}
 
 	email := r.FormValue("email")
-	id := r.FormValue("id")
+	//id := r.FormValue("id")
+
 	count := 0
-	//major := r.FormValue("major")
 
 	//db.Where("id = ?", id).Find(&model.Enrollment{})
-	intId, err := strconv.Atoi(id)
-	if err != nil {
-		err.Error()
-	}
+	//intId, err := strconv.Atoi(id)
+	//if err != nil {
+	//	err.Error()
+	//}
 
 
 	//first check if they entered an ID
-	if id != "" {
-		db.Where(&model.MainUser{UserID: uint(intId)}).Find(&user).Count(&count)
-	} else {
+	//if id != "" {
+	//	db.Where(&model.MainUser{UserID: uint(intId)}).Find(&user).Count(&count)
+	//}
+	if email != "" {
 		db.Where(&model.MainUser{UserEmail: email}).Find(&user).Count(&count)
+	}else{
+		//exit func
+		global.Tpl.ExecuteTemplate(w,"viewStudentHoldsAdmin", "No user found")
+		return
 	}
 
 	if count > 0 {
@@ -411,7 +414,9 @@ func AdminSearchCourse(w http.ResponseWriter, r *http.Request){
 	course := model.Course{}
 	//db.Table("course").Select("*").Where("course_id")
 	db.Where(model.Course{CourseID:uint(idInt)}).Find(&course)
+
 	prereqs := course.FindCoursePrerequisites(db)
+
 	fmt.Println("Course is", course)
 	fmt.Println("Pre-Reqs are", prereqs)
 

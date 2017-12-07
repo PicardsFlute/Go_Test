@@ -14,12 +14,8 @@ import (
 	_"Starfleet/memory"
 	"Starfleet/model"
 	"Starfleet/global"
-
-
 	"strconv"
-
 	"io/ioutil"
-
 	"strings"
 )
 
@@ -48,6 +44,7 @@ func init() {
 	dbPassword := os.Getenv("PG_DATABASE_PW")
 	//dbConnectString := os.Getenv("DATABASE_URL")
 	db, err = gorm.Open("postgres", "host=127.0.0.1 dbname=Starfleet sslmode=disable password="+dbPassword)
+
 
 	if err != nil {
 		fmt.Println("Cannot connect to database...")
@@ -117,7 +114,7 @@ func main() {
 	/*Admin routes */
 	
 	routes.Handle("/admin",  checkSessionWrapper(displayAdmin)).Methods("GET")
-	routes.Handle("/admin/student" , checkSessionWrapper(ViewStudentSchedulePage)).Methods("GET")
+	routes.HandleFunc("/admin/student" , ViewStudentSchedulePage).Methods("GET")
 	routes.HandleFunc("/admin/student/{student}", ViewStudentSchedule).Methods("GET")
 
 	routes.HandleFunc("/admin/transcript", viewStudentTranscriptPage).Methods("GET")
@@ -157,8 +154,11 @@ func main() {
 	routes.HandleFunc("/student/holds", ViewHolds).Methods("GET")
 	routes.HandleFunc("/student/advisor", ViewAdvisor).Methods("GET")
 	routes.HandleFunc("/student/transcript", ViewTranscript).Methods("GET")
+	routes.HandleFunc("/student/register", AddCoursePage).Methods("GET")
+	routes.HandleFunc("/student/register", AddCoursePage).Methods("POST")
 
 
+	//TODO: Custom auth middlewear for each user type
 
 	//routes.HandleFunc("/unauthorized", unauthorized)
 
@@ -201,6 +201,7 @@ func unauthorized(w http.ResponseWriter, r *http.Request){
 }
 
 func loginPage(w http.ResponseWriter, r *http.Request){
+	//TODO if they are logged in, just redirect them to their correct navbar
 	global.Tpl.ExecuteTemplate(w,"login",nil)
 }
 
@@ -741,6 +742,7 @@ func searchMasterScheduleForm(w http.ResponseWriter, r *http.Request){
 
 
 func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
+
 	println("Inside searchMasterSchedule")
 
 	queryVals := r.URL.Query()
@@ -749,8 +751,6 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 	courseNameQuery,_ := queryVals["course-name"]
 	courseNumQuery := queryVals["course-number"]
 	professorQuery := queryVals["instructor"]
-
-
 
 	depID := departmentQuery[0]
 	courseName := courseNameQuery[0]
@@ -766,14 +766,11 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 		//depID, _ := strconv.ParseUint(departmentQuery[0], 10, 64)
 		whereMap["department_id"] = depID
 		whereStuff += "department_id = " + depID
-
 	}
-
 	if courseName != "" {
 		whereMap["course_name"] = courseName
 		whereStuff += " AND course_name = '" + courseName + "'"
 	}
-
 	if courseNum != "" {
 		whereStuff += " AND course_num = " + courseNum
 	}
@@ -781,7 +778,6 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 		prof := strings.Split(professor, " ")
 		whereStuff += " AND first_name = '" + prof[0] + "'"
 		whereStuff += " AND last_name = '" + prof[1] + "'"
-
 	}
 
 	//registering for next semester
@@ -815,7 +811,7 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 
 	queryRes := []CourseData{}
 
-
+	//TODO: Phil add prerequisits to query and display the rest of the data in MS search
 
 	//rows, err := db.Joins("JOIN course ON course.course_id = section.course_id").Where(whereMap).Rows()
 	sql := `SELECT course.course_name, course.course_credits, course.course_description, course.department_id, section.section_id, section.course_section_number,
@@ -847,11 +843,14 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 		//} else {
 		//	println(err.Error())
 		//}
-
+	/*
 	for _, val := range queryRes{
 		println(val.CourseName)
 	}
+	*/
+	fmt.Println(queryRes)
 	allDepartments := []model.Department{}
+
 	db.Find(&allDepartments)
 
 	data :=  map[string]interface{}{
