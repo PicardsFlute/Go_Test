@@ -8,7 +8,6 @@ import (
 	"os"
 	"fmt"
 	//"time"
-	"os"
 )
 func main() {
 	dbPassword := os.Getenv("PG_DATABASE_PW")
