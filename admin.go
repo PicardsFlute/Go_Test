@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"encoding/json"
+	"strings"
 )
 
 
@@ -538,15 +539,6 @@ func GetDepartmentsForSections(w http.ResponseWriter, r *http.Request){
 
 }
 
-/*
-type SectionInfo struct {
-	Year int
-	Season string
-	Day string
-}
-*/
-
-
 
 func AdminAddSection(w http.ResponseWriter, r *http.Request){
 
@@ -579,7 +571,8 @@ func AdminAddSection(w http.ResponseWriter, r *http.Request){
 	roomInt, _ := strconv.Atoi(roomNum)
 	facultyInt, _ := strconv.Atoi(faculty)
 
-	//TODO: Rework this, shouldn't be creating, should be searching
+	//TODO: Add an extra button that allows the user to add a new time or day/week combo, use javascript to display
+	//TODO: the form, then use ajax to insert and repopulate the form
 	db.Create(&timeSlot)
 
 	location := model.Location{}
@@ -594,8 +587,7 @@ func AdminAddSection(w http.ResponseWriter, r *http.Request){
 	newCourseSection := model.Section{CourseSectionNumber:sectionInt,CourseID:uint(courseInt), FacultyID:uint(facultyID),
 	TimeSlotID:timeSlotID,LocationID:location.LocationID}
 
-	//TODO: Complete, now test
-
+	//TODO: Complete, 1st series of test passed
 	type RoomCheck struct{
 		Section_id int
 		Location_id int
@@ -619,6 +611,7 @@ func AdminAddSection(w http.ResponseWriter, r *http.Request){
 
 
 	if len(rc) > 0 {
+		global.Tpl.ExecuteTemplate(w, "adminSuccess", "Cant add section, because the room is already ocupied at this time")
 		fmt.Println("Cant add room, because is already ocupied at this time")
 		return
 	}
@@ -636,7 +629,7 @@ func AdminAddSection(w http.ResponseWriter, r *http.Request){
 	}
 
 	cc := []ProfessorCheck{}
-	//TODO: Complete, now test
+	//TODO: Complete, 1st series of test passed
 	db.Raw(`
 		SELECT user_id,user_email, first_name, section_id,period.period_id,time,day.day_id,meeting_day FROM main_user
 		 JOIN faculty ON main_user.user_id = faculty.faculty_id
@@ -649,12 +642,68 @@ func AdminAddSection(w http.ResponseWriter, r *http.Request){
 	fmt.Println(cc)
 
 	if len(cc) > 0{
+		global.Tpl.ExecuteTemplate(w, "adminSuccess", "Cant add section,teacher is already teaching a course at this time slot")
 		fmt.Println("Cant add section,teacher is already teachinga  course at this time slot exit function")
 		return
 	}
 	db.Create(&newCourseSection)
 	global.Tpl.ExecuteTemplate(w, "admin", nil)
 }
+
+func addSectionTime(w http.ResponseWriter, r *http.Request){
+	time := r.FormValue("timeslot")
+	splitSlot := strings.Split(time,"-")
+	stripWhite := strings.Split(splitSlot[1]," ")
+
+
+	finalStringFirst := ""
+	finalStringSecond := ""
+
+	//if splitSlot[0] > "12"{
+		if strings.Compare(splitSlot[0],"12") == 1{
+		//splitSlot[0]+= "PM"
+		splitDay := strings.Split(splitSlot[0],":")
+		first, _ := strconv.Atoi(splitDay[0])
+		first -= 12
+		finalStringFirst += strconv.Itoa(first) + ":" + splitDay[1] + "PM"
+	}else {
+		splitSlot[0] += "AM"
+		finalStringFirst += splitSlot[0]
+	}
+
+	if strings.Compare(stripWhite[1],"12") == 1 {
+		//splitSlot[1]+= "PM"
+		splitDay := strings.Split(stripWhite[1],":")
+		first, _ := strconv.Atoi(splitDay[0])
+		first -= 12
+		finalStringSecond += strconv.Itoa(first) + ":"  + splitDay[1] + " PM"
+	}else {
+		splitSlot[1] += "AM"
+		finalStringSecond += splitSlot[1]
+	}
+
+	var finalString string =  finalStringFirst + " - " + finalStringSecond
+
+	timeSlot := model.Period{Time:finalString}
+	db.Create(&timeSlot)
+
+	//
+	//fmt.Println("Time from form is", time)
+	//fmt.Println("Time after conversion is ", splitSlot[0] + splitSlot[1])
+	//fmt.Println("After subtracting militar ", finalStringFirst + " - " + finalStringSecond)
+
+	periods := []model.Period{}
+	db.Table("period").Select("*").Scan(&periods)
+	data, err := json.Marshal(periods)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	w.Write(data)
+	fmt.Println(string(data))
+
+}
+
 
 func changeSemesterStatusForm(w http.ResponseWriter, r *http.Request){
 

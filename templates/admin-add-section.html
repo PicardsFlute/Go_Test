@@ -43,6 +43,14 @@
 </div>
 
 -->
+
+<script>
+    $(document).ready(function(){
+        $("#days-forms").hide();
+        $("#time-form").hide();
+    });
+
+</script>
 <div class="contact-w3-agileits" id="contact" >
     <div class="container">
         <div class="col-md-12 contact-left-w3l" >
@@ -83,14 +91,29 @@
                 </select>
 
                 <label class="form-group">Time Slot</label>
-                    <select name="time" required class="form-control">
+                    <select name="time" id="time-slots" required class="form-control">
                         {{range .Period}}
                             <option value="{{.PeriodID}}">{{.Time}}</option>
                         {{end}}
                     </select>
+                    &nbsp;
+                    <h3>Don't see the time you want?</h3><button type="button" class="btn btn-info" id="show-time">Add New Time</button><br>
 
+                    <div id="time-form">
+                        <hr>
+                        <label class="form-group">Start Time: </label>
+                        <input type="time" class="form-control" name="start-time" placeholder="start" id="start-time"><br>
+                        <label class="form-group">End Time: </label>
+                        <input type="time" class="form-control" name="end-time" placeholder="end"  id="end-time"><br>
 
-                <label class="form-group">Building Number</label>
+                        <input type="button" id="submit-time" class="btn btn-primary pull-right" value="Add Time">
+                        <div class="error_msg"></div>
+                        <hr>
+                    </div>
+
+                    &nbsp;&nbsp;
+
+                    <label class="form-group">Building Number</label>
                     <select name="building" id="building-select" required class="form-control">
                         <option disabled selected value> -- select an option -- </option>
                         {{range .Building}}
@@ -116,8 +139,39 @@
                         <option value="1">MW</option>
                         <option value="2">TR</option>
                     </select>
+                    &nbsp;
+                    <h3>Don't see the days you want?</h3><button type="button" class="btn btn-info" id="show-day">Add New Day</button><br>
+                    <div id="days-forms">
+                        <label class="form-group">Days</label><br />
+                        <div class="row">
+                            <div class="col-lg-2">
+                                <input type="checkbox" class="ad_day" value="M" />Monday
+                            </div>
+                            <div class="col-lg-2">
+                                <input type="checkbox" class="ad_day" value="T" />Tuesday
+                            </div>
+                            <div class="col-lg-2">
+                                <input type="checkbox" class="ad_day" value="W" />Wednesday
+                            </div>
+                            <div class="col-lg-2">
+                                <input type="checkbox" class="ad_day" value="R" />Thursday
+                            </div>
+                            <div class="col-lg-2">
+                                <input type="checkbox" class="ad_day" value="F" />Friday
+                            </div>
+                            <div class="col-lg-2">
+                                <input type="checkbox" class="ad_day" value="Sa" />Saturday
+                            </div><br/><br />
+                            <div class="col-lg-2">
+                                <input type="checkbox" class="ad_day" value="Su" />Sunday
+                            </div>
 
-                <input type="submit" class="btn-success pull-right" value="Submit">
+                            <input type="button" class="btn btn-primary" id="save_days" value="Add Days">
+                        </div><br/>
+                    </div>
+
+
+                    <input type="submit" class="btn-success pull-right" value="Submit">
                 <p style="color:red" id="success"></p>
                 </form>
 
@@ -193,7 +247,64 @@
                 console.log(jsonData)
             }
         })
-    })
+    });
+
+    $('#submit-time').click(function(){
+
+        if ($('#start-time').val() === "" || $('#end-time').val() === ""){
+
+            $('.error_msg').text("Forms can't be blank")
+            return false;
+        }
+
+        var time = $('#start-time').val() + " - " + $('#end-time').val();
+
+        $.ajax({
+            url:"/admin/time",
+            type:"POST",
+            data: {
+                timeslot:time
+            },
+            success:function(data){
+                $('.error_msg').empty();
+                console.log("Ajax sent ok");
+                var jsonData = JSON.parse(data);
+                var timeSlots = $('#time-slots');
+                timeSlots.empty();
+
+                jsonData.forEach(function(value){
+                    var options = $("<option value=" + value.PeriodID + ">" + value.Time + "</option>")
+                    timeSlots.append(options)
+                });
+            }
+        });
+        $("#time-form").hide();
+
+    });
+
+    $('#save_days').click(function() {
+        var sel = $('input[type=checkbox]:checked').map(function(_, el) {
+            return $(el).val();
+        }).get();
+
+        alert(sel);
+    });
+
+    $('#show-day').click(function(){
+        if($('#days-forms').is(":visible")){
+            $("#days-forms").hide()
+        }else {
+            $('#days-forms').show()
+        }
+    });
+
+    $('#show-time').click(function(){
+        if($('#time-form').is(":visible")){
+            $("#time-form").hide()
+        }else {
+            $('#time-form').show()
+        }
+    });
 
 </script>
 {{template "end"}}
