@@ -41,12 +41,12 @@ func init() {
 	globalSessions, _ = session.NewManager("memory", "gosessionid", 3600)
 	go globalSessions.GC()
 
-	dbPassword := os.Getenv("PG_DATABASE_PW")
-	db, err = gorm.Open("postgres", "host=127.0.0.1 dbname=Starfleet sslmode=disable password="+dbPassword)
+	//dbPassword := os.Getenv("PG_DATABASE_PW")
+	//db, err = gorm.Open("postgres", "host=127.0.0.1 dbname=Starfleet sslmode=disable password="+dbPassword)
 
 	//for migration of data
 
-	//db, err = gorm.Open("postgres", os.Getenv("DATABASE_URL"))
+	db, err = gorm.Open("postgres", os.Getenv("DATABASE_URL"))
 
 
 	if err != nil {
@@ -182,8 +182,8 @@ func main() {
 
 
 	// USED FOR HEROKU
-	//http.ListenAndServe(":" + os.Getenv("PORT"),handlers.LoggingHandler(os.Stdout,routes))
-	http.ListenAndServe(":8080", handlers.LoggingHandler(os.Stdout,routes))
+	http.ListenAndServe(":" + os.Getenv("PORT"),handlers.LoggingHandler(os.Stdout,routes))
+	//http.ListenAndServe(":8080", handlers.LoggingHandler(os.Stdout,routes))
 
 	//defer db.Close(), want to keep db connectioT"), routes)
 
