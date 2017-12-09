@@ -804,6 +804,7 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 			BuildingID uint
 			BuildingName string
 			Time string
+			Prerequisites []model.Course
 		}
 
 	//coursesFound := []model.Course{}
@@ -853,9 +854,46 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 
 	db.Find(&allDepartments)
 
+	coursesFoundPrereqs := make(map[string][]model.Course)
+
+	// get prereqs for every unique course in queryRes
+	for qIndex, val := range queryRes{
+		if _, present := coursesFoundPrereqs[val.CourseName]; !present {
+			course := model.Course{}
+			db.First(&course, val.CourseID)
+			prereqs := course.FindCoursePrerequisites(db)
+			coursesFoundPrereqs[val.CourseName] = prereqs
+			queryRes[qIndex].Prerequisites = prereqs
+			println("Adding prereqs for: " + course.CourseName)
+			for _,c := range val.Prerequisites{
+				println("-prereq::" + c.CourseName)
+			}
+		} else {
+			queryRes[qIndex].Prerequisites = coursesFoundPrereqs[val.CourseName]
+		}
+	}
+	//
+	//
+	//for _,c := range queryRes{
+	//	println("Sent to template: course-" + c.CourseName + ", Prereqs:")
+	//	for _,p := range c.Prerequisites{
+	//		println(p.CourseName)
+	//	}
+	//}
+
+	chosenDep := model.Department{}
+	db.First(&chosenDep, depID)
+	searchParams := map[string]string{
+		"Department": chosenDep.DepartmentName,
+		"Professor": professor,
+		"CourseName": courseName,
+		"CourseNum": courseNum,
+	}
+
 	data :=  map[string]interface{}{
 		"Results": queryRes,
 		"Departments": allDepartments,
+		"Params": searchParams,
 	}
 
 	global.Tpl.ExecuteTemplate(w, "masterScheduleSearch", data)
