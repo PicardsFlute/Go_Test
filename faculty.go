@@ -34,7 +34,10 @@ func facultyViewSchedule(w http.ResponseWriter,r *http.Request){
 	JOIN location ON section.location_id = location.location_id
 	JOIN building ON location.building_id = building.building_id
 	JOIN room ON location.room_id = room.room_id
-	WHERE section.faculty_id = ? AND semester.year = 2018 AND semester.season = 'Spring'`, user.UserID).Scan(&facultySchedule)
+	WHERE section.faculty_id = ? AND semester.year = ? AND semester.season = ?`, user.UserID,2017,"Fall").Scan(&facultySchedule)
+	//TODO: these are hardcoded for current semester, fix these at some point
+
+
 	fmt.Println(facultySchedule)
 
 	err := global.Tpl.ExecuteTemplate(w, "ViewFacultyScheduleDetails", facultySchedule)
@@ -70,9 +73,9 @@ func giveStudentGradesPage(w http.ResponseWriter, r *http.Request){
 	JOIN location ON section.location_id = location.location_id
 	JOIN building ON location.building_id = building.building_id
 	JOIN room ON location.room_id = room.room_id
-	WHERE section.faculty_id = ? AND semester.year = 2018 AND semester.season = 'Spring'`, user.UserID).Scan(&facultySchedule)
+	WHERE section.faculty_id = ? AND semester.year = ? AND semester.season = ?`, user.UserID,2017,"Fall").Scan(&facultySchedule)
 	fmt.Println(facultySchedule)
-
+	//TODO: these are hardcoded for current semester, fix these at some point
 	err := global.Tpl.ExecuteTemplate(w, "FacultyGiveGrades", facultySchedule)
 	if err != nil {
 		fmt.Println(err.Error())

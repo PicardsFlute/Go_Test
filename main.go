@@ -152,11 +152,15 @@ func main() {
 	/* Student Routes*/
 	routes.Handle("/student",  checkSessionWrapper(displayStudent)).Methods("GET")
 	routes.HandleFunc("/student/schedule", ViewSchedule).Methods("GET")
+	routes.HandleFunc("/student/registered", ViewRegisteredCourses).Methods("GET")
 	routes.HandleFunc("/student/holds", ViewHolds).Methods("GET")
 	routes.HandleFunc("/student/advisor", ViewAdvisor).Methods("GET")
 	routes.HandleFunc("/student/transcript", ViewTranscript).Methods("GET")
 	routes.HandleFunc("/student/search", AddCoursePage).Methods("GET")
 	routes.HandleFunc("/student/register", StudentSearchCourseResults).Methods("GET")
+	routes.HandleFunc("/student/register", RegisterForSection).Methods("POST")
+
+
 
 
 	//TODO: Custom auth middlewear for each user type
@@ -752,37 +756,78 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 	courseNameQuery,_ := queryVals["course-name"]
 	courseNumQuery := queryVals["course-number"]
 	professorQuery := queryVals["instructor"]
+	day := queryVals["day"]
 
 	depID := departmentQuery[0]
 	courseName := courseNameQuery[0]
 	courseNum  := courseNumQuery[0]
 	professor := professorQuery[0]
+	dayID := day[0]
 
 	whereMap := make(map[string]interface{})
 
 	whereStuff := "WHERE "
+
+	numQueries := 0
 
 	if depID != "" {
 		println("Department query present: " + depID)
 		//depID, _ := strconv.ParseUint(departmentQuery[0], 10, 64)
 		whereMap["department_id"] = depID
 		whereStuff += "department_id = " + depID
+		numQueries++
 	}
 	if courseName != "" {
 		whereMap["course_name"] = courseName
-		whereStuff += " AND course_name = '" + courseName + "'"
+		if numQueries == 0 {
+			whereStuff += " course_name = '" + courseName + "'"
+
+		}else {
+			whereStuff += " AND course_name = '" + courseName + "'"
+
+		}
+		numQueries++
 	}
+
+	if dayID != ""{
+		if numQueries == 0 {
+			whereStuff += " day.day_id = " + dayID
+		} else {
+			whereStuff += " AND day.day_id = " + dayID
+		}
+		numQueries++
+	}
+
 	if courseNum != "" {
-		whereStuff += " AND course_num = " + courseNum
+
+		if numQueries == 0 {
+			whereStuff += " course_num = " + courseNum
+		}else {
+			whereStuff += " AND course_num = " + courseNum
+		}
+		numQueries++
+
 	}
 	if professor != "" {
 		prof := strings.Split(professor, " ")
-		whereStuff += " AND first_name = '" + prof[0] + "'"
-		whereStuff += " AND last_name = '" + prof[1] + "'"
+		if numQueries == 0 {
+			whereStuff += " first_name = '" + prof[0] + "'"
+			whereStuff += " AND last_name = '" + prof[1] + "'"
+
+		}else {
+			whereStuff += " AND first_name = '" + prof[0] + "'"
+			whereStuff += " AND last_name = '" + prof[1] + "'"
+		}
+		numQueries++
+
 	}
 
 	//registering for next semester
-	whereStuff += " AND semester.year = 2018 AND semester.season = 'Spring'"
+	if numQueries == 0 {
+		whereStuff += " semester.year = 2018 AND semester.season = 'Spring'"
+	}else {
+		whereStuff += " AND semester.year = 2018 AND semester.season = 'Spring'"
+	}
 
 		type CourseData struct {
 			CourseName string
@@ -820,9 +865,9 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 	section.course_id, section.faculty_id, section.time_slot_id, section.location_id, section.course_section_number,
 	main_user.first_name, main_user.last_name,
 	day.meeting_day, day.day_id,
-
-	building.building_name,
+	building.building_name,time,
 	room.room_number, room.room_type
+
 	FROM section
 	JOIN course ON course.course_id = section.course_id
 	JOIN main_user ON main_user.user_id = section.faculty_id
@@ -836,6 +881,9 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 
 	sql += whereStuff
 
+	if strings.Contains(whereStuff,";&"){
+		fmt.Println("escape")
+	}
 	fmt.Println("QUery to be run is", sql)
 	db.Raw(sql).Scan(&queryRes)
 
@@ -882,10 +930,10 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 	//	}
 	//}
 
-	chosenDep := model.Department{}
-	db.First(&chosenDep, depID)
+	//chosenDep := model.Department{}
+	//db.First(&chosenDep, depID)
 	searchParams := map[string]string{
-		"Department": chosenDep.DepartmentName,
+		//"Department": chosenDep.DepartmentName,
 		"Professor": professor,
 		"CourseName": courseName,
 		"CourseNum": courseNum,

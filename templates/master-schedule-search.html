@@ -17,7 +17,7 @@
                 <form action="/course/searchResult" id="requestData" class="form-horizontal" method="GET">
                     <label class="form-group">Department</label>
                     <select name="department" class="form-control">
-
+                        <option value="">Select A department</option>
                         {{ range .Departments }}
 
                             <option
@@ -36,6 +36,16 @@
                     <input type="text" class="form-control" name="course-name" placeholder="" >
                     <br />
 
+
+                    <label class="form-group">Day</label>
+                    <select name="day" class="form-control">
+                        <option value="">Select A Day</option>
+                        <option value="1">MW</option>
+                        <option value="2">TR</option>
+                        <option value="3">MWF</option>
+                        <option value="4">SA</option>
+                        <option value="5">SU</option>
+                    </select>
 
                     <br />
 
@@ -81,16 +91,19 @@
                             <h4>
                                 Credits: {{ .CourseCredits }}
                             </h4>
-                            <h4>Time:{{ .MeetingDay }} {{ .Time }} </h4>
+                            <h4>Day: {{ .MeetingDay }} </h4>
+                            <h4>Time: {{ .Time }} </h4>
 
-                            <h4>Location:{{ .RoomNumber }} {{ .BuildingName }}</h4>
+                            <h4>Location: {{ .RoomNumber }}</h4>
+                            <h4>Building: {{ .BuildingName }}</h4>
 
                             <h4>Prerequisites:</h4>
+                            <hr>
                             <ul>
                                 {{ range .Prerequisites }}
                                     <li>
-                                        <div class="col-md-8 contact-left-w3l">
-                                         <h4>{{ .CourseName }}</h4>
+                                        <div class="col-md-8 contact-left-w3l course-styles">
+                                            <p>{{ .CourseName }}</p>
                                         </div>
                                     </li>
                                 {{ end }}

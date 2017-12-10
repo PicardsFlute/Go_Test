@@ -131,15 +131,17 @@
                     <label class="form-group">Semester</label>
                     <select name="semester" required class="form-control">
                         <option value="1">Spring</option>
-                        <option value="2">Fall</option>
                     </select>
 
                     <label class="form-group">Day</label>
                     <select name="day" required class="form-control">
                         <option value="1">MW</option>
                         <option value="2">TR</option>
+                        <option value="3">MWF</option>
+                        <option value="4">SA</option>
+                        <option value="5">SU</option>
                     </select>
-                    &nbsp;
+                    &nbsp;<!--
                     <h3>Don't see the days you want?</h3><button type="button" class="btn btn-info" id="show-day">Add New Day</button><br>
                     <div id="days-forms">
                         <label class="form-group">Days</label><br />
@@ -169,7 +171,7 @@
                             <input type="button" class="btn btn-primary" id="save_days" value="Add Days">
                         </div><br/>
                     </div>
-
+                    -->
 
                     <input type="submit" class="btn-success pull-right" value="Submit">
                 <p style="color:red" id="success"></p>

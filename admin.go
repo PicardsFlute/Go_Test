@@ -282,6 +282,7 @@ func AdminDeleteHold(w http.ResponseWriter, r *http.Request){
 	db.Raw("SELECT * FROM student_holds WHERE student_id = ? AND hold_id = ?", userInt,holdInt).Scan(&studentHold)
 	fmt.Println("Hold found", studentHold)
 	db.Delete(&studentHold)
+	global.Tpl.ExecuteTemplate(w, "adminSuccess", "Hold removed.")
 	//fmt.Println("Hold deleted sucessfully")
 
 
@@ -566,13 +567,19 @@ func AdminAddSection(w http.ResponseWriter, r *http.Request){
 	semesterInt, _ := strconv.Atoi(semester)
 	dayInt , _ := strconv.Atoi(day)
 	timeInt , _ := strconv.Atoi(time)
+
+
+
 	timeSlot := model.TimeSlot{PeriodID:uint(timeInt),SemesterID:uint(semesterInt),DayID:uint(dayInt)}
+
 	buildingInt , _ := strconv.Atoi(buildingNum)
 	roomInt, _ := strconv.Atoi(roomNum)
 	facultyInt, _ := strconv.Atoi(faculty)
 
-	//TODO: Add an extra button that allows the user to add a new time or day/week combo, use javascript to display
-	//TODO: the form, then use ajax to insert and repopulate the form
+	fac := model.Faculty{}
+	//db.Where(model.Faculty{FacultyID:uint(facultyInt)}).Scan(&fac)
+	db.Table("faculty").Select("*").Where("faculty_id = ?",facultyInt).Scan(&fac)
+
 	db.Create(&timeSlot)
 
 	location := model.Location{}
@@ -582,10 +589,9 @@ func AdminAddSection(w http.ResponseWriter, r *http.Request){
 
 	sectionInt, _ := strconv.Atoi(sectionNum)
 	courseInt, _ := strconv.Atoi(courseName)
-	facultyID, _ := strconv.Atoi(faculty)
+	//facultyID, _ := strconv.Atoi(faculty)
 
-	newCourseSection := model.Section{CourseSectionNumber:sectionInt,CourseID:uint(courseInt), FacultyID:uint(facultyID),
-	TimeSlotID:timeSlotID,LocationID:location.LocationID}
+	newCourseSection := model.Section{CourseSectionNumber:sectionInt,CourseID:uint(courseInt), FacultyID:fac.FacultyID,TimeSlotID:timeSlotID,LocationID:location.LocationID}
 
 	//TODO: Complete, 1st series of test passed
 	type RoomCheck struct{
@@ -646,6 +652,7 @@ func AdminAddSection(w http.ResponseWriter, r *http.Request){
 		fmt.Println("Cant add section,teacher is already teachinga  course at this time slot exit function")
 		return
 	}
+	fmt.Println("Course section", newCourseSection)
 	db.Create(&newCourseSection)
 	global.Tpl.ExecuteTemplate(w, "admin", nil)
 }
