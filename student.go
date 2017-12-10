@@ -61,12 +61,14 @@ func ViewRegisteredCourses(w http.ResponseWriter, r *http.Request){
 		MeetingDay string
 		FirstName string
 		LastName string
+		SectionID uint
+		StudentID uint
 	}
 
 
 	_, user := CheckLoginStatus(w,r)
 	ss := []StudentSchedule{}
-	db.Raw(`SELECT student_history.student_id,course_name,course_credits,building_name,room.room_number,meeting_day, first_name, last_name, time,student_history.status
+	db.Raw(`SELECT student_history.student_id,course_name,section.section_id,course_credits,building_name,room.room_number,meeting_day, first_name, last_name, time,student_history.status
 	FROM student_history
 	JOIN enrollment ON student_history.enrollment_id = enrollment.enrollment_id
 	JOIN section ON enrollment.section_id = section.section_id
@@ -83,11 +85,31 @@ func ViewRegisteredCourses(w http.ResponseWriter, r *http.Request){
 	WHERE enrollment.student_id = ? AND student_history.status = ?`, user.UserID,"Registered").Scan(&ss)
 	fmt.Println(ss)
 
-	err := global.Tpl.ExecuteTemplate(w, "ViewStudentScheduleDetails", ss)
+	err := global.Tpl.ExecuteTemplate(w, "ViewStudentRegistered", ss)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
+}
 
+func DropRegisteredCourse(w http.ResponseWriter, r *http.Request){
+	sec := r.FormValue("section")
+	stud := r.FormValue("student")
+
+	//TODO first check if its an open registration period otherwise its too late to drop
+
+	fmt.Println("sec id", sec)
+	fmt.Println("stud id", stud)
+
+	enrollment := model.Enrollment{}
+	db.Table("enrollment").Select("*").Where("student_id = ? AND section_id = ?",stud,sec).Scan(&enrollment)
+
+	hist := model.StudentHistory{}
+	db.Table("student_history").Select("*").Where("enrollment_id = ? AND student_id = ?", enrollment.EnrollmentID,stud).Scan(&hist)
+
+	db.Delete(&hist) //delete the hist
+	db.Delete(&enrollment) //delete the enrollment
+
+	global.Tpl.ExecuteTemplate(w, "studentSuccess", "The course has been dropped")
 }
 
 func ViewHolds(w http.ResponseWriter, r *http.Request){

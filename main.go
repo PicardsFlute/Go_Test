@@ -107,8 +107,8 @@ func main() {
 	routes.Handle("/researcher", checkSessionWrapper(displayResearcher)).Methods("GET")
 
 	/* Master schedule searching*/
-	routes.HandleFunc("/course/search", searchMasterScheduleForm).Methods("GET")
-	routes.HandleFunc("/course/searchResult", searchMasterSchedule).Methods("GET")
+	routes.HandleFunc("/course", searchMasterScheduleForm).Methods("GET")
+	routes.HandleFunc("/course/", searchMasterSchedule).Methods("GET")
 
 
 	/*Admin routes */
@@ -135,6 +135,7 @@ func main() {
 
 	//routes.HandleFunc("/admin/course/", AdminDeleteCourse)
 	routes.HandleFunc("/admin/section", AdminAddSectionPage)
+	routes.HandleFunc("/section/update", AdminUpdateSection).Methods("POST")
 	routes.HandleFunc("/admin/section/{section}", AdminAddSection)
 	routes.HandleFunc("/admin/section/room/{id}", GetRoomsForBuilding)
 	routes.HandleFunc("/admin/section/department/{id}", GetDepartmentsForSections).Methods("GET")
@@ -153,6 +154,7 @@ func main() {
 	routes.Handle("/student",  checkSessionWrapper(displayStudent)).Methods("GET")
 	routes.HandleFunc("/student/schedule", ViewSchedule).Methods("GET")
 	routes.HandleFunc("/student/registered", ViewRegisteredCourses).Methods("GET")
+	routes.HandleFunc("/student/registered", DropRegisteredCourse).Methods("POST")
 	routes.HandleFunc("/student/holds", ViewHolds).Methods("GET")
 	routes.HandleFunc("/student/advisor", ViewAdvisor).Methods("GET")
 	routes.HandleFunc("/student/transcript", ViewTranscript).Methods("GET")
@@ -201,13 +203,16 @@ func index(w http.ResponseWriter, r *http.Request){
 
 }
 
-func unauthorized(w http.ResponseWriter, r *http.Request){
-	global.Tpl.ExecuteTemplate(w, "index" , "You can not view this page")
-}
-
 func loginPage(w http.ResponseWriter, r *http.Request){
 	//TODO if they are logged in, just redirect them to their correct navbar
-	global.Tpl.ExecuteTemplate(w,"login",nil)
+
+	logged, u := CheckLoginStatus(w, r)
+
+	if logged{
+		checkUserType(u,w,r)
+	}else {
+		global.Tpl.ExecuteTemplate(w, "login", nil)
+	}
 }
 
 func redirectPost(w http.ResponseWriter, r *http.Request){
@@ -357,6 +362,68 @@ func checkSessionWrapper(handle http.HandlerFunc) http.Handler {
 	})
 }
 
+func checkStudent(handle http.HandlerFunc) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("Executing middlewware for student")
+		isLogged, user := CheckLoginStatus(w, r)
+		if isLogged && user.UserType ==1 { //if check user is true, execute the handle that's inside
+			handle.ServeHTTP(w,r)
+		} else{ //otherwise deny request
+			//Tpl.ExecuteTemplate(w,"index", "You can't access that page")
+			http.Redirect(w, r, "/login", http.StatusUnauthorized)           // redirects route and gives unauthorized link
+			global.Tpl.ExecuteTemplate(w,"login", "You must login first.") //this renders the index template right under it
+		}
+
+	})
+}
+
+func checkFaculty(handle http.HandlerFunc) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("Executing middlewware for faculty")
+		isLogged, user := CheckLoginStatus(w, r)
+		if isLogged && user.UserType == 2 { //if check user is true, execute the handle that's inside
+			handle.ServeHTTP(w,r)
+		} else{ //otherwise deny request
+			//Tpl.ExecuteTemplate(w,"index", "You can't access that page")
+			http.Redirect(w, r, "/login", http.StatusUnauthorized)           // redirects route and gives unauthorized link
+			global.Tpl.ExecuteTemplate(w,"login", "You must login first.") //this renders the index template right under it
+		}
+
+	})
+}
+
+func checkAdmin(handle http.HandlerFunc) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("Executing middlewware for admin")
+		isLogged, user := CheckLoginStatus(w, r)
+		if isLogged && user.UserType == 3 { //if check user is true, execute the handle that's inside
+			handle.ServeHTTP(w,r)
+		} else{ //otherwise deny request
+			//Tpl.ExecuteTemplate(w,"index", "You can't access that page")
+			http.Redirect(w, r, "/login", http.StatusUnauthorized)           // redirects route and gives unauthorized link
+			global.Tpl.ExecuteTemplate(w,"login", "You must login first.") //this renders the index template right under it
+		}
+
+	})
+}
+
+func checkResearcher(handle http.HandlerFunc) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("Executing middlewware for researcher")
+		isLogged, user := CheckLoginStatus(w, r)
+		if isLogged && user.UserType == 5 { //if check user is true, execute the handle that's inside
+			handle.ServeHTTP(w,r)
+		} else{ //otherwise deny request
+			//Tpl.ExecuteTemplate(w,"index", "You can't access that page")
+			http.Redirect(w, r, "/login", http.StatusUnauthorized)           // redirects route and gives unauthorized link
+			global.Tpl.ExecuteTemplate(w,"login", "You must login first.") //this renders the index template right under it
+		}
+
+	})
+}
+
+
+
 
 
 func displayStudent(w http.ResponseWriter, r *http.Request){
@@ -410,30 +477,6 @@ func displayResearcher(w http.ResponseWriter, r *http.Request){
 		index(w,r)
 	}
 }
-
-
-
-/*
-func about(w http.ResponseWriter, r *http.Request){
-	vars := mux.Vars(r) //returns a mapping responses
-	personId := vars["number"] //get map with key id number
-	if num, _ := strconv.Atoi(personId); num > 3 {
-		p := Person{"Bob", 4}
-		Tpl.ExecuteTemplate(w, "index.html", p)
-	}else {
-		p := Person{"Steve", 2}
-		Tpl.ExecuteTemplate(w, "index.html", p)
-	}
-}
-func generateHTML(writer http.ResponseWriter, data interface{}, filenames ...string) {
-	var files []string
-	for _, file := range filenames {
-		files = append(files, fmt.Sprintf("templates/%s.public", file))
-	}
-	templates := template.Must(template.ParseFiles(files...))
-	templates.ExecuteTemplate(writer, "layout", data)
-}
-*/
 
 
 func logout(w http.ResponseWriter, r *http.Request){
@@ -829,6 +872,11 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 		whereStuff += " AND semester.year = 2018 AND semester.season = 'Spring'"
 	}
 
+	type IsAdmin struct {
+		IsAdmin bool
+		User model.MainUser
+	}
+
 		type CourseData struct {
 			CourseName string
 			CourseCredits int
@@ -851,6 +899,7 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 			BuildingName string
 			Time string
 			Prerequisites []model.Course
+			User IsAdmin
 		}
 
 	//coursesFound := []model.Course{}
@@ -887,6 +936,7 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 	fmt.Println("QUery to be run is", sql)
 	db.Raw(sql).Scan(&queryRes)
 
+
 		//if err == nil{
 		//	//rows.Scan(&queryRes)
 		//
@@ -921,14 +971,6 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 			queryRes[qIndex].Prerequisites = coursesFoundPrereqs[val.CourseName]
 		}
 	}
-	//
-	//
-	//for _,c := range queryRes{
-	//	println("Sent to template: course-" + c.CourseName + ", Prereqs:")
-	//	for _,p := range c.Prerequisites{
-	//		println(p.CourseName)
-	//	}
-	//}
 
 	//chosenDep := model.Department{}
 	//db.First(&chosenDep, depID)
@@ -939,12 +981,31 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 		"CourseNum": courseNum,
 	}
 
+	_,user := CheckLoginStatus(w,r)
+
+
+
+	admin := IsAdmin{}
+
+	if user.UserType == 3 {
+		admin.IsAdmin = true
+		admin.User = user
+	}else{
+		admin.IsAdmin = false
+	}
+
+
 	data :=  map[string]interface{}{
 		"Results": queryRes,
 		"Departments": allDepartments,
 		"Params": searchParams,
+		"User":admin,
 	}
 
-	global.Tpl.ExecuteTemplate(w, "masterScheduleSearch", data)
+	err := global.Tpl.ExecuteTemplate(w, "masterScheduleSearch", data)
+
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 
 }

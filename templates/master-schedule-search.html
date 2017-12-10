@@ -1,6 +1,12 @@
 {{define "masterScheduleSearch"}}
 {{template "head"}}
 
+{{$isAd := .User.IsAdmin}}
+
+{{if .User.IsAdmin}}
+    <h1>Admin is Logged in.</h1>
+    {{template "admin-navbar"}}
+{{end}}
 
 <div class="contact-w3-agileits" id="contact" >
     <div class="container">
@@ -12,9 +18,8 @@
             </div>
 
 
-
             <div class="col-md-8 contact-left-w3l">
-                <form action="/course/searchResult" id="requestData" class="form-horizontal" method="GET">
+                <form action="/course/" id="requestData" class="form-horizontal" method="GET">
                     <label class="form-group">Department</label>
                     <select name="department" class="form-control">
                         <option value="">Select A department</option>
@@ -97,6 +102,13 @@
                             <h4>Location: {{ .RoomNumber }}</h4>
                             <h4>Building: {{ .BuildingName }}</h4>
 
+                            {{if $isAd}}
+                            <form action="/section/update" method="POST">
+                                <input type="text" hidden name="section" value="{{.SectionID}}">
+                                <input type="submit" value="Edit Section" class="btn btn-danger pull-right">
+                            </form>
+                            {{end}}
+
                             <h4>Prerequisites:</h4>
                             <hr>
                             <ul>
@@ -113,6 +125,8 @@
                     </li>
                     <hr>
                     <br/>
+
+
 
                     {{  end }}
                 </ul>

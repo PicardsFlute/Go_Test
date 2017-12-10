@@ -691,7 +691,7 @@ func main() {
 	course4 := model.Course{CourseName: "Chemistry I", CourseCredits: 4, DepartmentID: department7.DepartmentID, CourseDescription: "Basic principles to be covered include atomic structure, chemical properties, chemical reactions, the nature of organic and inorganic compounds and novel materials."}
 	course5 := model.Course{CourseName: "Accounting I", CourseCredits: 4, DepartmentID: department5.DepartmentID, CourseDescription: "Inroduction to financial accounting with focus on how financial statements are structured and used by proprietorships and cooperations."}
 	course6 := model.Course{CourseName: "Microeconomics", CourseCredits: 4, DepartmentID: department5.DepartmentID, CourseDescription: "An introduction to conventional macroeconomic theory, including the determination of national income, government taxing and spending policy, money and banking, unemployment, inflation, economic growth and international trade."}
-	course7 := model.Course{CourseName: "Programming I", CourseCredits: 4, DepartmentID: department2.DepartmentID, CourseDescription: "Introduction to program design and analysis: algorithmic processes, basic programming techniques, program specification & structure, program development, debugging, and testing."}
+	course7 := model.Course{CourseName: "Computer Programming I", CourseCredits: 4, DepartmentID: department2.DepartmentID, CourseDescription: "Introduction to program design and analysis: algorithmic processes, basic programming techniques, program specification & structure, program development, debugging, and testing."}
 	course8 := model.Course{CourseName: "Calculus III", CourseCredits: 4, DepartmentID: department1.DepartmentID, CourseDescription: "Limits, differentiation, and integration. Relevant applications from the areas of business, economics and the social sciences."}
 	course9 := model.Course{CourseName: "French I", CourseCredits: 4, DepartmentID: department4.DepartmentID, CourseDescription: "Each provides for acquisition of the communication skills in French, with special emphasis on aural comprehension and speaking."}
 	course10 := model.Course{CourseName: "Spanish I", CourseCredits: 4, DepartmentID: department4.DepartmentID, CourseDescription: "Communication skills in standard Spanish are stressed with particular emphasis placed on speaking and aural comprehension."}
@@ -701,7 +701,7 @@ func main() {
 	course14 := model.Course{CourseName: "Biology I", CourseCredits: 4, DepartmentID: department6.DepartmentID, CourseDescription: "Surveys the major concepts and principles of biology, including cell structure and function, genetics, ecology, diversity and evolution."}
 	course15 := model.Course{CourseName: "Physical Science", CourseCredits: 4, DepartmentID: department8.DepartmentID, CourseDescription: "Fundamental principles of physics, astronomy, chemstry & earth science are covered to provide the student with a broad basic background."}
 	course16 := model.Course{CourseName: "Intro to Criminology", CourseCredits: 4, DepartmentID: department9.DepartmentID, CourseDescription: "This course will provide students with an introduction to the social scientific study of crime."}
-	course17 := model.Course{CourseName: "Computer Programming I", CourseCredits: 4, DepartmentID: department2.DepartmentID, CourseDescription: "Discussion of storage classes, pointers, recursion, files and string manipulation."}
+	course17 := model.Course{CourseName: "Computer Programming II", CourseCredits: 4, DepartmentID: department2.DepartmentID, CourseDescription: "Discussion of storage classes, pointers, recursion, files and string manipulation."}
 	course18 := model.Course{CourseName: "World History I: Non-Western", CourseCredits: 4, DepartmentID: department3.DepartmentID, CourseDescription: "This course surveys the history and culture of five regions of the world: the Middle East, sub-Saharan Africa, China, India, and Japan."}
 	course19 := model.Course{CourseName: "Biology II", CourseCredits: 4, DepartmentID: department6.DepartmentID, CourseDescription: "The topics considered include: introduction to the chemistry of life, cell biology, genetics, evolution, ecology, cellular and organismic cellular and organismic reproduction, comparative anatomy and the physiology of selected organ systems with emphasis on humans."}
 	course20 := model.Course{CourseName: "Chemistry II ", CourseCredits: 4, DepartmentID: department7.DepartmentID, CourseDescription: "Topics include reactions of hydrocarbons, alcohols,ethers, amines and carbonyl compounds, structure and metobolism of carbohydrates, lipids, proteins, enzymes and important body fluids."}
@@ -776,12 +776,13 @@ func main() {
 	preReq2 := model.Prerequisite{CourseRequiredBy: course1.CourseID, CourseRequirement: course2.CourseID}
 	preReq3 := model.Prerequisite{CourseRequiredBy:course41.CourseID, CourseRequirement: course42.CourseID}
 	preReq4 := model.Prerequisite{CourseRequiredBy:course8.CourseID, CourseRequirement: course41.CourseID}
-
+	preReq5 := model.Prerequisite{CourseRequiredBy:course17.CourseID, CourseRequirement: course7.CourseID}
 
 	db.Create(&preReq1)
 	db.Create(&preReq2)
 	db.Create(&preReq3)
 	db.Create(&preReq4)
+	db.Create(&preReq5)
 
 	building := model.Building{BuildingName: "The Academy", BuildingAddress: "5 Shawsington Road"}
 	building2 := model.Building{BuildingName: "Riften Building", BuildingAddress: "115 Shawsington Road"}

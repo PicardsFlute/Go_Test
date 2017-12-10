@@ -1,0 +1,34 @@
+{{define "adminUpdateSection"}}
+{{template "head"}}
+
+
+<div class="container">
+
+
+    {{template "admin-navbar"}}
+
+    <h1>Editing Section</h1>
+    <hr>
+    <h2>Course Name: {{.Section.CourseName}}</h2>
+    <label class="form-group">Faculty</label>
+    <input type="text" readonly placeholder="{{.Section.FirstName}} {{.Section.LastName}}"><br>
+
+    l<label class="form-group">Bulding</label>
+    <select name="building" id="building-select">
+        <option disabled selected value="{{.Section.BuildingID}}">{{.Section.BuildingName}}</option>
+        {{range .Buildings}}
+            <option value="{{.BuildingID}}">{{.BuildingName}}</option>
+        {{end}}
+    </select><br>
+
+    <label class="form-group">Room Number</label>
+    <input type="text" readonly value="{{.Section.RoomNumber}}">
+    <select name="room" id="room-results">
+        <option disabled selected value="{{.Section.RoomID}}">{{.Section.RoomNumber}}</option>
+
+    </select>
+</div>
+
+{{template "end"}}
+{{end}}
+

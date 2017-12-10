@@ -744,3 +744,63 @@ func changeSemesterStatus(w http.ResponseWriter, r *http.Request) {
 	global.Tpl.ExecuteTemplate(w, "adminSuccess", "Semester Status Changed Successfully.")
 
 }
+
+func AdminUpdateSection(w http.ResponseWriter, r *http.Request){
+	sec := r.FormValue("section")
+	fmt.Println("Section to update is ", sec)
+
+	type CourseData struct {
+		CourseName string
+		CourseCredits int
+		CourseDescription string
+		DepartmentID uint
+		SectionID uint
+		CourseSectionNumber int
+		CourseID uint
+		FacultyID uint
+		FirstName string
+		LastName string
+		TimeSlotID uint
+		LocationID uint
+		DayID uint
+		MeetingDay string
+		RoomID uint
+		RoomNumber string
+		RoomType string
+		BuildingID uint
+		BuildingName string
+		Time string
+	}
+
+	sectionData := CourseData{}
+	db.Raw(`
+		SELECT course.course_name, course.course_credits, course.course_description, course.department_id, section.section_id, section.course_section_number,
+		section.course_id, section.faculty_id, section.time_slot_id, section.location_id, section.course_section_number,
+		main_user.first_name, main_user.last_name,
+		day.meeting_day, day.day_id,
+		building.building_name,time,
+		room.room_number, room.room_type
+
+		FROM section
+		JOIN course ON course.course_id = section.course_id
+		JOIN main_user ON main_user.user_id = section.faculty_id
+		JOIN location ON section.location_id = location.location_id
+		JOIN building ON building.building_id = location.building_id
+		JOIN room ON room.room_id = location.room_id
+		JOIN time_slot ON time_slot.time_slot_id = section.time_slot_id
+		JOIN semester ON time_slot.semester_id = semester.semester_id
+		JOIN day ON time_slot.day_id = day.day_id
+		JOIN period ON period.period_id = time_slot.period_id
+		WHERE section.section_id = ?`, sec).Scan(&sectionData)
+
+	buildings := []model.Building{}
+
+	db.Table("building").Select("*").Scan(&buildings)
+
+	info := map[string]interface{}{
+		"Buildings":buildings,
+		"Section":sectionData,
+	}
+
+	global.Tpl.ExecuteTemplate(w,"adminUpdateSection", info)
+}

@@ -104,7 +104,7 @@ func giveStudentGradesForm(w http.ResponseWriter, r *http.Request) {
 		WHERE section.section_id = ?
 	`, sectionIDint).Scan(&gp)
 
-	if strings.Compare(gp.SemesterStatus,"Grading") != 0 {
+	if strings.Compare(gp.SemesterStatus,"Grading") != 0 || strings.Compare(gp.SemesterStatus,"Open") != 0{
 		fmt.Println("Error it is not currently a grading period")
 		global.Tpl.ExecuteTemplate(w, "facultySuccess", "Error it is not currently a grading period")
 		return
