@@ -5,10 +5,8 @@ import (
 	_ "github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"golang.org/x/crypto/bcrypt"
-
 	"fmt"
 	"time"
-
 	"errors"
 	"github.com/jinzhu/gorm"
 )

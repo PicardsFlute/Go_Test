@@ -230,10 +230,6 @@ th {
   .table-bordered td {
     border: 1px solid #ddd !important; } }
 
-@font-face {
-  font-family: 'Glyphicons Halflings';
-  src: url("../fonts/glyphicons-halflings-regular.html");
-  src: url("../fonts/glyphicons-halflings-regulard41d.html?#iefix") format("embedded-opentype"), url("../fonts/glyphicons-halflings-regular-2.html") format("woff2"), url("../fonts/glyphicons-halflings-regular-3.html") format("woff"), url("../fonts/glyphicons-halflings-regular-4.html") format("truetype"), url("../fonts/glyphicons-halflings-regular-5.html#glyphicons_halflingsregular") format("svg"); }
 
 .glyphicon {
   position: relative;
@@ -6226,8 +6222,6 @@ button.close {
 .affix {
   position: fixed; }
 
-@-ms-viewport {
-  width: device-width; }
 
 .visible-xs,
 .visible-sm,
@@ -6396,17 +6390,7 @@ button.close {
   .hidden-print {
     display: none !important; } }
 
-@font-face {
-  font-family: 'Proxima Nova';
-  font-style: normal;
-  font-weight: normal;
-  src: url("../fonts/ProximaNova-Regular.otf") format("opentype"); }
 
-@font-face {
-  font-family: 'Proxima Nova';
-  font-style: normal;
-  font-weight: bold;
-  src: url("../fonts/ProximaNova-Bold.otf") format("opentype"); }
 
 body {
   overflow-x: hidden;
@@ -6575,12 +6559,7 @@ h1, h2, h3, h4, h5, h6 {
         width: 80px;
        
       }
-    .navbar-custom ul.dropdown-menu {
-      background-color: transparent;
-      min-width: auto;
-      right: 0; }
-      .navbar-custom ul.dropdown-menu a:hover, .navbar-custom ul.dropdown-menu a:focus {
-        background-color: transparent; } }
+
 
 @media (min-width: 992px) {
   .navbar-custom.affix {
@@ -7153,16 +7132,7 @@ body {
   margin:0 auto;
 }
 
-#goal {
-  color: #00467f;
-  font-size: 30px;
-  text-align: center;
-  width: 100%;
-  @media only screen and (max-width : 640px) {
-    text-align: center;  
-  }
-  
-}
+
 
 #glass {
   width: 100%;
@@ -7185,24 +7155,10 @@ body {
   //border-radius: 5px;
 }
 
-.goal-stat {
-  width: 100%;
-  height: 30px;
-  padding: 10px;
-  float: left;
-  margin: 0;
-  text-align:center;
-  
-  @media only screen and (max-width : 640px) {
-    width: 100%;
-    text-align: center;
-  }
-}
-
 .goal-number, .goal-label {
   display: block;
 }
 
 .goal-number {
   font-weight: bold;
-}
+}}

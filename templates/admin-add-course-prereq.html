@@ -15,7 +15,7 @@
             <form action="/admin/course/prereq/{course}" id="requestData" class="form-horizontal" method="POST">
             -->
 
-                <div class="col-md-8 contact-left-w3l">
+                <div class="col-md-8 contact-left-w3l" id="pre-req-form">
 
 
                     <label class="form-group">Course Name</label>
@@ -47,6 +47,10 @@
 
                         <input type="submit" value="submit" id="submit" class="btn btn-default pull-right">
 
+
+                </div>
+
+                <div id="success-message">
 
                 </div>
 
@@ -108,6 +112,9 @@
 
                 success:function () {
                     console.log("Ajax sent")
+                    $('#pre-req-form').hide();
+                    $('#success-message').append("Course was added correctly");
+
                 }
             });
         }
