@@ -615,4 +615,6 @@ func RegisterForSection(w http.ResponseWriter, r *http.Request){
 }
 
 //TODO write a function to check overlapping times
+//TODO add class size to section, check this size before student registers because class capacity could be smaller than room capactiy
+
 
