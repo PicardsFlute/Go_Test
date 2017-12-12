@@ -50,9 +50,9 @@ func init() {
 	db, err = gorm.Open("postgres", os.Getenv("DATABASE_URL"))
 
 
-	dbPassword := os.Getenv("PG_DATABASE_PW")
+	//dbPassword := os.Getenv("PG_DATABASE_PW")
 	//dbConnectString := os.Getenv("DATABASE_URL")
-	db, err = gorm.Open("postgres", "host=127.0.0.1 dbname=Starfleet sslmode=disable password="+dbPassword)
+	//db, err = gorm.Open("postgres", "host=127.0.0.1 dbname=Starfleet sslmode=disable password="+dbPassword)
 
 
 
