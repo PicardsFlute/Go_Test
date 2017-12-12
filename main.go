@@ -132,10 +132,11 @@ func main() {
 
 	routes.HandleFunc("/admin/course/search", AdminSearchCoursePage).Methods("GET")
 	routes.HandleFunc("/admin/course/search/{course}", AdminSearchCourse).Methods("GET")
-
 	//routes.HandleFunc("/admin/course/", AdminDeleteCourse)
 	routes.HandleFunc("/admin/section", AdminAddSectionPage)
+	routes.HandleFunc("/section/update", AdminUpdateSectionForm).Methods("GET")
 	routes.HandleFunc("/section/update", AdminUpdateSection).Methods("POST")
+
 	routes.HandleFunc("/admin/section/{section}", AdminAddSection)
 	routes.HandleFunc("/admin/section/room/{id}", GetRoomsForBuilding)
 	routes.HandleFunc("/admin/section/department/{id}", GetDepartmentsForSections).Methods("GET")

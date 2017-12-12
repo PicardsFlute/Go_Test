@@ -424,6 +424,8 @@ func RegisterForSection(w http.ResponseWriter, r *http.Request){
 
 	//TODO check if its a registration period
 
+	//TODO check if room is full
+
 	holds := 0
 
 	db.Table("student_holds").Select("*").Where("student_id = ?",user.UserID).Count(&holds)
@@ -456,6 +458,9 @@ func RegisterForSection(w http.ResponseWriter, r *http.Request){
 		MeetingDay string
 		Time string
 	}
+
+
+
 	//course attempting to register
 	courseRegistering := CourseRegistering{}
 	totalCredits := 0
@@ -471,6 +476,12 @@ func RegisterForSection(w http.ResponseWriter, r *http.Request){
 		WHERE section.section_id = ?
 
 	`,section).Scan(&courseRegistering)
+
+	splitSlot := strings.Split(courseRegistering.Time,"-")
+	stripWhite := strings.Split(splitSlot[1]," ")
+	fullSecondHalfofRegisteringCourse := stripWhite[1]+ " "+stripWhite[2]
+
+
 
 	type RegistrationCheck struct {
 		SectionID uint
@@ -501,6 +512,9 @@ func RegisterForSection(w http.ResponseWriter, r *http.Request){
 
 	//check course attempting to register vs courses already registered
 	for i := 0; i < len(registrationCheck); i++{
+		overlapTime := registrationCheck[i].Time
+		overlapTimeFirstHalf := strings.Split(overlapTime,"-")
+
 		totalCredits += registrationCheck[i].CourseCredits
 		if totalCredits >= maxCredits { //check max credits
 			fmt.Println("Error you are over the credit limit for your student type")
@@ -515,11 +529,17 @@ func RegisterForSection(w http.ResponseWriter, r *http.Request){
 			return
 		}
 
-		//check if time and day are equal
+		//check if time and day are equal /
 		if strings.Compare(courseRegistering.Time,registrationCheck[i].Time) == 0 &&
 		strings.Compare(courseRegistering.MeetingDay,registrationCheck[i].MeetingDay) == 0 {
 			fmt.Println("Error you are already registrered for that time slot at that day")
 			global.Tpl.ExecuteTemplate(w, "studentSuccess", "Error you are already registrered for that time slot at that day " )
+			return
+		}
+		//TODO overlapping time strings would not be equal i.e 12:30PM -> 4:50PM != 12:30PM -> 2:00PM but would pass test
+		if strings.Compare(fullSecondHalfofRegisteringCourse,overlapTimeFirstHalf[0]) == 1 {
+			fmt.Println("Error, you are attempting to register for overlapping time slots")
+			global.Tpl.ExecuteTemplate(w, "studentSuccess", "Error, you are attempting to register for overlapping time slots" )
 			return
 		}
 
@@ -593,4 +613,6 @@ func RegisterForSection(w http.ResponseWriter, r *http.Request){
 
 
 }
+
+//TODO write a function to check overlapping times
 

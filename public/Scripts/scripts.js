@@ -14,7 +14,7 @@ $('#building-select').on('change',function(){
             results.empty();
 
             jsonData.forEach(function(value){
-                var option = $("<option value="+value.RoomID +">" +value.RoomNumber + "</option>");
+                var option = $("<option value="+value.RoomID +"> Number: " +value.RoomNumber + "-- Capacity:" + value.RoomCapacity + "</option>");
 
                 // "---- <b>Type: </b>"+ value.RoomType +
                 // option.add('value',value.RoomID);

@@ -170,11 +170,8 @@ func main() {
 	user2 := model.MainUser{FirstName: "Irish", LastName: "James", UserEmail: "jirish@yahoo.com", UserPassword: "ij12345", UserType: 1}
 	user3 := model.MainUser{FirstName: "Trey", LastName: "Gorkin", UserEmail: "gork@yahoo.com", UserPassword: "tg12345", UserType: 1}
 	user4 := model.MainUser{FirstName: "Testy", LastName: "McTest", UserEmail: "test@test.test", UserPassword: "testPW", UserType: 1}
-	user5 := model.MainUser{FirstName: "Faculty", LastName: "McFaculton", UserEmail: "faculty@test.test", UserPassword: "testPW", UserType: 2}
-	user6 := model.MainUser{FirstName: "Aymen", LastName: "Johnson", UserEmail: "ifaculty@starfleet.edu", UserPassword: "testPW", UserType: 2}
-	user7 := model.MainUser{FirstName: "Jordi", LastName: "LaForge", UserEmail: "laforge@starfleet.edu", UserPassword: "testPW", UserType: 2}
-	user8 := model.MainUser{FirstName: "Admin", LastName: "McAdminton", UserEmail: "admin@test.test", UserPassword: "testPW", UserType: 3}
-	user9 := model.MainUser{FirstName: "George", LastName: "Admintonson", UserEmail: "adminson@starfleet.edu", UserPassword: "testPW", UserType: 3}
+
+
 	user10 := model.MainUser{FirstName: "Lesdo", LastName: "SomeResearch", UserEmail: "research@starfleet.edu", UserPassword: "testPW", UserType: 4}
 	user11 := model.MainUser{FirstName: "Dwayne", LastName: "Johnson", UserEmail: "Djohn@starfleet.edu", UserPassword: "6yhdf", UserType: 1}
 	user12 := model.MainUser{FirstName: "Mike", LastName: "Wayne", UserEmail: "Mwayne@starfleet.edu", UserPassword: "hrer2r", UserType: 1}
@@ -238,6 +235,12 @@ func main() {
 	facultyUser19 := model.MainUser{FirstName: "Jenna", LastName: "Dame", UserEmail: "Jdame@winterfell.com", UserPassword: "02i3joe", UserType: 2}
 	facultyUser20 := model.MainUser{FirstName: "Eric", LastName: "Iverson", UserEmail: "Eiverson@winterfell.com", UserPassword: "mckmpo2k3", UserType: 2}
 
+	user5 := model.MainUser{FirstName: "Faculty", LastName: "McFaculton", UserEmail: "faculty@test.test", UserPassword: "testPW", UserType: 2}
+	user6 := model.MainUser{FirstName: "Aymen", LastName: "Johnson", UserEmail: "ifaculty@starfleet.edu", UserPassword: "testPW", UserType: 2}
+	user7 := model.MainUser{FirstName: "Jordi", LastName: "LaForge", UserEmail: "laforge@starfleet.edu", UserPassword: "testPW", UserType: 2}
+
+	adminUser2 := model.MainUser{FirstName: "Admin", LastName: "McAdminton", UserEmail: "admin@test.test", UserPassword: "testPW", UserType: 3}
+	adminUser1 := model.MainUser{FirstName: "George", LastName: "Admintonson", UserEmail: "adminson@starfleet.edu", UserPassword: "testPW", UserType: 3}
 
 	/*
 	facultyUser4 := model.MainUser{FirstName: "Brandon", LastName: "Sanderson", UserEmail: "sanderson@gmail.com", UserPassword: "testPW", UserType: 2}
@@ -252,8 +255,7 @@ func main() {
 	db.Create(&user5)
 	db.Create(&user6)
 	db.Create(&user7)
-	db.Create(&user8)
-	db.Create(&user9)
+
 	db.Create(&user10)
 	db.Create(&user11)
 	db.Create(&user12)
@@ -295,6 +297,9 @@ func main() {
 	db.Create(&user48)
 	db.Create(&user49)
 	db.Create(&user50)
+
+	db.Create(&adminUser2)
+	db.Create(&adminUser1)
 
 	db.Create(&facultyUser1)
 	db.Create(&facultyUser2)
@@ -564,14 +569,32 @@ func main() {
 	db.Create(&department14)
 	db.Create(&department15)
 
+	//TODO make sure all faculty are added
+
 	faculty1 := model.Faculty{FacultyID: facultyUser1.UserID, FacultyType: 1, RoomNumber:"B100", DepartmentID: department1.DepartmentID}
 	faculty2 := model.Faculty{FacultyID: facultyUser2.UserID, FacultyType: 2, RoomNumber:"C300",DepartmentID: department2.DepartmentID}
 	faculty3 := model.Faculty{FacultyID: facultyUser3.UserID, FacultyType: 1, RoomNumber:"B110",DepartmentID: department1.DepartmentID}
 
 	faculty4 := model.Faculty{FacultyID: facultyUser4.UserID, FacultyType: 1, RoomNumber:"D100", DepartmentID: department3.DepartmentID}
 	faculty5 := model.Faculty{FacultyID: facultyUser5.UserID, FacultyType: 1, RoomNumber:"B200", DepartmentID: department4.DepartmentID}
-	faculty6 := model.Faculty{FacultyID: facultyUser6.UserID, FacultyType: 1, RoomNumber:"B400", DepartmentID: department5.DepartmentID}
-	//TODO finish faculty
+	faculty6 := model.Faculty{FacultyID: facultyUser6.UserID, FacultyType: 1, RoomNumber:"C400", DepartmentID: department5.DepartmentID}
+	faculty7 := model.Faculty{FacultyID: facultyUser7.UserID, FacultyType: 2, RoomNumber:"B411",DepartmentID: department6.DepartmentID}
+	faculty8 := model.Faculty{FacultyID: facultyUser8.UserID, FacultyType: 2, RoomNumber:"D400",DepartmentID: department7.DepartmentID}
+	faculty9 := model.Faculty{FacultyID: facultyUser9.UserID, FacultyType: 2, RoomNumber:"C411",DepartmentID: department8.DepartmentID}
+	faculty10 := model.Faculty{FacultyID: facultyUser10.UserID, FacultyType: 2,RoomNumber:"B212", DepartmentID: department9.DepartmentID}
+	faculty11 := model.Faculty{FacultyID: facultyUser11.UserID, FacultyType: 1, RoomNumber:"B300",DepartmentID: department10.DepartmentID}
+	faculty12 := model.Faculty{FacultyID: facultyUser12.UserID, FacultyType: 1, RoomNumber:"B213",DepartmentID: department11.DepartmentID}
+	faculty13 := model.Faculty{FacultyID: facultyUser13.UserID, FacultyType: 1,RoomNumber:"B214", DepartmentID: department14.DepartmentID}
+	faculty14 := model.Faculty{FacultyID: facultyUser14.UserID, FacultyType: 1, RoomNumber:"B215",DepartmentID: department13.DepartmentID}
+	faculty15 := model.Faculty{FacultyID: facultyUser15.UserID, FacultyType: 1, RoomNumber:"B315",DepartmentID: department12.DepartmentID}
+	faculty16 := model.Faculty{FacultyID: facultyUser16.UserID, FacultyType: 1, RoomNumber:"B216",DepartmentID: department10.DepartmentID}
+	faculty17 := model.Faculty{FacultyID: facultyUser17.UserID, FacultyType: 1, RoomNumber:"C113",DepartmentID: department9.DepartmentID}
+	faculty18 := model.Faculty{FacultyID: facultyUser18.UserID, FacultyType: 1, RoomNumber:"C114",DepartmentID: department8.DepartmentID}
+	faculty19 := model.Faculty{FacultyID: facultyUser19.UserID, FacultyType: 1, RoomNumber:"C117",DepartmentID: department7.DepartmentID}
+	faculty20 := model.Faculty{FacultyID: facultyUser20.UserID, FacultyType: 1, RoomNumber:"C131",DepartmentID: department15.DepartmentID}
+	faculty21 := model.Faculty{FacultyID: user5.UserID, FacultyType: 1, RoomNumber:"C114",DepartmentID: department8.DepartmentID}
+	faculty22 := model.Faculty{FacultyID: user6.UserID, FacultyType: 1, RoomNumber:"C117",DepartmentID: department7.DepartmentID}
+	faculty23 := model.Faculty{FacultyID: user7.UserID, FacultyType: 1, RoomNumber:"C131",DepartmentID: department15.DepartmentID}
 
 	db.Create(&faculty1)
 	db.Create(&faculty2)
@@ -579,6 +602,74 @@ func main() {
 	db.Create(&faculty4)
 	db.Create(&faculty5)
 	db.Create(&faculty6)
+	db.Create(&faculty7)
+	db.Create(&faculty8)
+	db.Create(&faculty9)
+	db.Create(&faculty10)
+	db.Create(&faculty11)
+	db.Create(&faculty12)
+	db.Create(&faculty13)
+	db.Create(&faculty14)
+	db.Create(&faculty15)
+	db.Create(&faculty16)
+	db.Create(&faculty17)
+	db.Create(&faculty18)
+	db.Create(&faculty19)
+	db.Create(&faculty20)
+	db.Create(&faculty21)
+	db.Create(&faculty22)
+	db.Create(&faculty23)
+
+	fullTimeFaculty1 := model.FullTimeFaculty{FullTimeFacultyID: faculty1.FacultyID}
+	fullTimeFaculty2 := model.FullTimeFaculty{FullTimeFacultyID: faculty2.FacultyID}
+	fullTimeFaculty3 := model.FullTimeFaculty{FullTimeFacultyID: faculty3.FacultyID}
+	fullTimeFaculty4 := model.FullTimeFaculty{FullTimeFacultyID: faculty4.FacultyID}
+	fullTimeFaculty5 := model.FullTimeFaculty{FullTimeFacultyID: faculty5.FacultyID}
+	db.Create(&fullTimeFaculty1)
+	db.Create(&fullTimeFaculty2)
+	db.Create(&fullTimeFaculty3)
+	db.Create(&fullTimeFaculty4)
+	db.Create(&fullTimeFaculty5)
+	partTimeFaculty6 := model.PartTimeFaculty{PartTimeFacultyID: faculty6.FacultyID}
+	partTimeFaculty7 := model.PartTimeFaculty{PartTimeFacultyID: faculty7.FacultyID}
+	partTimeFaculty8 := model.PartTimeFaculty{PartTimeFacultyID: faculty8.FacultyID}
+	partTimeFaculty9 := model.PartTimeFaculty{PartTimeFacultyID: faculty9.FacultyID}
+	partTimeFaculty10 := model.PartTimeFaculty{PartTimeFacultyID: faculty10.FacultyID}
+	db.Create(&partTimeFaculty6)
+	db.Create(&partTimeFaculty7)
+	db.Create(&partTimeFaculty8)
+	db.Create(&partTimeFaculty9)
+	db.Create(&partTimeFaculty10)
+	fullTimeFaculty11 := model.FullTimeFaculty{FullTimeFacultyID: faculty11.FacultyID}
+	fullTimeFaculty12 := model.FullTimeFaculty{FullTimeFacultyID: faculty12.FacultyID}
+	fullTimeFaculty13 := model.FullTimeFaculty{FullTimeFacultyID: faculty13.FacultyID}
+	fullTimeFaculty14 := model.FullTimeFaculty{FullTimeFacultyID: faculty14.FacultyID}
+	fullTimeFaculty15 := model.FullTimeFaculty{FullTimeFacultyID: faculty15.FacultyID}
+	fullTimeFaculty16 := model.FullTimeFaculty{FullTimeFacultyID: faculty16.FacultyID}
+	fullTimeFaculty17 := model.FullTimeFaculty{FullTimeFacultyID: faculty17.FacultyID}
+	fullTimeFaculty18 := model.FullTimeFaculty{FullTimeFacultyID: faculty18.FacultyID}
+	fullTimeFaculty19 := model.FullTimeFaculty{FullTimeFacultyID: faculty19.FacultyID}
+	fullTimeFaculty20 := model.FullTimeFaculty{FullTimeFacultyID: faculty20.FacultyID}
+
+	fullTimeFaculty21 := model.FullTimeFaculty{FullTimeFacultyID: faculty21.FacultyID}
+	fullTimeFaculty22 := model.FullTimeFaculty{FullTimeFacultyID: faculty22.FacultyID}
+	fullTimeFaculty23 := model.FullTimeFaculty{FullTimeFacultyID: faculty23.FacultyID}
+
+	db.Create(&fullTimeFaculty11)
+	db.Create(&fullTimeFaculty12)
+	db.Create(&fullTimeFaculty13)
+	db.Create(&fullTimeFaculty14)
+	db.Create(&fullTimeFaculty15)
+	db.Create(&fullTimeFaculty16)
+	db.Create(&fullTimeFaculty17)
+	db.Create(&fullTimeFaculty18)
+	db.Create(&fullTimeFaculty19)
+	db.Create(&fullTimeFaculty20)
+
+
+	db.Create(&fullTimeFaculty21)
+	db.Create(&fullTimeFaculty22)
+	db.Create(&fullTimeFaculty23)
 
 	// example of finding a many-one lookup
 	dep := model.Department{}
@@ -590,8 +681,8 @@ func main() {
 	db.Where(model.Faculty{DepartmentID: department1.DepartmentID}).Find(&facMembers)
 	fmt.Println("For the departent1 (Math), the faculty is: ")
 
-	admin1 := model.Admin{AdminID: user8.UserID}
-	admin2 := model.Admin{AdminID: user9.UserID}
+	admin1 := model.Admin{AdminID: adminUser2.UserID}
+	admin2 := model.Admin{AdminID: adminUser1.UserID}
 	db.Create(&admin1)
 	db.Create(&admin2)
 
@@ -777,12 +868,14 @@ func main() {
 	preReq3 := model.Prerequisite{CourseRequiredBy:course41.CourseID, CourseRequirement: course42.CourseID}
 	preReq4 := model.Prerequisite{CourseRequiredBy:course8.CourseID, CourseRequirement: course41.CourseID}
 	preReq5 := model.Prerequisite{CourseRequiredBy:course17.CourseID, CourseRequirement: course7.CourseID}
+	bioPreReq := model.Prerequisite{CourseRequiredBy:course19.CourseID, CourseRequirement:course14.CourseID}
 
 	db.Create(&preReq1)
 	db.Create(&preReq2)
 	db.Create(&preReq3)
 	db.Create(&preReq4)
 	db.Create(&preReq5)
+	db.Create(&bioPreReq)
 
 	building := model.Building{BuildingName: "The Academy", BuildingAddress: "5 Shawsington Road"}
 	building2 := model.Building{BuildingName: "Riften Building", BuildingAddress: "115 Shawsington Road"}
