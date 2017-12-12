@@ -14,7 +14,6 @@ func main() {
 	dbPassword := os.Getenv("PG_DATABASE_PW")
 	db, err := gorm.Open("postgres", "host=127.0.0.1 dbname=Starfleet sslmode=disable password="+dbPassword)
 
-
 	if err != nil {
 		fmt.Println("Cannot connect to database...")
 		fmt.Println("DB Error: ", err)
@@ -869,6 +868,8 @@ func main() {
 	preReq4 := model.Prerequisite{CourseRequiredBy:course8.CourseID, CourseRequirement: course41.CourseID}
 	preReq5 := model.Prerequisite{CourseRequiredBy:course17.CourseID, CourseRequirement: course7.CourseID}
 	bioPreReq := model.Prerequisite{CourseRequiredBy:course19.CourseID, CourseRequirement:course14.CourseID}
+
+	//TODO add some pre-reqs
 
 	db.Create(&preReq1)
 	db.Create(&preReq2)
