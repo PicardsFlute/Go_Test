@@ -142,6 +142,7 @@ func main() {
 
 	routes.HandleFunc("/admin/course/search", AdminSearchCoursePage).Methods("GET")
 	routes.HandleFunc("/admin/course/search/{course}", AdminSearchCourse).Methods("GET")
+	routes.HandleFunc("/course/update", UpdateCourse).Methods("POST")
 	//routes.HandleFunc("/admin/course/", AdminDeleteCourse)
 	routes.HandleFunc("/admin/section", AdminAddSectionPage)
 	routes.HandleFunc("/section/update", AdminUpdateSectionForm).Methods("GET")
@@ -170,7 +171,7 @@ func main() {
 	routes.HandleFunc("/student/advisor", ViewAdvisor).Methods("GET")
 	routes.HandleFunc("/student/transcript", ViewTranscript).Methods("GET")
 	routes.HandleFunc("/student/search", AddCoursePage).Methods("GET")
-	routes.HandleFunc("/student/register", StudentSearchCourseResults).Methods("GET")
+	//routes.HandleFunc("/student/register", StudentSearchCourseResults).Methods("GET")
 	routes.HandleFunc("/student/register", RegisterForSection).Methods("POST")
 
 
@@ -908,6 +909,7 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 			RoomType string
 			BuildingID uint
 			BuildingName string
+			Capacity uint
 			Time string
 			Prerequisites []model.Course
 			User IsAdmin
@@ -918,7 +920,6 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 
 	queryRes := []CourseData{}
 
-	//TODO: Phil add prerequisits to query and display the rest of the data in MS search
 
 	//rows, err := db.Joins("JOIN course ON course.course_id = section.course_id").Where(whereMap).Rows()
 	sql := `SELECT course.course_name, course.course_credits, course.course_description, course.department_id, section.section_id, section.course_section_number,
@@ -926,7 +927,7 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 	main_user.first_name, main_user.last_name,
 	day.meeting_day, day.day_id,
 	building.building_name,time,
-	room.room_number, room.room_type
+	room.room_number, room.room_type,capacity
 
 	FROM section
 	JOIN course ON course.course_id = section.course_id
@@ -1005,12 +1006,27 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 		admin.IsAdmin = false
 	}
 
+	type IsStudent struct {
+		IsStudent bool
+		User model.MainUser
+	}
+
+	student := IsStudent{}
+
+	if user.UserType == 1 {
+		student.IsStudent = true
+		student.User = user
+	}else {
+		student.IsStudent = false
+	}
+
 
 	data :=  map[string]interface{}{
 		"Results": queryRes,
 		"Departments": allDepartments,
 		"Params": searchParams,
 		"User":admin,
+		"Student": student,
 	}
 
 	err := global.Tpl.ExecuteTemplate(w, "masterScheduleSearch", data)

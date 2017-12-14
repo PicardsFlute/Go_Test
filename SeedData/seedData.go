@@ -166,12 +166,17 @@ func main() {
 	db.Model(&model.Reports{}).AddForeignKey("researcher_id", "researcher(researcher_id)", "RESTRICT", "RESTRICT")
 
 	user1 := model.MainUser{FirstName: "Pat", LastName: "Lagat", UserEmail: "plagat@yahoo.com", UserPassword: "pl12345", UserType: 1}
-	user2 := model.MainUser{FirstName: "Irish", LastName: "James", UserEmail: "jirish@yahoo.com", UserPassword: "ij12345", UserType: 1}
+	user2 := model.MainUser{FirstName: "Irman", LastName: "James", UserEmail: "jirish@yahoo.com", UserPassword: "ij12345", UserType: 1}
 	user3 := model.MainUser{FirstName: "Trey", LastName: "Gorkin", UserEmail: "gork@yahoo.com", UserPassword: "tg12345", UserType: 1}
 	user4 := model.MainUser{FirstName: "Testy", LastName: "McTest", UserEmail: "test@test.test", UserPassword: "testPW", UserType: 1}
 
+	user5 := model.MainUser{FirstName: "Forest", LastName: "Traub", UserEmail: "forest@test.test", UserPassword: "tcvvg", UserType: 1}
+	user6 := model.MainUser{FirstName: "Lilli", LastName: "Hai", UserEmail: "llili@starfleet.edu", UserPassword: "sdvbW", UserType: 1}
+	user7 := model.MainUser{FirstName: "Naresh", LastName: "Gupta", UserEmail: "ngupta@starfleet.edu", UserPassword: "t35hW", UserType: 1}
+	user8 := model.MainUser{FirstName: "Ashok", LastName: "Basawapatna", UserEmail: "ashok @gmail.com", UserPassword: "565rt", UserType: 1}
+	user9 := model.MainUser{FirstName: "Josh", LastName: "Sand", UserEmail: "jsanders@gmail.com", UserPassword: "tth666", UserType: 1}
 
-	user10 := model.MainUser{FirstName: "Lesdo", LastName: "SomeResearch", UserEmail: "research@starfleet.edu", UserPassword: "testPW", UserType: 4}
+	user10 := model.MainUser{FirstName: "Lester", LastName: "Somrofrom", UserEmail: "research@starfleet.edu", UserPassword: "testPW", UserType: 4}
 	user11 := model.MainUser{FirstName: "Dwayne", LastName: "Johnson", UserEmail: "Djohn@starfleet.edu", UserPassword: "6yhdf", UserType: 1}
 	user12 := model.MainUser{FirstName: "Mike", LastName: "Wayne", UserEmail: "Mwayne@starfleet.edu", UserPassword: "hrer2r", UserType: 1}
 	user13 := model.MainUser{FirstName: "Brook", LastName: "Gordon", UserEmail: "Bgordon@starfleet.edu", UserPassword: "cbtdPW", UserType: 1}
@@ -187,9 +192,9 @@ func main() {
 	user23 := model.MainUser{FirstName: "Pam", LastName: "Pen", UserEmail: "Ppen@starfleet.edu", UserPassword: "4htuug", UserType: 1}
 	user24 := model.MainUser{FirstName: "Helen", LastName: "Keller", UserEmail: "Hkel@starfleet.edu", UserPassword: "wrg3td", UserType: 1}
 	user25 := model.MainUser{FirstName: "Kelly", LastName: "Nevers", UserEmail: "Knevers@starfleet.edu", UserPassword: "h5645s", UserType: 1}
-	user26 := model.MainUser{FirstName: "Jill", LastName: "Jack", UserEmail: "Jjack@starfleet.edu", UserPassword: "gwf345h", UserType: 1}
-	user27 := model.MainUser{FirstName: "Rell", LastName: "Kell", UserEmail: "Rkell@starfleet.edu", UserPassword: "4h6y54", UserType: 1}
-	user28 := model.MainUser{FirstName: "Bell", LastName: "Bank", UserEmail: "Bbank@starfleet.edu", UserPassword: "0swwjv", UserType: 1}
+	user26 := model.MainUser{FirstName: "Jill", LastName: "Jackson", UserEmail: "Jjack@starfleet.edu", UserPassword: "gwf345h", UserType: 1}
+	user27 := model.MainUser{FirstName: "Riley", LastName: "Kelly", UserEmail: "Rkell@starfleet.edu", UserPassword: "4h6y54", UserType: 1}
+	user28 := model.MainUser{FirstName: "Bella", LastName: "Banks", UserEmail: "Bbank@starfleet.edu", UserPassword: "0swwjv", UserType: 1}
 	user29 := model.MainUser{FirstName: "Lola", LastName: "Hank", UserEmail: "Lhank@starfleet.edu", UserPassword: "29whe44", UserType: 1}
 	user30 := model.MainUser{FirstName: "Manny", LastName: "Pell", UserEmail: "Mpell@starfleet.edu", UserPassword: "9sgu9g", UserType: 1}
 	user31 := model.MainUser{FirstName: "Kenny", LastName: "Ford", UserEmail: "Kford@starfleet.edu", UserPassword: "nkxjnw", UserType: 1}
@@ -197,10 +202,10 @@ func main() {
 	user33 := model.MainUser{FirstName: "Frank", LastName: "Brick", UserEmail: "Fmignon@starfleet.edu", UserPassword: "jelly", UserType: 1}
 	user34 := model.MainUser{FirstName: "Jonathan", LastName: "Poke", UserEmail: "Bcheese@starfleet.edu", UserPassword: "kwodss", UserType: 1}
 	user35 := model.MainUser{FirstName: "Ken", LastName: "Will", UserEmail: "Kwill@starfleet.edu", UserPassword: "svrww", UserType: 1}
-	user36 := model.MainUser{FirstName: "Ill", LastName: "Dill", UserEmail: "Illdill@starfleet.edu", UserPassword: "snviuwwwj", UserType: 1}
+	user36 := model.MainUser{FirstName: "Phil", LastName: "Dillard", UserEmail: "Illdill@starfleet.edu", UserPassword: "snviuwwwj", UserType: 1}
 	user37 := model.MainUser{FirstName: "Kayton", LastName: "Booking", UserEmail: "Kbooking@starfleet.edu", UserPassword: "89jsvnjk", UserType: 1}
 	user38 := model.MainUser{FirstName: "Jaleel", LastName: "Neal", UserEmail: "Jneal@starfleet.edu", UserPassword: "kjnwkjnw", UserType: 1}
-	user39 := model.MainUser{FirstName: "Wendy", LastName: "Gem", UserEmail: "Wgem@starfleet.edu", UserPassword: "o2ifjwe", UserType: 1}
+	user39 := model.MainUser{FirstName: "Wendy", LastName: "Gemston", UserEmail: "Wgem@starfleet.edu", UserPassword: "o2ifjwe", UserType: 1}
 	user40 := model.MainUser{FirstName: "Sally", LastName: "Mae", UserEmail: "Smae@starfleet.edu", UserPassword: "knswlwe", UserType: 1}
 	user41 := model.MainUser{FirstName: "Trey", LastName: "Valley", UserEmail: "Tvalley@starfleet.edu", UserPassword: "sjoi2jw", UserType: 1}
 	user42 := model.MainUser{FirstName: "Krystal", LastName: "Clear", UserEmail: "Kclear@starfleet.edu", UserPassword: "jwjknwejk", UserType: 1}
@@ -208,38 +213,38 @@ func main() {
 	user44 := model.MainUser{FirstName: "Rich", LastName: "Man", UserEmail: "Rmsn@starfleet.edu", UserPassword: "opakve", UserType: 1}
 	user45 := model.MainUser{FirstName: "Kay", LastName: "Winn", UserEmail: "Kwinn@starfleet.edu", UserPassword: "slsjios", UserType: 1}
 	user46 := model.MainUser{FirstName: "Lens", LastName: "Wilson", UserEmail: "Lwil@starfleet.edu", UserPassword: "niji2o", UserType: 1}
-	user47 := model.MainUser{FirstName: "Gong", LastName: "Ho", UserEmail: "Gho@starfleet.edu", UserPassword: "93u94fhiu34", UserType: 1}
-	user48 := model.MainUser{FirstName: "Pal", LastName: "Cakes", UserEmail: "Pcakes@starfleet.edu", UserPassword: "9fhewjkwe", UserType: 1}
+	user47 := model.MainUser{FirstName: "Gong", LastName: "Honton", UserEmail: "Gho@starfleet.edu", UserPassword: "93u94fhiu34", UserType: 1}
+	user48 := model.MainUser{FirstName: "Pal", LastName: "Colston", UserEmail: "Pcakes@starfleet.edu", UserPassword: "9fhewjkwe", UserType: 1}
 	user49 := model.MainUser{FirstName: "Pat", LastName: "Megan", UserEmail: "Pmegan@starfleet.edu", UserPassword: "wiuhfui2", UserType: 1}
-	user50 := model.MainUser{FirstName: "Nana", LastName: "Yaw", UserEmail: "Nyaw@starfleet.edu", UserPassword: "kjecnjn2", UserType: 1}
+	user50 := model.MainUser{FirstName: "Nana", LastName: "Ashiton", UserEmail: "Nyaw@starfleet.edu", UserPassword: "kjecnjn2", UserType: 1}
 
 	facultyUser1 := model.MainUser{FirstName: "Brandon", LastName: "Sanderson", UserEmail: "sanderson@gmail.com", UserPassword: "testPW", UserType: 2}
-	facultyUser2 := model.MainUser{FirstName: "Mike", LastName: "Tyson", UserEmail: "tyson@gmail.com", UserPassword: "j76755", UserType: 2}
+	facultyUser2 := model.MainUser{FirstName: "Mikael", LastName: "Tyson", UserEmail: "tyson@gmail.com", UserPassword: "j76755", UserType: 2}
 	facultyUser3 := model.MainUser{FirstName: "Eddard", LastName: "Stark", UserEmail: "estark@winterfell.com", UserPassword: "65745", UserType: 2}
 	facultyUser4 := model.MainUser{FirstName: "Angela", LastName: "Gordon", UserEmail: "Agordon@winterfell.com", UserPassword: "fr643d", UserType: 2}
-	facultyUser5 := model.MainUser{FirstName: "Blue", LastName: "West", UserEmail: "Bwestk@winterfell.com", UserPassword: "jtyt656", UserType: 2}
-	facultyUser6 := model.MainUser{FirstName: "Jada", LastName: "Los", UserEmail: "Jlos@winterfell.com", UserPassword: "e45bd56", UserType: 2}
-	facultyUser7 := model.MainUser{FirstName: "Prince", LastName: "King", UserEmail: "Pking@winterfell.com", UserPassword: "85894j", UserType: 2}
-	facultyUser8 := model.MainUser{FirstName: "Princess", LastName: "June", UserEmail: "Pjune@winterfell.com", UserPassword: "9ehve", UserType: 2}
-	facultyUser9 := model.MainUser{FirstName: "Gifty", LastName: "Boateng", UserEmail: "Pboa@winterfell.com", UserPassword: "isjv39", UserType: 2}
-	facultyUser10 := model.MainUser{FirstName: "Puff", LastName: "Dad", UserEmail: "Pdad@winterfell.com", UserPassword: "93hjiw", UserType: 2}
-	facultyUser11 := model.MainUser{FirstName: "Mase", LastName: "Cam", UserEmail: "Mcam@winterfell.com", UserPassword: "ewweke", UserType: 2}
+	facultyUser5 := model.MainUser{FirstName: "Blake", LastName: "Weller", UserEmail: "Bwestk@winterfell.com", UserPassword: "jtyt656", UserType: 2}
+	facultyUser6 := model.MainUser{FirstName: "Jada", LastName: "Campbell", UserEmail: "Jlos@winterfell.com", UserPassword: "e45bd56", UserType: 2}
+	facultyUser7 := model.MainUser{FirstName: "Prince", LastName: "Drako", UserEmail: "Pking@winterfell.com", UserPassword: "85894j", UserType: 2}
+	facultyUser8 := model.MainUser{FirstName: "Patrick", LastName: "Allen", UserEmail: "Pjune@winterfell.com", UserPassword: "9ehve", UserType: 2}
+	facultyUser9 := model.MainUser{FirstName: "Garrett", LastName: "Boateng", UserEmail: "Pboa@winterfell.com", UserPassword: "isjv39", UserType: 2}
+	facultyUser10 := model.MainUser{FirstName: "Payton", LastName: "Dacres", UserEmail: "Pdad@winterfell.com", UserPassword: "93hjiw", UserType: 2}
+	facultyUser11 := model.MainUser{FirstName: "Martin", LastName: "McStevenson", UserEmail: "Mcam@winterfell.com", UserPassword: "ewweke", UserType: 2}
 	facultyUser12 := model.MainUser{FirstName: "Curtis", LastName: "Jackson", UserEmail: "Cjack@winterfell.com", UserPassword: "ofjewk", UserType: 2}
-	facultyUser13 := model.MainUser{FirstName: "Jim", LastName: "Slimmy", UserEmail: "Jslim@winterfell.com", UserPassword: "93ifje", UserType: 2}
+	facultyUser13 := model.MainUser{FirstName: "Jim", LastName: "McNeil", UserEmail: "Jslim@winterfell.com", UserPassword: "93ifje", UserType: 2}
 	facultyUser14 := model.MainUser{FirstName: "Gordon", LastName: "Paul", UserEmail: "Gpaul@winterfell.com", UserPassword: "woj2io2", UserType: 2}
-	facultyUser15 := model.MainUser{FirstName: "Missy", LastName: "Elliot", UserEmail: "Melliot@winterfell.com", UserPassword: "odjco22", UserType: 2}
-	facultyUser16 := model.MainUser{FirstName: "Cardi", LastName: "Kim", UserEmail: "Ckim@winterfell.com", UserPassword: "oij20fwe", UserType: 2}
-	facultyUser17 := model.MainUser{FirstName: "Layla", LastName: "Ali", UserEmail: "Lali@winterfell.com", UserPassword: "ooo2jnfk2", UserType: 2}
+	facultyUser15 := model.MainUser{FirstName: "Margaret", LastName: "Elliot", UserEmail: "Melliot@winterfell.com", UserPassword: "odjco22", UserType: 2}
+	facultyUser16 := model.MainUser{FirstName: "Janette", LastName: "Craig", UserEmail: "Ckim@winterfell.com", UserPassword: "oij20fwe", UserType: 2}
+	facultyUser17 := model.MainUser{FirstName: "Layla", LastName: "Allston", UserEmail: "Lali@winterfell.com", UserPassword: "ooo2jnfk2", UserType: 2}
 	facultyUser18 := model.MainUser{FirstName: "Tyreke", LastName: "Evans", UserEmail: "Tevans@winterfell.com", UserPassword: "owkop2k22", UserType: 2}
 	facultyUser19 := model.MainUser{FirstName: "Jenna", LastName: "Dame", UserEmail: "Jdame@winterfell.com", UserPassword: "02i3joe", UserType: 2}
 	facultyUser20 := model.MainUser{FirstName: "Eric", LastName: "Iverson", UserEmail: "Eiverson@winterfell.com", UserPassword: "mckmpo2k3", UserType: 2}
 
-	user5 := model.MainUser{FirstName: "Faculty", LastName: "McFaculton", UserEmail: "faculty@test.test", UserPassword: "testPW", UserType: 2}
-	user6 := model.MainUser{FirstName: "Aymen", LastName: "Johnson", UserEmail: "ifaculty@starfleet.edu", UserPassword: "testPW", UserType: 2}
-	user7 := model.MainUser{FirstName: "Jordi", LastName: "LaForge", UserEmail: "laforge@starfleet.edu", UserPassword: "testPW", UserType: 2}
+	faculty21 := model.MainUser{FirstName: "Fredrick", LastName: "Foster", UserEmail: "faculty@test.test", UserPassword: "testPW", UserType: 2}
+	faculty22 := model.MainUser{FirstName: "Aymen", LastName: "Johnson", UserEmail: "ifaculty@starfleet.edu", UserPassword: "testPW", UserType: 2}
+	faculty23 := model.MainUser{FirstName: "Jordi", LastName: "LaForge", UserEmail: "laforge@starfleet.edu", UserPassword: "testPW", UserType: 2}
 
-	adminUser2 := model.MainUser{FirstName: "Admin", LastName: "McAdminton", UserEmail: "admin@test.test", UserPassword: "testPW", UserType: 3}
-	adminUser1 := model.MainUser{FirstName: "George", LastName: "Admintonson", UserEmail: "adminson@starfleet.edu", UserPassword: "testPW", UserType: 3}
+	adminUser2 := model.MainUser{FirstName: "Arnold", LastName: "Armstrong", UserEmail: "admin@test.test", UserPassword: "testPW", UserType: 3}
+	adminUser1 := model.MainUser{FirstName: "Ben", LastName: "Xerri", UserEmail: "adminson@starfleet.edu", UserPassword: "testPW", UserType: 3}
 
 	/*
 	facultyUser4 := model.MainUser{FirstName: "Brandon", LastName: "Sanderson", UserEmail: "sanderson@gmail.com", UserPassword: "testPW", UserType: 2}
@@ -251,9 +256,13 @@ func main() {
 	db.Create(&user2)
 	db.Create(&user3)
 	db.Create(&user4)
+
+
 	db.Create(&user5)
 	db.Create(&user6)
 	db.Create(&user7)
+	db.Create(&user8)
+	db.Create(&user9)
 
 	db.Create(&user10)
 	db.Create(&user11)
@@ -321,7 +330,15 @@ func main() {
 	db.Create(&facultyUser19)
 	db.Create(&facultyUser20)
 
+	db.Create(&faculty21)
+	db.Create(&faculty22)
+	db.Create(&faculty23)
 
+	student5 := model.Student{StudentID: user5.UserID, StudentType: 1}
+	student6 := model.Student{StudentID: user6.UserID, StudentType: 1}
+	student7 := model.Student{StudentID: user7.UserID, StudentType: 1}
+	student8 := model.Student{StudentID: user8.UserID, StudentType: 1}
+	student9 := model.Student{StudentID: user9.UserID, StudentType: 1}
 
 	student2 := model.Student{StudentID: user2.UserID, StudentType: 1}
 	student1 := model.Student{StudentID: user1.UserID, StudentType: 1}
@@ -373,6 +390,12 @@ func main() {
 	db.Create(&student2)
 	db.Create(&student3)
 	db.Create(&student4)
+
+	db.Create(&student5)
+	db.Create(&student6)
+	db.Create(&student7)
+	db.Create(&student8)
+	db.Create(&student9)
 
 	db.Create(&student10)
 	db.Create(&student11)
@@ -431,19 +454,19 @@ func main() {
 	db.Create(&partTimeStudent1)
 	db.Create(&partTimeStudent2)
 
-	//fullTimeStudent5 := model.FullTimeStudent{FullTimeStudentID: student5.StudentID, NumCredits: 16}
-	//fullTimeStudent6 := model.FullTimeStudent{FullTimeStudentID: student6.StudentID, NumCredits: 18}
-	//fullTimeStudent7 := model.FullTimeStudent{FullTimeStudentID: student7.StudentID, NumCredits: 16}
-	//fullTimeStudent8 := model.FullTimeStudent{FullTimeStudentID: student8.StudentID, NumCredits: 16}
-	//fullTimeStudent9 := model.FullTimeStudent{FullTimeStudentID: student9.StudentID, NumCredits: 18}
+	fullTimeStudent5 := model.FullTimeStudent{FullTimeStudentID: student5.StudentID, NumCredits: 16}
+	fullTimeStudent6 := model.FullTimeStudent{FullTimeStudentID: student6.StudentID, NumCredits: 18}
+	fullTimeStudent7 := model.FullTimeStudent{FullTimeStudentID: student7.StudentID, NumCredits: 16}
+	fullTimeStudent8 := model.FullTimeStudent{FullTimeStudentID: student8.StudentID, NumCredits: 16}
+	fullTimeStudent9 := model.FullTimeStudent{FullTimeStudentID: student9.StudentID, NumCredits: 18}
 	fullTimeStudent10 := model.FullTimeStudent{FullTimeStudentID: student10.StudentID, NumCredits: 16}
 	//db.Create(&fullTimeStudent3)
 	//db.Create(&fullTimeStudent4)
-	//db.Create(&fullTimeStudent5)
-	//db.Create(&fullTimeStudent6)
-	//db.Create(&fullTimeStudent7)
-	//db.Create(&fullTimeStudent8)
-	//db.Create(&fullTimeStudent9)
+	db.Create(&fullTimeStudent5)
+	db.Create(&fullTimeStudent6)
+	db.Create(&fullTimeStudent7)
+	db.Create(&fullTimeStudent8)
+	db.Create(&fullTimeStudent9)
 	db.Create(&fullTimeStudent10)
 	partTimeStudent11 := model.PartTimeStudent{PartTimeStudentID: student11.StudentID, NumCredits: 8}
 	partTimeStudent12 := model.PartTimeStudent{PartTimeStudentID: student12.StudentID, NumCredits: 8}
@@ -591,9 +614,10 @@ func main() {
 	faculty18 := model.Faculty{FacultyID: facultyUser18.UserID, FacultyType: 1, RoomNumber:"C114",DepartmentID: department8.DepartmentID}
 	faculty19 := model.Faculty{FacultyID: facultyUser19.UserID, FacultyType: 1, RoomNumber:"C117",DepartmentID: department7.DepartmentID}
 	faculty20 := model.Faculty{FacultyID: facultyUser20.UserID, FacultyType: 1, RoomNumber:"C131",DepartmentID: department15.DepartmentID}
-	faculty21 := model.Faculty{FacultyID: user5.UserID, FacultyType: 1, RoomNumber:"C114",DepartmentID: department8.DepartmentID}
-	faculty22 := model.Faculty{FacultyID: user6.UserID, FacultyType: 1, RoomNumber:"C117",DepartmentID: department7.DepartmentID}
-	faculty23 := model.Faculty{FacultyID: user7.UserID, FacultyType: 1, RoomNumber:"C131",DepartmentID: department15.DepartmentID}
+
+	facultyUser21 := model.Faculty{FacultyID: faculty21.UserID, FacultyType: 1, RoomNumber: "E114", DepartmentID: department8.DepartmentID}
+	facultyUser22 := model.Faculty{FacultyID: faculty22.UserID, FacultyType: 1, RoomNumber: "F117", DepartmentID: department7.DepartmentID}
+	facultyUser23 := model.Faculty{FacultyID: faculty23.UserID, FacultyType: 1, RoomNumber: "G131", DepartmentID: department15.DepartmentID}
 
 	db.Create(&faculty1)
 	db.Create(&faculty2)
@@ -615,9 +639,9 @@ func main() {
 	db.Create(&faculty18)
 	db.Create(&faculty19)
 	db.Create(&faculty20)
-	db.Create(&faculty21)
-	db.Create(&faculty22)
-	db.Create(&faculty23)
+	db.Create(&facultyUser21)
+	db.Create(&facultyUser22)
+	db.Create(&facultyUser23)
 
 	fullTimeFaculty1 := model.FullTimeFaculty{FullTimeFacultyID: faculty1.FacultyID}
 	fullTimeFaculty2 := model.FullTimeFaculty{FullTimeFacultyID: faculty2.FacultyID}
@@ -650,9 +674,9 @@ func main() {
 	fullTimeFaculty19 := model.FullTimeFaculty{FullTimeFacultyID: faculty19.FacultyID}
 	fullTimeFaculty20 := model.FullTimeFaculty{FullTimeFacultyID: faculty20.FacultyID}
 
-	fullTimeFaculty21 := model.FullTimeFaculty{FullTimeFacultyID: faculty21.FacultyID}
-	fullTimeFaculty22 := model.FullTimeFaculty{FullTimeFacultyID: faculty22.FacultyID}
-	fullTimeFaculty23 := model.FullTimeFaculty{FullTimeFacultyID: faculty23.FacultyID}
+	fullTimeFaculty21 := model.FullTimeFaculty{FullTimeFacultyID: facultyUser21.FacultyID}
+	fullTimeFaculty22 := model.FullTimeFaculty{FullTimeFacultyID: facultyUser22.FacultyID}
+	fullTimeFaculty23 := model.FullTimeFaculty{FullTimeFacultyID: facultyUser23.FacultyID}
 
 	db.Create(&fullTimeFaculty11)
 	db.Create(&fullTimeFaculty12)
@@ -693,11 +717,27 @@ func main() {
 	advisor2 := model.Advises{FacultyID:faculty1.FacultyID,StudentID:student2.StudentID}
 	advisor3 := model.Advises{FacultyID:faculty3.FacultyID,StudentID:student3.StudentID}
 	advisor4 := model.Advises{FacultyID:faculty4.FacultyID,StudentID:student4.StudentID}
+	advisor5 := model.Advises{FacultyID:faculty5.FacultyID,StudentID:student10.StudentID}
+	advisor6 := model.Advises{FacultyID:faculty6.FacultyID,StudentID:student11.StudentID}
+	advisor7 := model.Advises{FacultyID:faculty7.FacultyID,StudentID:student12.StudentID}
+	advisor8 := model.Advises{FacultyID:faculty8.FacultyID,StudentID:student13.StudentID}
+	advisor9 := model.Advises{FacultyID:faculty9.FacultyID,StudentID:student14.StudentID}
+	advisor10 := model.Advises{FacultyID:faculty10.FacultyID,StudentID:student15.StudentID}
+	advisor11:= model.Advises{FacultyID:faculty11.FacultyID,StudentID:student16.StudentID}
+	advisor12 := model.Advises{FacultyID:faculty12.FacultyID,StudentID:student17.StudentID}
 
 	db.Create(&advisor1)
 	db.Create(&advisor2)
 	db.Create(&advisor3)
 	db.Create(&advisor4)
+	db.Create(&advisor5)
+	db.Create(&advisor6)
+	db.Create(&advisor7)
+	db.Create(&advisor8)
+	db.Create(&advisor9)
+	db.Create(&advisor10)
+	db.Create(&advisor11)
+	db.Create(&advisor12)
 
 	major1 := model.Major{DepartmentID: department1.DepartmentID, MajorName: "Math"}
 	major2 := model.Major{DepartmentID: department1.DepartmentID, MajorName: "Physics"}
@@ -1096,14 +1136,14 @@ func main() {
 	db.Create(&period4)
 
 	//Timeslot for spring 2018
-		//all 5 periods for MW
+	//all 5 periods for MW
 	timeslot1 := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day1.DayID, PeriodID:period1.PeriodID}
 	timeslot2 := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day1.DayID, PeriodID:period2.PeriodID}
 	timeslota := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day1.DayID, PeriodID:period3.PeriodID}
 	timeslotb := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day1.DayID, PeriodID:period4.PeriodID}
 	timeslotc := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day1.DayID, PeriodID:period0.PeriodID}
 
-		//all 5 periods for TR
+	//all 5 periods for TR
 	timeslot11 := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day2.DayID, PeriodID:period1.PeriodID}
 	timeslot21 := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day2.DayID, PeriodID:period2.PeriodID}
 	timeslota1 := model.TimeSlot{SemesterID:semester1.SemesterID, DayID:day2.DayID, PeriodID:period3.PeriodID}
@@ -1115,7 +1155,7 @@ func main() {
 
 
 	//Timeslot for Fall 2017
-		//MW
+	//MW
 	timeslotFall2017 := model.TimeSlot{SemesterID:fallLastYear.SemesterID, DayID:day1.DayID, PeriodID:period1.PeriodID}
 	timeslotFall12017 := model.TimeSlot{SemesterID:fallLastYear.SemesterID, DayID:day1.DayID, PeriodID:period2.PeriodID}
 	timeslotFall22017 := model.TimeSlot{SemesterID:fallLastYear.SemesterID, DayID:day1.DayID, PeriodID:period3.PeriodID}
@@ -1129,7 +1169,7 @@ func main() {
 	db.Create(&timeslotFall42017)
 
 
-		//TR
+	//TR
 	timeslotFall2017tr := model.TimeSlot{SemesterID:fallLastYear.SemesterID, DayID:day2.DayID, PeriodID:period1.PeriodID}
 	timeslotFall12017tr := model.TimeSlot{SemesterID:fallLastYear.SemesterID, DayID:day2.DayID, PeriodID:period2.PeriodID}
 	timeslotFall22017tr := model.TimeSlot{SemesterID:fallLastYear.SemesterID, DayID:day2.DayID, PeriodID:period3.PeriodID}
@@ -1143,7 +1183,7 @@ func main() {
 	db.Create(&timeslotFall42017tr)
 
 	// Timeslot for Spring 2017
-		//MW
+	//MW
 	timeslotSpring2017 := model.TimeSlot{SemesterID:springLastYear.SemesterID, DayID:day1.DayID, PeriodID:period1.PeriodID}
 	timeslotSpring12017 := model.TimeSlot{SemesterID:springLastYear.SemesterID, DayID:day1.DayID, PeriodID:period2.PeriodID}
 	timeslotSpring22017 := model.TimeSlot{SemesterID:springLastYear.SemesterID, DayID:day1.DayID, PeriodID:period3.PeriodID}
@@ -1157,7 +1197,7 @@ func main() {
 	db.Create(&timeslotSpring42017)
 
 
-		//TR
+	//TR
 	timeslotSpring2017tr := model.TimeSlot{SemesterID:springLastYear.SemesterID, DayID:day2.DayID, PeriodID:period1.PeriodID}
 	timeslotSpring12017tr := model.TimeSlot{SemesterID:springLastYear.SemesterID, DayID:day2.DayID, PeriodID:period2.PeriodID}
 	timeslotSpring22017tr := model.TimeSlot{SemesterID:springLastYear.SemesterID, DayID:day2.DayID, PeriodID:period3.PeriodID}
@@ -1198,6 +1238,34 @@ func main() {
 	db.Create(&timeslotFall32016tr)
 	db.Create(&timeslotFall42016tr)
 
+	//Timeslot for Spring 2016
+	//MW
+	timeslotSpring2016e := model.TimeSlot{SemesterID:fallLastLastYear.SemesterID, DayID:day1.DayID, PeriodID:period1.PeriodID}
+	timeslotSpring2016a := model.TimeSlot{SemesterID:fallLastLastYear.SemesterID, DayID:day1.DayID, PeriodID:period2.PeriodID}
+	timeslotSpring2016b := model.TimeSlot{SemesterID:fallLastLastYear.SemesterID, DayID:day1.DayID, PeriodID:period3.PeriodID}
+	timeslotSpring2016c := model.TimeSlot{SemesterID:fallLastLastYear.SemesterID, DayID:day1.DayID, PeriodID:period4.PeriodID}
+	timeslotSpring2016d := model.TimeSlot{SemesterID:fallLastLastYear.SemesterID, DayID:day1.DayID, PeriodID:period0.PeriodID}
+
+	db.Create(&timeslotSpring2016e)
+	db.Create(&timeslotSpring2016a)
+	db.Create(&timeslotSpring2016b)
+	db.Create(&timeslotSpring2016c)
+	db.Create(&timeslotSpring2016d)
+
+
+	//TR
+	timeslotSpring52016tr := model.TimeSlot{SemesterID:fallLastLastYear.SemesterID, DayID:day2.DayID, PeriodID:period1.PeriodID}
+	timeslotSpring12016tr := model.TimeSlot{SemesterID:fallLastLastYear.SemesterID, DayID:day2.DayID, PeriodID:period2.PeriodID}
+	timeslotSpring22016tr := model.TimeSlot{SemesterID:fallLastLastYear.SemesterID, DayID:day2.DayID, PeriodID:period3.PeriodID}
+	timeslotSpring32016tr := model.TimeSlot{SemesterID:fallLastLastYear.SemesterID, DayID:day2.DayID, PeriodID:period4.PeriodID}
+	timeslotSpring42016tr := model.TimeSlot{SemesterID:fallLastLastYear.SemesterID, DayID:day2.DayID, PeriodID:period0.PeriodID}
+
+	db.Create(&timeslotSpring52016tr)
+	db.Create(&timeslotSpring12016tr)
+	db.Create(&timeslotSpring22016tr)
+	db.Create(&timeslotSpring32016tr)
+	db.Create(&timeslotSpring42016tr)
+
 	//Timeslot for Spring 2015
 
 	fmt.Println("Creating timeslots")
@@ -1215,18 +1283,17 @@ func main() {
 	db.Create(&timeslotb2)
 	db.Create(&timeslotc3)
 
-
-	//Spring 2018 Sections //These are wrong all these enrollments are for spring 2018, should not be in progress until the next semester
-	section1 := model.Section{CourseSectionNumber:001, CourseID:course21.CourseID, FacultyID:faculty1.FacultyID, TimeSlotID:timeslot1.TimeSlotID, LocationID:location1.LocationID}
-	section2 := model.Section{CourseSectionNumber:002, CourseID:course22.CourseID, FacultyID:faculty1.FacultyID, TimeSlotID:timeslot2.TimeSlotID, LocationID:location4.LocationID}
-	section3 := model.Section{CourseSectionNumber:001, CourseID:course23.CourseID, FacultyID:faculty2.FacultyID, TimeSlotID:timeslota.TimeSlotID, LocationID:location5.LocationID}
-	section4 := model.Section{CourseSectionNumber:002, CourseID:course24.CourseID, FacultyID:faculty2.FacultyID, TimeSlotID:timeslotb.TimeSlotID, LocationID:location8.LocationID}
-	section5 := model.Section{CourseSectionNumber:001, CourseID:course25.CourseID, FacultyID:faculty1.FacultyID, TimeSlotID:timeslotc.TimeSlotID, LocationID:location12.LocationID}
-	section6 := model.Section{CourseSectionNumber:001, CourseID:course26.CourseID, FacultyID:faculty3.FacultyID, TimeSlotID:timeslot11.TimeSlotID, LocationID:location16.LocationID}
-	section7 := model.Section{CourseSectionNumber:002, CourseID:course27.CourseID, FacultyID:faculty1.FacultyID, TimeSlotID:timeslot21.TimeSlotID, LocationID:location17.LocationID}
-	section8 := model.Section{CourseSectionNumber:001, CourseID:course28.CourseID, FacultyID:faculty3.FacultyID, TimeSlotID:timeslota1.TimeSlotID, LocationID:location23.LocationID}
-	section9 := model.Section{CourseSectionNumber:001, CourseID:course41.CourseID, FacultyID:faculty5.FacultyID, TimeSlotID:timeslotb2.TimeSlotID, LocationID:location16.LocationID}
-	section10 := model.Section{CourseSectionNumber:001, CourseID:course42.CourseID, FacultyID:faculty5.FacultyID, TimeSlotID:timeslot1.TimeSlotID, LocationID:location2.LocationID}
+	//spring 2018 sections
+	section1 := model.Section{CourseSectionNumber:001, CourseID:course21.CourseID, FacultyID:faculty1.FacultyID,Capacity:30, TimeSlotID:timeslot1.TimeSlotID, LocationID:location1.LocationID}
+	section2 := model.Section{CourseSectionNumber:002, CourseID:course22.CourseID, FacultyID:faculty1.FacultyID,Capacity:50, TimeSlotID:timeslot2.TimeSlotID, LocationID:location4.LocationID}
+	section3 := model.Section{CourseSectionNumber:001, CourseID:course23.CourseID, FacultyID:faculty2.FacultyID,Capacity:20, TimeSlotID:timeslota.TimeSlotID, LocationID:location5.LocationID}
+	section4 := model.Section{CourseSectionNumber:002, CourseID:course24.CourseID, FacultyID:faculty2.FacultyID,Capacity:40, TimeSlotID:timeslotb.TimeSlotID, LocationID:location8.LocationID}
+	section5 := model.Section{CourseSectionNumber:001, CourseID:course25.CourseID, FacultyID:faculty1.FacultyID,Capacity:30, TimeSlotID:timeslotc.TimeSlotID, LocationID:location12.LocationID}
+	section6 := model.Section{CourseSectionNumber:001, CourseID:course26.CourseID, FacultyID:faculty3.FacultyID,Capacity:30, TimeSlotID:timeslot11.TimeSlotID, LocationID:location16.LocationID}
+	section7 := model.Section{CourseSectionNumber:002, CourseID:course27.CourseID, FacultyID:faculty1.FacultyID,Capacity:20, TimeSlotID:timeslot21.TimeSlotID, LocationID:location17.LocationID}
+	section8 := model.Section{CourseSectionNumber:001, CourseID:course28.CourseID, FacultyID:faculty3.FacultyID,Capacity:20, TimeSlotID:timeslota1.TimeSlotID, LocationID:location23.LocationID}
+	section9 := model.Section{CourseSectionNumber:001, CourseID:course41.CourseID, FacultyID:faculty5.FacultyID,Capacity:30, TimeSlotID:timeslotb2.TimeSlotID, LocationID:location16.LocationID}
+	section10 := model.Section{CourseSectionNumber:001, CourseID:course42.CourseID, FacultyID:faculty5.FacultyID,Capacity:30, TimeSlotID:timeslot1.TimeSlotID, LocationID:location2.LocationID}
 
 	db.Create(&section1)
 	db.Create(&section2)
@@ -1251,6 +1318,16 @@ func main() {
 	sectionFall2017i := model.Section{CourseSectionNumber:002, CourseID:course13.CourseID, FacultyID:faculty3.FacultyID,TimeSlotID:timeslotFall32017tr.TimeSlotID, LocationID:location2.LocationID}
 	sectionFall2017j := model.Section{CourseSectionNumber:003, CourseID:course14.CourseID, FacultyID:faculty4.FacultyID,TimeSlotID:timeslotFall42017tr.TimeSlotID, LocationID:location3.LocationID}
 	sectionFall2017k := model.Section{CourseSectionNumber:001, CourseID:course15.CourseID, FacultyID:faculty5.FacultyID,TimeSlotID:timeslotFall2017tr.TimeSlotID, LocationID:location4.LocationID}
+	sectionFall2017l := model.Section{CourseSectionNumber:012, CourseID:course12.CourseID, FacultyID:faculty12.FacultyID,TimeSlotID:timeslotFall2017.TimeSlotID, LocationID:location15.LocationID}
+	sectionFall2017m := model.Section{CourseSectionNumber:013, CourseID:course13.CourseID, FacultyID:faculty13.FacultyID,TimeSlotID:timeslotFall2017.TimeSlotID, LocationID:location16.LocationID}
+	sectionFall2017n := model.Section{CourseSectionNumber:014, CourseID:course14.CourseID, FacultyID:faculty14.FacultyID,TimeSlotID:timeslotFall2017.TimeSlotID, LocationID:location17.LocationID}
+	sectionFall2017o := model.Section{CourseSectionNumber:015, CourseID:course15.CourseID, FacultyID:faculty15.FacultyID,TimeSlotID:timeslotFall2017.TimeSlotID, LocationID:location18.LocationID}
+	sectionFall2017p := model.Section{CourseSectionNumber:016, CourseID:course16.CourseID, FacultyID:faculty16.FacultyID,TimeSlotID:timeslotFall2017tr.TimeSlotID, LocationID:location19.LocationID}
+	sectionFall2017q := model.Section{CourseSectionNumber:017, CourseID:course17.CourseID, FacultyID:faculty17.FacultyID,TimeSlotID:timeslotFall2017tr.TimeSlotID, LocationID:location20.LocationID}
+	sectionFall2017r := model.Section{CourseSectionNumber:18, CourseID:course18.CourseID, FacultyID:faculty18.FacultyID,TimeSlotID:timeslotFall2017tr.TimeSlotID, LocationID:location1.LocationID}
+	sectionFall2017s := model.Section{CourseSectionNumber:19, CourseID:course19.CourseID, FacultyID:faculty19.FacultyID,TimeSlotID:timeslotFall2017tr.TimeSlotID, LocationID:location2.LocationID}
+	sectionFall2017t := model.Section{CourseSectionNumber:020, CourseID:course20.CourseID, FacultyID:faculty20.FacultyID,TimeSlotID:timeslotFall2017tr.TimeSlotID, LocationID:location3.LocationID}
+
 
 	db.Create(&sectionFall2017a)
 	db.Create(&sectionFall2017b)
@@ -1263,6 +1340,15 @@ func main() {
 	db.Create(&sectionFall2017i)
 	db.Create(&sectionFall2017j)
 	db.Create(&sectionFall2017k)
+	db.Create(&sectionFall2017l)
+	db.Create(&sectionFall2017m)
+	db.Create(&sectionFall2017n)
+	db.Create(&sectionFall2017o)
+	db.Create(&sectionFall2017p)
+	db.Create(&sectionFall2017q)
+	db.Create(&sectionFall2017r)
+	db.Create(&sectionFall2017s)
+	db.Create(&sectionFall2017t)
 
 
 	//Spring 2017 sections
@@ -1277,6 +1363,16 @@ func main() {
 	sectionSpring2017i := model.Section{CourseSectionNumber:002, CourseID:course4.CourseID, FacultyID:faculty3.FacultyID,TimeSlotID:timeslotSpring2017tr.TimeSlotID, LocationID:location2.LocationID}
 	sectionSpring2017j := model.Section{CourseSectionNumber:003, CourseID:course5.CourseID, FacultyID:faculty4.FacultyID,TimeSlotID:timeslotSpring2017tr.TimeSlotID, LocationID:location3.LocationID}
 	sectionSpring2017k := model.Section{CourseSectionNumber:001, CourseID:course1.CourseID, FacultyID:faculty5.FacultyID,TimeSlotID:timeslotSpring2017tr.TimeSlotID, LocationID:location4.LocationID}
+	sectionSpring2017l := model.Section{CourseSectionNumber:012, CourseID:course12.CourseID, FacultyID:faculty12.FacultyID,TimeSlotID:timeslotSpring2017.TimeSlotID, LocationID:location15.LocationID}
+	sectionSpring2017m := model.Section{CourseSectionNumber:013, CourseID:course13.CourseID, FacultyID:faculty13.FacultyID,TimeSlotID:timeslotSpring2017.TimeSlotID, LocationID:location16.LocationID}
+	sectionSpring2017n := model.Section{CourseSectionNumber:014, CourseID:course14.CourseID, FacultyID:faculty14.FacultyID,TimeSlotID:timeslotSpring2017.TimeSlotID, LocationID:location17.LocationID}
+	sectionSpring2017o := model.Section{CourseSectionNumber:015, CourseID:course15.CourseID, FacultyID:faculty15.FacultyID,TimeSlotID:timeslotSpring2017.TimeSlotID, LocationID:location18.LocationID}
+	sectionSpring2017p := model.Section{CourseSectionNumber:016, CourseID:course16.CourseID, FacultyID:faculty16.FacultyID,TimeSlotID:timeslotSpring2017tr.TimeSlotID, LocationID:location19.LocationID}
+	sectionSpring2017q := model.Section{CourseSectionNumber:017, CourseID:course17.CourseID, FacultyID:faculty17.FacultyID,TimeSlotID:timeslotSpring2017tr.TimeSlotID, LocationID:location20.LocationID}
+	sectionSpring2017r := model.Section{CourseSectionNumber:18, CourseID:course18.CourseID, FacultyID:faculty18.FacultyID,TimeSlotID:timeslotSpring2017tr.TimeSlotID, LocationID:location21.LocationID}
+	sectionSpring2017s := model.Section{CourseSectionNumber:19, CourseID:course19.CourseID, FacultyID:faculty19.FacultyID,TimeSlotID:timeslotSpring2017tr.TimeSlotID, LocationID:location22.LocationID}
+	sectionSpring2017t := model.Section{CourseSectionNumber:020, CourseID:course20.CourseID, FacultyID:faculty20.FacultyID,TimeSlotID:timeslotSpring2017tr.TimeSlotID, LocationID:location23.LocationID}
+
 
 	db.Create(&sectionSpring2017a)
 	db.Create(&sectionSpring2017b)
@@ -1289,7 +1385,104 @@ func main() {
 	db.Create(&sectionSpring2017i)
 	db.Create(&sectionSpring2017j)
 	db.Create(&sectionSpring2017k)
+	db.Create(&sectionSpring2017l)
+	db.Create(&sectionSpring2017m)
+	db.Create(&sectionSpring2017n)
+	db.Create(&sectionSpring2017o)
+	db.Create(&sectionSpring2017p)
+	db.Create(&sectionSpring2017q)
+	db.Create(&sectionSpring2017r)
+	db.Create(&sectionSpring2017s)
+	db.Create(&sectionSpring2017t)
 
+	//Spring 2016 sections
+	section21 := model.Section{CourseSectionNumber:001, CourseID:course1.CourseID, FacultyID:faculty1.FacultyID, TimeSlotID:timeslotSpring2016e.TimeSlotID, LocationID:location1.LocationID}
+	section22 := model.Section{CourseSectionNumber:002, CourseID:course2.CourseID, FacultyID:faculty2.FacultyID, TimeSlotID:timeslotSpring2016a.TimeSlotID, LocationID:location2.LocationID}
+	section23 := model.Section{CourseSectionNumber:003, CourseID:course3.CourseID, FacultyID:faculty3.FacultyID, TimeSlotID:timeslotSpring2016b.TimeSlotID, LocationID:location3.LocationID}
+	section24 := model.Section{CourseSectionNumber:004, CourseID:course4.CourseID, FacultyID:faculty4.FacultyID, TimeSlotID:timeslotSpring2016c.TimeSlotID, LocationID:location4.LocationID}
+	section25 := model.Section{CourseSectionNumber:005, CourseID:course5.CourseID, FacultyID:faculty5.FacultyID, TimeSlotID:timeslotSpring2016d.TimeSlotID, LocationID:location5.LocationID}
+	section26 := model.Section{CourseSectionNumber:006, CourseID:course6.CourseID, FacultyID:faculty6.FacultyID, TimeSlotID:timeslotSpring12016tr.TimeSlotID, LocationID:location6.LocationID}
+	section27 := model.Section{CourseSectionNumber:007, CourseID:course7.CourseID, FacultyID:faculty7.FacultyID, TimeSlotID:timeslotSpring22016tr.TimeSlotID, LocationID:location7.LocationID}
+	section28 := model.Section{CourseSectionNumber:8, CourseID:course8.CourseID, FacultyID:faculty8.FacultyID, TimeSlotID:timeslotSpring32016tr.TimeSlotID, LocationID:location8.LocationID}
+	section29 := model.Section{CourseSectionNumber:9, CourseID:course9.CourseID, FacultyID:faculty9.FacultyID, TimeSlotID:timeslotSpring42016tr.TimeSlotID, LocationID:location9.LocationID}
+	section30 := model.Section{CourseSectionNumber:010, CourseID:course10.CourseID, FacultyID:faculty10.FacultyID, TimeSlotID:timeslotSpring52016tr.TimeSlotID, LocationID:location10.LocationID}
+	section31 := model.Section{CourseSectionNumber:011, CourseID:course11.CourseID, FacultyID:faculty11.FacultyID, TimeSlotID:timeslotSpring52016tr.TimeSlotID, LocationID:location11.LocationID}
+	section32 := model.Section{CourseSectionNumber:012, CourseID:course12.CourseID, FacultyID:faculty12.FacultyID, TimeSlotID:timeslotSpring22016tr.TimeSlotID, LocationID:location12.LocationID}
+	section33 := model.Section{CourseSectionNumber:013, CourseID:course13.CourseID, FacultyID:faculty13.FacultyID, TimeSlotID:timeslotSpring32016tr.TimeSlotID, LocationID:location13.LocationID}
+	section34 := model.Section{CourseSectionNumber:014, CourseID:course14.CourseID, FacultyID:faculty14.FacultyID, TimeSlotID:timeslotSpring42016tr.TimeSlotID, LocationID:location14.LocationID}
+	section35 := model.Section{CourseSectionNumber:015, CourseID:course15.CourseID, FacultyID:faculty15.FacultyID, TimeSlotID:timeslotSpring32016tr.TimeSlotID, LocationID:location15.LocationID}
+	section36 := model.Section{CourseSectionNumber:016, CourseID:course16.CourseID, FacultyID:faculty16.FacultyID, TimeSlotID:timeslotSpring2016a.TimeSlotID, LocationID:location16.LocationID}
+	section37 := model.Section{CourseSectionNumber:017, CourseID:course17.CourseID, FacultyID:faculty17.FacultyID, TimeSlotID:timeslotSpring2016b.TimeSlotID, LocationID:location17.LocationID}
+	section38 := model.Section{CourseSectionNumber:18, CourseID:course18.CourseID, FacultyID:faculty18.FacultyID, TimeSlotID:timeslotSpring2016c.TimeSlotID, LocationID:location18.LocationID}
+	section39 := model.Section{CourseSectionNumber:19, CourseID:course19.CourseID, FacultyID:faculty19.FacultyID, TimeSlotID:timeslotSpring2016e.TimeSlotID, LocationID:location19.LocationID}
+	section40 := model.Section{CourseSectionNumber:020, CourseID:course20.CourseID, FacultyID:faculty20.FacultyID, TimeSlotID:timeslotSpring12016tr.TimeSlotID, LocationID:location20.LocationID}
+
+
+	db.Create(&section21)
+	db.Create(&section22)
+	db.Create(&section23)
+	db.Create(&section24)
+	db.Create(&section25)
+	db.Create(&section26)
+	db.Create(&section27)
+	db.Create(&section28)
+	db.Create(&section29)
+	db.Create(&section30)
+	db.Create(&section31)
+	db.Create(&section32)
+	db.Create(&section33)
+	db.Create(&section34)
+	db.Create(&section35)
+	db.Create(&section36)
+	db.Create(&section37)
+	db.Create(&section38)
+	db.Create(&section39)
+	db.Create(&section40)
+
+	//Fall 2016 sections
+	section41 := model.Section{CourseSectionNumber:001, CourseID:course1.CourseID, FacultyID:faculty1.FacultyID, TimeSlotID:timeslotFall2016.TimeSlotID, LocationID:location1.LocationID}
+	section42 := model.Section{CourseSectionNumber:002, CourseID:course2.CourseID, FacultyID:faculty2.FacultyID, TimeSlotID:timeslotFall12016.TimeSlotID, LocationID:location2.LocationID}
+	section43 := model.Section{CourseSectionNumber:003, CourseID:course3.CourseID, FacultyID:faculty3.FacultyID, TimeSlotID:timeslotFall22016.TimeSlotID, LocationID:location3.LocationID}
+	section44 := model.Section{CourseSectionNumber:004, CourseID:course4.CourseID, FacultyID:faculty4.FacultyID, TimeSlotID:timeslotFall32016.TimeSlotID, LocationID:location4.LocationID}
+	section45 := model.Section{CourseSectionNumber:005, CourseID:course5.CourseID, FacultyID:faculty5.FacultyID, TimeSlotID:timeslotFall42016.TimeSlotID, LocationID:location5.LocationID}
+	section46 := model.Section{CourseSectionNumber:006, CourseID:course6.CourseID, FacultyID:faculty6.FacultyID, TimeSlotID:timeslotFall12016tr.TimeSlotID, LocationID:location6.LocationID}
+	section47 := model.Section{CourseSectionNumber:007, CourseID:course7.CourseID, FacultyID:faculty7.FacultyID, TimeSlotID:timeslotFall2016tr.TimeSlotID, LocationID:location7.LocationID}
+	section48 := model.Section{CourseSectionNumber:8, CourseID:course8.CourseID, FacultyID:faculty8.FacultyID, TimeSlotID:timeslotFall22016tr.TimeSlotID, LocationID:location8.LocationID}
+	section49 := model.Section{CourseSectionNumber:9, CourseID:course9.CourseID, FacultyID:faculty9.FacultyID, TimeSlotID:timeslotFall32016tr.TimeSlotID, LocationID:location9.LocationID}
+	section50 := model.Section{CourseSectionNumber:010, CourseID:course10.CourseID, FacultyID:faculty10.FacultyID, TimeSlotID:timeslotFall42016tr.TimeSlotID, LocationID:location10.LocationID}
+	section51 := model.Section{CourseSectionNumber:011, CourseID:course11.CourseID, FacultyID:faculty11.FacultyID, TimeSlotID:timeslotFall2016.TimeSlotID, LocationID:location11.LocationID}
+	section52 := model.Section{CourseSectionNumber:012, CourseID:course12.CourseID, FacultyID:faculty12.FacultyID, TimeSlotID:timeslotFall12016.TimeSlotID, LocationID:location12.LocationID}
+	section53 := model.Section{CourseSectionNumber:013, CourseID:course13.CourseID, FacultyID:faculty13.FacultyID, TimeSlotID:timeslotFall32016.TimeSlotID, LocationID:location13.LocationID}
+	section54 := model.Section{CourseSectionNumber:014, CourseID:course14.CourseID, FacultyID:faculty14.FacultyID, TimeSlotID:timeslotFall42016.TimeSlotID, LocationID:location14.LocationID}
+	section55 := model.Section{CourseSectionNumber:015, CourseID:course15.CourseID, FacultyID:faculty15.FacultyID, TimeSlotID:timeslotFall2016tr.TimeSlotID, LocationID:location15.LocationID}
+	section56 := model.Section{CourseSectionNumber:016, CourseID:course16.CourseID, FacultyID:faculty16.FacultyID, TimeSlotID:timeslotFall12016tr.TimeSlotID, LocationID:location16.LocationID}
+	section57 := model.Section{CourseSectionNumber:017, CourseID:course17.CourseID, FacultyID:faculty17.FacultyID, TimeSlotID:timeslotFall22016tr.TimeSlotID, LocationID:location17.LocationID}
+	section58 := model.Section{CourseSectionNumber:18, CourseID:course18.CourseID, FacultyID:faculty18.FacultyID, TimeSlotID:timeslotFall32016tr.TimeSlotID, LocationID:location18.LocationID}
+	section59 := model.Section{CourseSectionNumber:19, CourseID:course19.CourseID, FacultyID:faculty19.FacultyID, TimeSlotID:timeslotFall42016tr.TimeSlotID, LocationID:location19.LocationID}
+	section60 := model.Section{CourseSectionNumber:020, CourseID:course20.CourseID, FacultyID:faculty20.FacultyID, TimeSlotID:timeslotFall42016.TimeSlotID, LocationID:location20.LocationID}
+
+	db.Create(&section41)
+	db.Create(&section42)
+	db.Create(&section43)
+	db.Create(&section44)
+	db.Create(&section45)
+	db.Create(&section46)
+	db.Create(&section47)
+	db.Create(&section48)
+	db.Create(&section49)
+	db.Create(&section50)
+	db.Create(&section51)
+	db.Create(&section52)
+	db.Create(&section53)
+	db.Create(&section54)
+	db.Create(&section55)
+	db.Create(&section56)
+	db.Create(&section57)
+	db.Create(&section58)
+	db.Create(&section59)
+	db.Create(&section60)
+
+		/*  ENROLLMENT & HISTORY START		 *///
 
 	//enrollment for Spring 2018
 	enroll1 := model.Enrollment{StudentID:student1.StudentID, SectionID:section3.SectionID}
@@ -1338,6 +1531,8 @@ func main() {
 	history12 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll12.EnrollmentID, Status:"Registered", Grade:"-"}
 	history1222 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enroll1011.EnrollmentID, Status:"Registered", Grade:"-"}
 	history1221 := model.StudentHistory{StudentID:student4.StudentID, EnrollmentID:enroll1012.EnrollmentID, Status:"Registered", Grade:"-"}
+
+	//TODO BEFORE INTEGRATING KWAMES SEED DATA, ADD STATUS REGISTERED TO HISTORY STATUS
 
 	db.Create(&history1)
 	db.Create(&history2)
@@ -1390,98 +1585,324 @@ func main() {
 	*/
 
 	//fall 2017 enrollment
-	enrollfall2017 := model.Enrollment{StudentID:student1.StudentID, SectionID:sectionFall2017a.SectionID}
-	enrollfall2017a := model.Enrollment{StudentID:student2.StudentID, SectionID:sectionFall2017b.SectionID}
-	enrollfall2017b := model.Enrollment{StudentID:student3.StudentID, SectionID:sectionFall2017c.SectionID}
-	enrollfall2017c := model.Enrollment{StudentID:student4.StudentID, SectionID:sectionFall2017d.SectionID}
-	enrollfall2017d := model.Enrollment{StudentID:student3.StudentID, SectionID:sectionFall2017e.SectionID}
-	enrollfall2017e := model.Enrollment{StudentID:student1.StudentID, SectionID:sectionFall2017f.SectionID}
-	enrollfall2017f := model.Enrollment{StudentID:student2.StudentID, SectionID:sectionFall2017g.SectionID}
-	enrollfall2017g := model.Enrollment{StudentID:student3.StudentID, SectionID:sectionFall2017h.SectionID}
-	enrollfall2017h := model.Enrollment{StudentID:student4.StudentID, SectionID:sectionFall2017i.SectionID}
-	enrollfall2017i := model.Enrollment{StudentID:student1.StudentID, SectionID:sectionFall2017j.SectionID}
-	enrollfall2017j := model.Enrollment{StudentID:student2.StudentID, SectionID:sectionFall2017k.SectionID}
 
-	db.Create(&enrollfall2017)
-	db.Create(&enrollfall2017a)
-	db.Create(&enrollfall2017b)
-	db.Create(&enrollfall2017c)
-	db.Create(&enrollfall2017d)
-	db.Create(&enrollfall2017e)
-	db.Create(&enrollfall2017f)
-	db.Create(&enrollfall2017g)
-	db.Create(&enrollfall2017h)
-	db.Create(&enrollfall2017i)
-	db.Create(&enrollfall2017j)
+	//enrollfall2017 := model.Enrollment{StudentID:student1.StudentID, SectionID:sectionFall2017a.SectionID}
+	//enrollfall2017a := model.Enrollment{StudentID:student2.StudentID, SectionID:sectionFall2017b.SectionID}
+	//enrollfall2017b := model.Enrollment{StudentID:student3.StudentID, SectionID:sectionFall2017c.SectionID}
+	//enrollfall2017c := model.Enrollment{StudentID:student4.StudentID, SectionID:sectionFall2017d.SectionID}
+	//enrollfall2017d := model.Enrollment{StudentID:student3.StudentID, SectionID:sectionFall2017e.SectionID}
+	//enrollfall2017e := model.Enrollment{StudentID:student1.StudentID, SectionID:sectionFall2017f.SectionID}
+	//enrollfall2017f := model.Enrollment{StudentID:student2.StudentID, SectionID:sectionFall2017g.SectionID}
+	//enrollfall2017g := model.Enrollment{StudentID:student3.StudentID, SectionID:sectionFall2017h.SectionID}
+	//enrollfall2017h := model.Enrollment{StudentID:student4.StudentID, SectionID:sectionFall2017i.SectionID}
+	//enrollfall2017i := model.Enrollment{StudentID:student1.StudentID, SectionID:sectionFall2017j.SectionID}
+	//enrollfall2017j := model.Enrollment{StudentID:student2.StudentID, SectionID:sectionFall2017k.SectionID}
+	//
+	//db.Create(&enrollfall2017)
+	//db.Create(&enrollfall2017a)
+	//db.Create(&enrollfall2017b)
+	//db.Create(&enrollfall2017c)
+	//db.Create(&enrollfall2017d)
+	//db.Create(&enrollfall2017e)
+	//db.Create(&enrollfall2017f)
+	//db.Create(&enrollfall2017g)
+	//db.Create(&enrollfall2017h)
+	//db.Create(&enrollfall2017i)
+	//db.Create(&enrollfall2017j)
+	//
+	////history fall 2017
+	//
+	//historyfall2017 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enrollfall2017.EnrollmentID, Status: "In progress", Grade:"-"}
+	//historyfall2017a := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enrollfall2017a.EnrollmentID, Status: "In progress", Grade:"-"}
+	//historyfall2017b := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enrollfall2017b.EnrollmentID, Status: "In progress", Grade:"-"}
+	//historyfall2017c := model.StudentHistory{StudentID:student4.StudentID, EnrollmentID:enrollfall2017c.EnrollmentID, Status: "In progress", Grade:"-"}
+	//historyfall2017d := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enrollfall2017d.EnrollmentID, Status: "In progress", Grade:"-"}
+	//historyfall2017e := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enrollfall2017e.EnrollmentID, Status: "In progress", Grade:"-"}
+	//historyfall2017f := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enrollfall2017f.EnrollmentID, Status: "In progress", Grade:"-"}
+	//historyfall2017g := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enrollfall2017g.EnrollmentID, Status: "In progress", Grade:"-"}
+	//historyfall2017h := model.StudentHistory{StudentID:student4.StudentID, EnrollmentID:enrollfall2017h.EnrollmentID, Status: "In progress", Grade:"-"}
+	//historyfall2017i := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enrollfall2017i.EnrollmentID, Status: "In progress", Grade:"-"}
+	//historyfall2017j := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enrollfall2017j.EnrollmentID, Status: "In progress", Grade:"-"}
+	//
+	//db.Create(&historyfall2017)
+	//db.Create(&historyfall2017a)
+	//db.Create(&historyfall2017b)
+	//db.Create(&historyfall2017c)
+	//db.Create(&historyfall2017d)
+	//db.Create(&historyfall2017e)
+	//db.Create(&historyfall2017f)
+	//db.Create(&historyfall2017g)
+	//db.Create(&historyfall2017h)
+	//db.Create(&historyfall2017i)
+	//db.Create(&historyfall2017j)
 
-	//history fall 2017
+	//enrollment for Fall 2017
+	enroll62 := model.Enrollment{StudentID:student1.StudentID, SectionID:sectionFall2017a.SectionID}
+	enroll63 := model.Enrollment{StudentID:student1.StudentID, SectionID:sectionFall2017b.SectionID}
+	enroll64 := model.Enrollment{StudentID:student1.StudentID, SectionID:sectionFall2017c.SectionID}
+	enroll65 := model.Enrollment{StudentID:student1.StudentID, SectionID:sectionFall2017d.SectionID}
+	enroll66 := model.Enrollment{StudentID:student2.StudentID, SectionID:sectionFall2017a.SectionID}
+	enroll67 := model.Enrollment{StudentID:student2.StudentID, SectionID:sectionFall2017b.SectionID}
+	enroll68 := model.Enrollment{StudentID:student2.StudentID, SectionID:sectionFall2017c.SectionID}
+	enroll69 := model.Enrollment{StudentID:student2.StudentID, SectionID:sectionFall2017d.SectionID}
+	enroll70 := model.Enrollment{StudentID:student3.StudentID, SectionID:sectionFall2017a.SectionID}
+	enroll71 := model.Enrollment{StudentID:student3.StudentID, SectionID:sectionFall2017b.SectionID}
+	enroll72 := model.Enrollment{StudentID:student3.StudentID, SectionID:sectionFall2017c.SectionID}
+	enroll73 := model.Enrollment{StudentID:student3.StudentID, SectionID:sectionFall2017d.SectionID}
+	enroll74 := model.Enrollment{StudentID:student4.StudentID, SectionID:sectionFall2017a.SectionID}
+	enroll75 := model.Enrollment{StudentID:student4.StudentID, SectionID:sectionFall2017b.SectionID}
+	enroll76 := model.Enrollment{StudentID:student4.StudentID, SectionID:sectionFall2017c.SectionID}
+	enroll77 := model.Enrollment{StudentID:student4.StudentID, SectionID:sectionFall2017d.SectionID}
+	enroll78 := model.Enrollment{StudentID:student5.StudentID, SectionID:sectionFall2017a.SectionID}
+	enroll79 := model.Enrollment{StudentID:student5.StudentID, SectionID:sectionFall2017b.SectionID}
+	enroll80 := model.Enrollment{StudentID:student5.StudentID, SectionID:sectionFall2017c.SectionID}
+	enroll81 := model.Enrollment{StudentID:student5.StudentID, SectionID:sectionFall2017d.SectionID}
+	enroll82 := model.Enrollment{StudentID:student6.StudentID, SectionID:sectionFall2017a.SectionID}
+	enroll83 := model.Enrollment{StudentID:student6.StudentID, SectionID:sectionFall2017b.SectionID}
+	enroll84 := model.Enrollment{StudentID:student6.StudentID, SectionID:sectionFall2017c.SectionID}
+	enroll85 := model.Enrollment{StudentID:student6.StudentID, SectionID:sectionFall2017d.SectionID}
+	enroll86 := model.Enrollment{StudentID:student7.StudentID, SectionID:sectionFall2017a.SectionID}
+	enroll87 := model.Enrollment{StudentID:student7.StudentID, SectionID:sectionFall2017b.SectionID}
+	enroll88 := model.Enrollment{StudentID:student7.StudentID, SectionID:sectionFall2017c.SectionID}
+	enroll89 := model.Enrollment{StudentID:student7.StudentID, SectionID:sectionFall2017d.SectionID}
+	enroll90 := model.Enrollment{StudentID:student8.StudentID, SectionID:sectionFall2017a.SectionID}
+	enroll91 := model.Enrollment{StudentID:student8.StudentID, SectionID:sectionFall2017b.SectionID}
+	enroll92 := model.Enrollment{StudentID:student8.StudentID, SectionID:sectionFall2017c.SectionID}
+	enroll93 := model.Enrollment{StudentID:student8.StudentID, SectionID:sectionFall2017d.SectionID}
+	enroll94 := model.Enrollment{StudentID:student9.StudentID, SectionID:sectionFall2017a.SectionID}
+	enroll95 := model.Enrollment{StudentID:student9.StudentID, SectionID:sectionFall2017b.SectionID}
+	enroll96 := model.Enrollment{StudentID:student9.StudentID, SectionID:sectionFall2017c.SectionID}
+	enroll97 := model.Enrollment{StudentID:student9.StudentID, SectionID:sectionFall2017d.SectionID}
+	enroll98 := model.Enrollment{StudentID:student10.StudentID, SectionID:sectionFall2017a.SectionID}
+	enroll99 := model.Enrollment{StudentID:student10.StudentID, SectionID:sectionFall2017b.SectionID}
+	enroll100 := model.Enrollment{StudentID:student10.StudentID, SectionID:sectionFall2017c.SectionID}
+	enroll101 := model.Enrollment{StudentID:student10.StudentID, SectionID:sectionFall2017d.SectionID}
 
-	historyfall2017 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enrollfall2017.EnrollmentID, Status: "In progress", Grade:"-"}
-	historyfall2017a := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enrollfall2017a.EnrollmentID, Status: "In progress", Grade:"-"}
-	historyfall2017b := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enrollfall2017b.EnrollmentID, Status: "In progress", Grade:"-"}
-	historyfall2017c := model.StudentHistory{StudentID:student4.StudentID, EnrollmentID:enrollfall2017c.EnrollmentID, Status: "In progress", Grade:"-"}
-	historyfall2017d := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enrollfall2017d.EnrollmentID, Status: "In progress", Grade:"-"}
-	historyfall2017e := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enrollfall2017e.EnrollmentID, Status: "In progress", Grade:"-"}
-	historyfall2017f := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enrollfall2017f.EnrollmentID, Status: "In progress", Grade:"-"}
-	historyfall2017g := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enrollfall2017g.EnrollmentID, Status: "In progress", Grade:"-"}
-	historyfall2017h := model.StudentHistory{StudentID:student4.StudentID, EnrollmentID:enrollfall2017h.EnrollmentID, Status: "In progress", Grade:"-"}
-	historyfall2017i := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enrollfall2017i.EnrollmentID, Status: "In progress", Grade:"-"}
-	historyfall2017j := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enrollfall2017j.EnrollmentID, Status: "In progress", Grade:"-"}
+	db.Create(&enroll62)
+	db.Create(&enroll63)
+	db.Create(&enroll64)
+	db.Create(&enroll65)
+	db.Create(&enroll66)
+	db.Create(&enroll67)
+	db.Create(&enroll68)
+	db.Create(&enroll69)
+	db.Create(&enroll70)
+	db.Create(&enroll71)
+	db.Create(&enroll72)
+	db.Create(&enroll73)
+	db.Create(&enroll74)
+	db.Create(&enroll75)
+	db.Create(&enroll76)
+	db.Create(&enroll77)
+	db.Create(&enroll78)
+	db.Create(&enroll79)
+	db.Create(&enroll80)
+	db.Create(&enroll81)
+	db.Create(&enroll82)
+	db.Create(&enroll83)
+	db.Create(&enroll84)
+	db.Create(&enroll85)
+	db.Create(&enroll86)
+	db.Create(&enroll87)
+	db.Create(&enroll88)
+	db.Create(&enroll89)
+	db.Create(&enroll90)
+	db.Create(&enroll91)
+	db.Create(&enroll92)
+	db.Create(&enroll93)
+	db.Create(&enroll94)
+	db.Create(&enroll95)
+	db.Create(&enroll96)
+	db.Create(&enroll97)
+	db.Create(&enroll98)
+	db.Create(&enroll99)
+	db.Create(&enroll100)
+	db.Create(&enroll101)
 
-	db.Create(&historyfall2017)
-	db.Create(&historyfall2017a)
-	db.Create(&historyfall2017b)
-	db.Create(&historyfall2017c)
-	db.Create(&historyfall2017d)
-	db.Create(&historyfall2017e)
-	db.Create(&historyfall2017f)
-	db.Create(&historyfall2017g)
-	db.Create(&historyfall2017h)
-	db.Create(&historyfall2017i)
-	db.Create(&historyfall2017j)
+	//history Fall 2017
+	history13 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll62.EnrollmentID, Status:"In progress", Grade:"-"}
+	history14 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll63.EnrollmentID, Status:"In progress", Grade:"-"}
+	history15 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll64.EnrollmentID, Status:"In progress", Grade:"-"}
+	history16 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll65.EnrollmentID, Status:"In progress", Grade:"-"}
+	history17 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enroll66.EnrollmentID, Status:"In progress", Grade:"-"}
+	history18 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enroll67.EnrollmentID, Status:"In progress", Grade:"-"}
+	history19 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enroll68.EnrollmentID, Status:"In progress", Grade:"-"}
+	history20 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enroll69.EnrollmentID, Status:"In progress", Grade:"-"}
+	history21 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enroll70.EnrollmentID, Status:"In progress", Grade:"-"}
+	history22a := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enroll71.EnrollmentID, Status:"In progress", Grade:"-"}
+	history23 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enroll72.EnrollmentID, Status:"In progress", Grade:"-"}
+	history24 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enroll73.EnrollmentID, Status:"In progress", Grade:"-"}
+	history13fall2017 := model.StudentHistory{StudentID:student4.StudentID, EnrollmentID:enroll74.EnrollmentID, Status:"In progress", Grade:"-"}
+	history14fall2017 := model.StudentHistory{StudentID:student4.StudentID, EnrollmentID:enroll75.EnrollmentID, Status:"In progress", Grade:"-"}
+	history15fall2017 := model.StudentHistory{StudentID:student4.StudentID, EnrollmentID:enroll76.EnrollmentID, Status:"In progress", Grade:"-"}
+	history16fall2017 := model.StudentHistory{StudentID:student4.StudentID, EnrollmentID:enroll77.EnrollmentID, Status:"In progress", Grade:"-"}
+	history17fall2017 := model.StudentHistory{StudentID:student5.StudentID, EnrollmentID:enroll78.EnrollmentID, Status:"In progress", Grade:"-"}
+	history18fall2017 := model.StudentHistory{StudentID:student5.StudentID, EnrollmentID:enroll79.EnrollmentID, Status:"In progress", Grade:"-"}
+	history19fall2017 := model.StudentHistory{StudentID:student5.StudentID, EnrollmentID:enroll80.EnrollmentID, Status:"In progress", Grade:"-"}
+	history20fall2017 := model.StudentHistory{StudentID:student5.StudentID, EnrollmentID:enroll81.EnrollmentID, Status:"In progress", Grade:"-"}
+	history21fall2017 := model.StudentHistory{StudentID:student6.StudentID, EnrollmentID:enroll82.EnrollmentID, Status:"In progress", Grade:"-"}
+	history22fall2017 := model.StudentHistory{StudentID:student6.StudentID, EnrollmentID:enroll83.EnrollmentID, Status:"In progress", Grade:"-"}
+	history23fall2017 := model.StudentHistory{StudentID:student6.StudentID, EnrollmentID:enroll84.EnrollmentID, Status:"In progress", Grade:"-"}
+	history24fall2017 := model.StudentHistory{StudentID:student6.StudentID, EnrollmentID:enroll85.EnrollmentID, Status:"In progress", Grade:"-"}
+	history13fall2017a := model.StudentHistory{StudentID:student7.StudentID, EnrollmentID:enroll86.EnrollmentID, Status:"In progress", Grade:"-"}
+	history14fall2017a := model.StudentHistory{StudentID:student7.StudentID, EnrollmentID:enroll87.EnrollmentID, Status:"In progress", Grade:"-"}
+	history15fall2017a := model.StudentHistory{StudentID:student7.StudentID, EnrollmentID:enroll88.EnrollmentID, Status:"In progress", Grade:"-"}
+	history16fall2017a := model.StudentHistory{StudentID:student7.StudentID, EnrollmentID:enroll89.EnrollmentID, Status:"In progress", Grade:"-"}
+	history17fall2017a := model.StudentHistory{StudentID:student8.StudentID, EnrollmentID:enroll90.EnrollmentID, Status:"In progress", Grade:"-"}
+	history18fall2017a := model.StudentHistory{StudentID:student8.StudentID, EnrollmentID:enroll91.EnrollmentID, Status:"In progress", Grade:"-"}
+	history19fall2017a := model.StudentHistory{StudentID:student8.StudentID, EnrollmentID:enroll92.EnrollmentID, Status:"In progress", Grade:"-"}
+	history20fall2017a := model.StudentHistory{StudentID:student8.StudentID, EnrollmentID:enroll93.EnrollmentID, Status:"In progress", Grade:"-"}
+	history21fall2017a := model.StudentHistory{StudentID:student9.StudentID, EnrollmentID:enroll94.EnrollmentID, Status:"In progress", Grade:"-"}
+	history22fall2017a := model.StudentHistory{StudentID:student9.StudentID, EnrollmentID:enroll95.EnrollmentID, Status:"In progress", Grade:"-"}
+	history23fall2017a := model.StudentHistory{StudentID:student9.StudentID, EnrollmentID:enroll96.EnrollmentID, Status:"In progress", Grade:"-"}
+	history24fall2017a := model.StudentHistory{StudentID:student9.StudentID, EnrollmentID:enroll97.EnrollmentID, Status:"In progress", Grade:"-"}
+
+	history21fall2017ab := model.StudentHistory{StudentID:student10.StudentID, EnrollmentID:enroll98.EnrollmentID, Status:"In progress", Grade:"-"}
+	history22fall2017ab := model.StudentHistory{StudentID:student10.StudentID, EnrollmentID:enroll99.EnrollmentID, Status:"In progress", Grade:"-"}
+	history23fall2017ab := model.StudentHistory{StudentID:student10.StudentID, EnrollmentID:enroll100.EnrollmentID, Status:"In progress", Grade:"-"}
+	history24fall2017ab := model.StudentHistory{StudentID:student10.StudentID, EnrollmentID:enroll101.EnrollmentID, Status:"In progress", Grade:"-"}
 
 
+	db.Create(&history13)
+	db.Create(&history14)
+	db.Create(&history15)
+	db.Create(&history16)
+	db.Create(&history17)
+	db.Create(&history18)
+	db.Create(&history19)
+	db.Create(&history20)
+	db.Create(&history21)
+	db.Create(&history22a)
+	db.Create(&history23)
+	db.Create(&history24)
+	db.Create(&history13fall2017)
+	db.Create(&history14fall2017)
+	db.Create(&history15fall2017)
+	db.Create(&history16fall2017)
+	db.Create(&history17fall2017)
+	db.Create(&history18fall2017)
+	db.Create(&history19fall2017)
+	db.Create(&history20fall2017)
+	db.Create(&history21fall2017)
+	db.Create(&history22fall2017)
+	db.Create(&history23fall2017)
+	db.Create(&history24fall2017)
+	db.Create(&history13fall2017a)
+	db.Create(&history14fall2017a)
+	db.Create(&history15fall2017a)
+	db.Create(&history16fall2017a)
+	db.Create(&history17fall2017a)
+	db.Create(&history18fall2017a)
+	db.Create(&history19fall2017a)
+	db.Create(&history20fall2017a)
+	db.Create(&history21fall2017a)
+	db.Create(&history22fall2017a)
+	db.Create(&history23fall2017a)
+	db.Create(&history24fall2017a)
+	db.Create(&history21fall2017ab)
+	db.Create(&history22fall2017ab)
+	db.Create(&history23fall2017ab)
+	db.Create(&history24fall2017ab)
 
 	//enrollment for Spring 2017
-	enroll111 := model.Enrollment{StudentID:student1.StudentID, SectionID:sectionSpring2017a.SectionID}
-	enroll21 := model.Enrollment{StudentID:student2.StudentID, SectionID:sectionSpring2017b.SectionID}
+	enroll21 := model.Enrollment{StudentID:student1.StudentID, SectionID:sectionSpring2017a.SectionID}
+	enroll22 := model.Enrollment{StudentID:student1.StudentID, SectionID:sectionSpring2017b.SectionID}
+	enroll23 := model.Enrollment{StudentID:student1.StudentID, SectionID:sectionSpring2017c.SectionID}
+	enroll24 := model.Enrollment{StudentID:student1.StudentID, SectionID:sectionSpring2017d.SectionID}
+	enroll25 := model.Enrollment{StudentID:student2.StudentID, SectionID:sectionSpring2017a.SectionID}
+	enroll26 := model.Enrollment{StudentID:student2.StudentID, SectionID:sectionSpring2017b.SectionID}
+	enroll27 := model.Enrollment{StudentID:student2.StudentID, SectionID:sectionSpring2017c.SectionID}
+	enroll28 := model.Enrollment{StudentID:student2.StudentID, SectionID:sectionSpring2017d.SectionID}
+	enroll29 := model.Enrollment{StudentID:student3.StudentID, SectionID:sectionSpring2017a.SectionID}
+	enroll30 := model.Enrollment{StudentID:student3.StudentID, SectionID:sectionSpring2017b.SectionID}
 	enroll31 := model.Enrollment{StudentID:student3.StudentID, SectionID:sectionSpring2017c.SectionID}
-	enroll41 := model.Enrollment{StudentID:student4.StudentID, SectionID:sectionSpring2017d.SectionID}
-	enroll51 := model.Enrollment{StudentID:student1.StudentID, SectionID:sectionSpring2017e.SectionID}
-	enroll61 := model.Enrollment{StudentID:student2.StudentID, SectionID:sectionSpring2017f.SectionID}
-	enroll71 := model.Enrollment{StudentID:student3.StudentID, SectionID:sectionSpring2017g.SectionID}
-	enroll81 := model.Enrollment{StudentID:student4.StudentID, SectionID:sectionSpring2017h.SectionID}
-	enroll91 := model.Enrollment{StudentID:student1.StudentID, SectionID:sectionSpring2017i.SectionID}
-	enroll101 := model.Enrollment{StudentID:student2.StudentID, SectionID:sectionSpring2017j.SectionID}
-	enroll1112 := model.Enrollment{StudentID:student3.StudentID, SectionID:sectionSpring2017k.SectionID}
-	enroll121 := model.Enrollment{StudentID:student1.StudentID, SectionID:sectionSpring2017b.SectionID}
+	enroll32 := model.Enrollment{StudentID:student3.StudentID, SectionID:sectionSpring2017d.SectionID}
+	enroll33 := model.Enrollment{StudentID:student4.StudentID, SectionID:sectionSpring2017a.SectionID}
+	enroll34 := model.Enrollment{StudentID:student4.StudentID, SectionID:sectionSpring2017b.SectionID}
+	enroll35 := model.Enrollment{StudentID:student4.StudentID, SectionID:sectionSpring2017c.SectionID}
+	enroll36 := model.Enrollment{StudentID:student4.StudentID, SectionID:sectionSpring2017d.SectionID}
+	enroll37 := model.Enrollment{StudentID:student5.StudentID, SectionID:sectionSpring2017a.SectionID}
+	enroll38 := model.Enrollment{StudentID:student5.StudentID, SectionID:sectionSpring2017b.SectionID}
+	enroll39 := model.Enrollment{StudentID:student5.StudentID, SectionID:sectionSpring2017c.SectionID}
+	enroll40 := model.Enrollment{StudentID:student5.StudentID, SectionID:sectionSpring2017d.SectionID}
+	enroll41 := model.Enrollment{StudentID:student6.StudentID, SectionID:sectionSpring2017a.SectionID}
+	enroll42 := model.Enrollment{StudentID:student6.StudentID, SectionID:sectionSpring2017b.SectionID}
+	enroll43 := model.Enrollment{StudentID:student6.StudentID, SectionID:sectionSpring2017c.SectionID}
+	enroll44 := model.Enrollment{StudentID:student6.StudentID, SectionID:sectionSpring2017d.SectionID}
+	enroll45 := model.Enrollment{StudentID:student7.StudentID, SectionID:sectionSpring2017a.SectionID}
+	enroll46 := model.Enrollment{StudentID:student7.StudentID, SectionID:sectionSpring2017b.SectionID}
+	enroll47 := model.Enrollment{StudentID:student7.StudentID, SectionID:sectionSpring2017c.SectionID}
+	enroll48 := model.Enrollment{StudentID:student7.StudentID, SectionID:sectionSpring2017d.SectionID}
+	enroll49 := model.Enrollment{StudentID:student8.StudentID, SectionID:sectionSpring2017a.SectionID}
+	enroll50 := model.Enrollment{StudentID:student8.StudentID, SectionID:sectionSpring2017b.SectionID}
+	enroll51 := model.Enrollment{StudentID:student8.StudentID, SectionID:sectionSpring2017c.SectionID}
+	enroll52 := model.Enrollment{StudentID:student8.StudentID, SectionID:sectionSpring2017d.SectionID}
+	enroll53 := model.Enrollment{StudentID:student9.StudentID, SectionID:sectionSpring2017a.SectionID}
+	enroll54 := model.Enrollment{StudentID:student9.StudentID, SectionID:sectionSpring2017b.SectionID}
+	enroll55 := model.Enrollment{StudentID:student9.StudentID, SectionID:sectionSpring2017c.SectionID}
+	enroll56 := model.Enrollment{StudentID:student9.StudentID, SectionID:sectionSpring2017d.SectionID}
+	enroll57 := model.Enrollment{StudentID:student10.StudentID, SectionID:sectionSpring2017a.SectionID}
+	enroll58 := model.Enrollment{StudentID:student10.StudentID, SectionID:sectionSpring2017b.SectionID}
+	enroll59 := model.Enrollment{StudentID:student10.StudentID, SectionID:sectionSpring2017c.SectionID}
+	enroll60 := model.Enrollment{StudentID:student10.StudentID, SectionID:sectionSpring2017d.SectionID}
 
-	db.Create(&enroll111)
+
 	db.Create(&enroll21)
+	db.Create(&enroll22)
+	db.Create(&enroll23)
+	db.Create(&enroll24)
+	db.Create(&enroll25)
+	db.Create(&enroll26)
+	db.Create(&enroll27)
+	db.Create(&enroll28)
+	db.Create(&enroll29)
+	db.Create(&enroll30)
 	db.Create(&enroll31)
+	db.Create(&enroll32)
+	db.Create(&enroll33)
+	db.Create(&enroll34)
+	db.Create(&enroll35)
+	db.Create(&enroll36)
+	db.Create(&enroll37)
+	db.Create(&enroll38)
+	db.Create(&enroll39)
+	db.Create(&enroll40)
 	db.Create(&enroll41)
+	db.Create(&enroll42)
+	db.Create(&enroll43)
+	db.Create(&enroll44)
+	db.Create(&enroll45)
+	db.Create(&enroll46)
+	db.Create(&enroll47)
+	db.Create(&enroll48)
+	db.Create(&enroll49)
+	db.Create(&enroll50)
 	db.Create(&enroll51)
-	db.Create(&enroll61)
-	db.Create(&enroll71)
-	db.Create(&enroll81)
-	db.Create(&enroll91)
-	db.Create(&enroll101)
-	db.Create(&enroll1112)
-	db.Create(&enroll121)
+	db.Create(&enroll52)
+	db.Create(&enroll53)
+	db.Create(&enroll54)
+	db.Create(&enroll55)
+	db.Create(&enroll56)
+	db.Create(&enroll57)
+	db.Create(&enroll58)
+	db.Create(&enroll59)
+	db.Create(&enroll60)
+
+	//TODO finish adding enrollment history
 
 	//history Spring 2017
-	history11a := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll111.EnrollmentID, Status:"Complete", Grade:"A"}
-	history22 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enroll21.EnrollmentID, Status:"Complete", Grade:"A"}
-	history33 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enroll31.EnrollmentID, Status:"Complete", Grade:"B"}
-	history44 := model.StudentHistory{StudentID:student4.StudentID, EnrollmentID:enroll41.EnrollmentID, Status:"Complete", Grade:"B"}
-	history55 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll51.EnrollmentID, Status:"Complete", Grade:"B-"}
-	history66 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enroll61.EnrollmentID, Status:"Complete", Grade:"A"}
-	history77 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enroll71.EnrollmentID, Status:"Complete", Grade:"B+"}
-	history88 := model.StudentHistory{StudentID:student4.StudentID, EnrollmentID:enroll81.EnrollmentID, Status:"Complete", Grade:"C"}
-	history99 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll91.EnrollmentID, Status:"Complete", Grade:"A-"}
-	history100 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enroll101.EnrollmentID, Status:"Complete", Grade:"B+"}
-	history111 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enroll1112.EnrollmentID, Status:"Dropped", Grade:"-"}
-	history122 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll121.EnrollmentID, Status:"Complete", Grade:"A"}
+	history11a := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll21.EnrollmentID, Status:"Completed", Grade:"A"}
+	history22 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enroll25.EnrollmentID, Status:"Completed", Grade:"A"}
+	history33 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enroll29.EnrollmentID, Status:"Completed", Grade:"B"}
+	history44 := model.StudentHistory{StudentID:student4.StudentID, EnrollmentID:enroll33.EnrollmentID, Status:"Completed", Grade:"C"}
+	history55 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll22.EnrollmentID, Status:"Completed", Grade:"B+"}
+	history66 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enroll25.EnrollmentID, Status:"Completed", Grade:"C-"}
+	history77 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enroll30.EnrollmentID, Status:"Completed", Grade:"D"}
+	history88 := model.StudentHistory{StudentID:student4.StudentID, EnrollmentID:enroll34.EnrollmentID, Status:"Completed", Grade:"A"}
+	history99 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll23.EnrollmentID, Status:"Completed", Grade:"B-"}
+	history100 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enroll26.EnrollmentID, Status:"Completed", Grade:"A"}
+	history111 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enroll31.EnrollmentID, Status:"Completed", Grade:"B+"}
+	history122 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll35.EnrollmentID, Status:"Completed", Grade:"D"}
 
 	db.Create(&history11a)
 	db.Create(&history22)
@@ -1496,6 +1917,203 @@ func main() {
 	db.Create(&history111)
 	db.Create(&history122)
 
-	}
+	//enrollment for Fall 2016
+	enroll102 := model.Enrollment{StudentID:student1.StudentID, SectionID:section41.SectionID}
+	enroll103 := model.Enrollment{StudentID:student1.StudentID, SectionID:section42.SectionID}
+	enroll104 := model.Enrollment{StudentID:student1.StudentID, SectionID:section43.SectionID}
+	enroll105 := model.Enrollment{StudentID:student1.StudentID, SectionID:section44.SectionID}
+	enroll106 := model.Enrollment{StudentID:student2.StudentID, SectionID:section41.SectionID}
+	enroll107 := model.Enrollment{StudentID:student2.StudentID, SectionID:section42.SectionID}
+	enroll108 := model.Enrollment{StudentID:student2.StudentID, SectionID:section43.SectionID}
+	enroll109 := model.Enrollment{StudentID:student2.StudentID, SectionID:section44.SectionID}
+	enroll110 := model.Enrollment{StudentID:student3.StudentID, SectionID:section41.SectionID}
+	enroll111 := model.Enrollment{StudentID:student3.StudentID, SectionID:section42.SectionID}
+	enroll112 := model.Enrollment{StudentID:student3.StudentID, SectionID:section43.SectionID}
+	enroll113 := model.Enrollment{StudentID:student3.StudentID, SectionID:section44.SectionID}
+	enroll114 := model.Enrollment{StudentID:student4.StudentID, SectionID:section41.SectionID}
+	enroll115 := model.Enrollment{StudentID:student4.StudentID, SectionID:section42.SectionID}
+	enroll116 := model.Enrollment{StudentID:student4.StudentID, SectionID:section43.SectionID}
+	enroll117 := model.Enrollment{StudentID:student4.StudentID, SectionID:section44.SectionID}
+	enroll118 := model.Enrollment{StudentID:student5.StudentID, SectionID:section41.SectionID}
+	enroll119 := model.Enrollment{StudentID:student5.StudentID, SectionID:section42.SectionID}
+	enroll120 := model.Enrollment{StudentID:student5.StudentID, SectionID:section43.SectionID}
+	enroll121 := model.Enrollment{StudentID:student5.StudentID, SectionID:section44.SectionID}
+
+	db.Create(&enroll102)
+	db.Create(&enroll103)
+	db.Create(&enroll104)
+	db.Create(&enroll105)
+	db.Create(&enroll106)
+	db.Create(&enroll107)
+	db.Create(&enroll108)
+	db.Create(&enroll109)
+	db.Create(&enroll110)
+	db.Create(&enroll111)
+	db.Create(&enroll112)
+	db.Create(&enroll113)
+	db.Create(&enroll114)
+	db.Create(&enroll115)
+	db.Create(&enroll116)
+	db.Create(&enroll117)
+	db.Create(&enroll118)
+	db.Create(&enroll119)
+	db.Create(&enroll120)
+	db.Create(&enroll121)
+
+	//history Fall 2016
+	history25 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll102.EnrollmentID, Status:"Complete", Grade:"A"}
+	history26 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enroll106.EnrollmentID, Status:"Complete", Grade:"A"}
+	history27 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enroll110.EnrollmentID, Status:"Complete", Grade:"B"}
+	history28 := model.StudentHistory{StudentID:student4.StudentID, EnrollmentID:enroll114.EnrollmentID, Status:"Complete", Grade:"B"}
+	history29 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll103.EnrollmentID, Status:"Complete", Grade:"B-"}
+	history30 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enroll107.EnrollmentID, Status:"Complete", Grade:"A"}
+	history31 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enroll111.EnrollmentID, Status:"Complete", Grade:"B+"}
+	history32 := model.StudentHistory{StudentID:student4.StudentID, EnrollmentID:enroll115.EnrollmentID, Status:"Complete", Grade:"C"}
+	history33a := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll104.EnrollmentID, Status:"Complete", Grade:"A-"}
+	history34 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enroll108.EnrollmentID, Status:"Complete", Grade:"B+"}
+	history35 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enroll112.EnrollmentID, Status:"Dropped", Grade:"-"}
+	history36 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll116.EnrollmentID, Status:"Complete", Grade:"A"}
+
+	db.Create(&history25)
+	db.Create(&history26)
+	db.Create(&history27)
+	db.Create(&history28)
+	db.Create(&history29)
+	db.Create(&history30)
+	db.Create(&history31)
+	db.Create(&history32)
+	db.Create(&history33a)
+	db.Create(&history34)
+	db.Create(&history35)
+	db.Create(&history36)
+
+	//enrollment for Spring 2016
+	enrolla := model.Enrollment{StudentID:student1.StudentID, SectionID:section21.SectionID}
+	enrollb := model.Enrollment{StudentID:student1.StudentID, SectionID:section22.SectionID}
+	enrollc := model.Enrollment{StudentID:student1.StudentID, SectionID:section23.SectionID}
+	enrolld := model.Enrollment{StudentID:student1.StudentID, SectionID:section24.SectionID}
+	enrolle := model.Enrollment{StudentID:student2.StudentID, SectionID:section21.SectionID}
+	enrollf := model.Enrollment{StudentID:student2.StudentID, SectionID:section22.SectionID}
+	enrollg := model.Enrollment{StudentID:student2.StudentID, SectionID:section23.SectionID}
+	enrollh := model.Enrollment{StudentID:student2.StudentID, SectionID:section24.SectionID}
+	enrolli := model.Enrollment{StudentID:student3.StudentID, SectionID:section21.SectionID}
+	enrollj := model.Enrollment{StudentID:student3.StudentID, SectionID:section22.SectionID}
+	enrollk := model.Enrollment{StudentID:student3.StudentID, SectionID:section23.SectionID}
+	enrolll := model.Enrollment{StudentID:student3.StudentID, SectionID:section24.SectionID}
+	enrollm := model.Enrollment{StudentID:student4.StudentID, SectionID:section21.SectionID}
+	enrolln := model.Enrollment{StudentID:student4.StudentID, SectionID:section22.SectionID}
+	enrollo := model.Enrollment{StudentID:student4.StudentID, SectionID:section23.SectionID}
+	enrollp := model.Enrollment{StudentID:student4.StudentID, SectionID:section24.SectionID}
+	enrollq := model.Enrollment{StudentID:student5.StudentID, SectionID:section21.SectionID}
+	enrollr := model.Enrollment{StudentID:student5.StudentID, SectionID:section22.SectionID}
+	enrolls := model.Enrollment{StudentID:student5.StudentID, SectionID:section23.SectionID}
+	enrollt := model.Enrollment{StudentID:student5.StudentID, SectionID:section24.SectionID}
+
+
+	db.Create(&enrolla)
+	db.Create(&enrollb)
+	db.Create(&enrollc)
+	db.Create(&enrolld)
+	db.Create(&enrolle)
+	db.Create(&enrollf)
+	db.Create(&enrollg)
+	db.Create(&enrollh)
+	db.Create(&enrolli)
+	db.Create(&enrollj)
+	db.Create(&enrollk)
+	db.Create(&enrolll)
+	db.Create(&enrollm)
+	db.Create(&enrolln)
+	db.Create(&enrollo)
+	db.Create(&enrollp)
+	db.Create(&enrollq)
+	db.Create(&enrollr)
+	db.Create(&enrolls)
+	db.Create(&enrollt)
+
+	//history Spring 2016
+	history37 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enrolla.EnrollmentID, Status:"Complete", Grade:"A"}
+	history38 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enrolle.EnrollmentID, Status:"Complete", Grade:"A"}
+	history39 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enrolli.EnrollmentID, Status:"Complete", Grade:"B"}
+	history40 := model.StudentHistory{StudentID:student4.StudentID, EnrollmentID:enrollm.EnrollmentID, Status:"Complete", Grade:"B"}
+	history41 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enrollb.EnrollmentID, Status:"Complete", Grade:"B-"}
+	history42 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enrollf.EnrollmentID, Status:"Complete", Grade:"A"}
+	history43 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enrollj.EnrollmentID, Status:"Complete", Grade:"B+"}
+	history44a := model.StudentHistory{StudentID:student4.StudentID, EnrollmentID:enrolln.EnrollmentID, Status:"Complete", Grade:"C"}
+	history45 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enrollc.EnrollmentID, Status:"Complete", Grade:"A-"}
+	history46 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enrollg.EnrollmentID, Status:"Complete", Grade:"B+"}
+	history47 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enrollk.EnrollmentID, Status:"Dropped", Grade:"-"}
+	history48 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enrollo.EnrollmentID, Status:"Complete", Grade:"A"}
+
+	db.Create(&history37)
+	db.Create(&history38)
+	db.Create(&history39)
+	db.Create(&history40)
+	db.Create(&history41)
+	db.Create(&history42)
+	db.Create(&history43)
+	db.Create(&history44a)
+	db.Create(&history45)
+	db.Create(&history46)
+	db.Create(&history47)
+	db.Create(&history48)
+
+
+	//
+	////enrollment for Spring 2017
+	//enroll111 := model.Enrollment{StudentID:student1.StudentID, SectionID:sectionSpring2017a.SectionID}
+	//enroll21 := model.Enrollment{StudentID:student2.StudentID, SectionID:sectionSpring2017b.SectionID}
+	//enroll31 := model.Enrollment{StudentID:student3.StudentID, SectionID:sectionSpring2017c.SectionID}
+	//enroll41 := model.Enrollment{StudentID:student4.StudentID, SectionID:sectionSpring2017d.SectionID}
+	//enroll51 := model.Enrollment{StudentID:student1.StudentID, SectionID:sectionSpring2017e.SectionID}
+	//enroll61 := model.Enrollment{StudentID:student2.StudentID, SectionID:sectionSpring2017f.SectionID}
+	//enroll71 := model.Enrollment{StudentID:student3.StudentID, SectionID:sectionSpring2017g.SectionID}
+	//enroll81 := model.Enrollment{StudentID:student4.StudentID, SectionID:sectionSpring2017h.SectionID}
+	//enroll91 := model.Enrollment{StudentID:student1.StudentID, SectionID:sectionSpring2017i.SectionID}
+	//enroll101 := model.Enrollment{StudentID:student2.StudentID, SectionID:sectionSpring2017j.SectionID}
+	//enroll1112 := model.Enrollment{StudentID:student3.StudentID, SectionID:sectionSpring2017k.SectionID}
+	//enroll121 := model.Enrollment{StudentID:student1.StudentID, SectionID:sectionSpring2017b.SectionID}
+	//
+	//db.Create(&enroll111)
+	//db.Create(&enroll21)
+	//db.Create(&enroll31)
+	//db.Create(&enroll41)
+	//db.Create(&enroll51)
+	//db.Create(&enroll61)
+	//db.Create(&enroll71)
+	//db.Create(&enroll81)
+	//db.Create(&enroll91)
+	//db.Create(&enroll101)
+	//db.Create(&enroll1112)
+	//db.Create(&enroll121)
+	//
+	////history Spring 2017
+	//history11a := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll111.EnrollmentID, Status:"Complete", Grade:"A"}
+	//history22 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enroll21.EnrollmentID, Status:"Complete", Grade:"A"}
+	//history33 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enroll31.EnrollmentID, Status:"Complete", Grade:"B"}
+	//history44 := model.StudentHistory{StudentID:student4.StudentID, EnrollmentID:enroll41.EnrollmentID, Status:"Complete", Grade:"B"}
+	//history55 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll51.EnrollmentID, Status:"Complete", Grade:"B-"}
+	//history66 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enroll61.EnrollmentID, Status:"Complete", Grade:"A"}
+	//history77 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enroll71.EnrollmentID, Status:"Complete", Grade:"B+"}
+	//history88 := model.StudentHistory{StudentID:student4.StudentID, EnrollmentID:enroll81.EnrollmentID, Status:"Complete", Grade:"C"}
+	//history99 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll91.EnrollmentID, Status:"Complete", Grade:"A-"}
+	//history100 := model.StudentHistory{StudentID:student2.StudentID, EnrollmentID:enroll101.EnrollmentID, Status:"Complete", Grade:"B+"}
+	//history111 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enroll1112.EnrollmentID, Status:"Dropped", Grade:"-"}
+	//history122 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll121.EnrollmentID, Status:"Complete", Grade:"A"}
+	//
+	//db.Create(&history11a)
+	//db.Create(&history22)
+	//db.Create(&history33)
+	//db.Create(&history44)
+	//db.Create(&history55)
+	//db.Create(&history66)
+	//db.Create(&history77)
+	//db.Create(&history88)
+	//db.Create(&history99)
+	//db.Create(&history100)
+	//db.Create(&history111)
+	//db.Create(&history122)
+
+}
 
 

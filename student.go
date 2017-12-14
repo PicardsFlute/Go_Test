@@ -188,10 +188,68 @@ func ViewTranscript(w http.ResponseWriter, r *http.Request){
 	 JOIN semester ON time_slot.semester_id = semester.semester_id
 	 WHERE enrollment.student_id = ?`,user.UserID).Scan(&st)
 
+	totalGrade := 0
+	var total float64 = 0
+
+
+	for i := 0 ; i < len(st); i++{
+		g := st[i].Grade
+
+		if strings.Compare(g,"-") != 0 { // if the grade is not 0
+			totalGrade++
+
+			if strings.Compare(g,"A") == 0{
+				total += 4
+
+			}else if strings.Compare(g,"B+") == 0{
+				total += 3.3
+
+			}else if strings.Compare(g,"B") == 0{
+				total += 3.0
+
+			}else if strings.Compare(g,"B-") == 0{
+				total += 2.7
+
+			}else if strings.Compare(g,"C") == 0{
+				total += 2.0
+
+			}else if strings.Compare(g,"C-") == 0{
+				total += 1.7
+
+			}else if strings.Compare(g,"C+") == 0{
+				total += 2.3
+
+			}else if strings.Compare(g,"D+") == 0{
+				total += 1.3
+
+			}else if strings.Compare(g,"D") == 0{
+				total += 1.0
+
+			}else if strings.Compare(g,"F") == 0{
+				total += 0.0
+			}
+
+		}
+
+	}
+
+	gpa := total/float64(totalGrade)
+
+	fmt.Println("GPA is ", Round(gpa, .5,2))
+	RoundedGpa := Round(gpa, .5, 2)
+
+	type GPA struct {
+		StudentGPA float64
+	}
+
+	studentGpa := GPA{StudentGPA:RoundedGpa}
+
 	m := map[string]interface{}{
 		"User":user,
 		"Transcript":st,
+		"GPA":studentGpa,
 	}
+
 
 
 	global.Tpl.ExecuteTemplate(w, "ViewTranscript", m)
@@ -213,209 +271,210 @@ func AddCoursePage(w http.ResponseWriter, r *http.Request){
 	}
 
 }
-
-func StudentSearchCourseResults(w http.ResponseWriter, r *http.Request){
-	println("Inside searchMasterSchedule")
-
-	println("Inside searchMasterSchedule")
-
-	queryVals := r.URL.Query()
-
-	departmentQuery,_ := queryVals["department"]
-	courseNameQuery,_ := queryVals["course-name"]
-	courseNumQuery := queryVals["course-number"]
-	professorQuery := queryVals["instructor"]
-	day := queryVals["day"]
-
-	depID := departmentQuery[0]
-	courseName := courseNameQuery[0]
-	courseNum  := courseNumQuery[0]
-	professor := professorQuery[0]
-	dayID := day[0]
-
-	whereMap := make(map[string]interface{})
-
-	whereStuff := "WHERE "
-
-	numQueries := 0
-
-	if depID != "" {
-		println("Department query present: " + depID)
-		//depID, _ := strconv.ParseUint(departmentQuery[0], 10, 64)
-		whereMap["department_id"] = depID
-		whereStuff += "department_id = " + depID
-		numQueries++
-	}
-	if courseName != "" {
-		whereMap["course_name"] = courseName
-		if numQueries == 0 {
-			whereStuff += " course_name = '" + courseName + "'"
-
-		}else {
-			whereStuff += " AND course_name = '" + courseName + "'"
-
-		}
-		numQueries++
-	}
-
-	if dayID != ""{
-		if numQueries == 0 {
-			whereStuff += " day.day_id = " + dayID
-		} else {
-			whereStuff += " AND day.day_id = " + dayID
-		}
-		numQueries++
-	}
-
-	if courseNum != "" {
-
-		if numQueries == 0 {
-			whereStuff += " course_num = " + courseNum
-		}else {
-			whereStuff += " AND course_num = " + courseNum
-		}
-		numQueries++
-
-	}
-	if professor != "" {
-		prof := strings.Split(professor, " ")
-		if numQueries == 0 {
-			whereStuff += " first_name = '" + prof[0] + "'"
-			whereStuff += " AND last_name = '" + prof[1] + "'"
-
-		}else {
-			whereStuff += " AND first_name = '" + prof[0] + "'"
-			whereStuff += " AND last_name = '" + prof[1] + "'"
-		}
-		numQueries++
-
-	}
-
-	//registering for next semester
-	if numQueries == 0 {
-		whereStuff += " semester.year = 2018 AND semester.season = 'Spring'"
-	}else {
-		whereStuff += " AND semester.year = 2018 AND semester.season = 'Spring'"
-	}
-
-	type CourseData struct {
-		CourseName string
-		CourseCredits int
-		CourseDescription string
-		DepartmentID uint
-		SectionID uint
-		CourseSectionNumber int
-		CourseID uint
-		FacultyID uint
-		FirstName string
-		LastName string
-		TimeSlotID uint
-		LocationID uint
-		DayID uint
-		MeetingDay string
-		RoomID uint
-		RoomNumber string
-		RoomType string
-		BuildingID uint
-		BuildingName string
-		Time string
-		Prerequisites []model.Course
-	}
-
-	//coursesFound := []model.Course{}
-	//db.Where(model.Course{CourseName: courseName}).Or(model.Course{DepartmentID: uint(depID)}).Or(model.Course{CourseName: courseName}).Find(&coursesFound)
-
-	queryRes := []CourseData{}
-
-
-	//rows, err := db.Joins("JOIN course ON course.course_id = section.course_id").Where(whereMap).Rows()
-	sql := `SELECT course.course_name, course.course_credits, course.course_description, course.department_id, section.section_id, section.course_section_number,
-	section.course_id, section.faculty_id, section.time_slot_id, section.location_id, section.course_section_number,
-	main_user.first_name, main_user.last_name,
-	day.meeting_day, day.day_id,
-	building.building_name,time,
-	room.room_number, room.room_type
-
-	FROM section
-	JOIN course ON course.course_id = section.course_id
-	JOIN main_user ON main_user.user_id = section.faculty_id
-	JOIN location ON section.location_id = location.location_id
-	JOIN building ON building.building_id = location.building_id
-	JOIN room ON room.room_id = location.room_id
-	JOIN time_slot ON time_slot.time_slot_id = section.time_slot_id
-	JOIN semester ON time_slot.semester_id = semester.semester_id
-	JOIN day ON time_slot.day_id = day.day_id
-	JOIN period ON period.period_id = time_slot.period_id `
-
-	sql += whereStuff
-
-	if strings.Contains(whereStuff,";&"){
-		fmt.Println("escape")
-	}
-	fmt.Println("QUery to be run is", sql)
-	db.Raw(sql).Scan(&queryRes)
-
-	//if err == nil{
-	//	//rows.Scan(&queryRes)
-	//
-	//} else {
-	//	println(err.Error())
-	//}
-	/*
-	for _, val := range queryRes{
-		println(val.CourseName)
-	}
-	*/
-	fmt.Println(queryRes)
-	allDepartments := []model.Department{}
-
-	db.Find(&allDepartments)
-
-	coursesFoundPrereqs := make(map[string][]model.Course)
-
-	// get prereqs for every unique course in queryRes
-	for qIndex, val := range queryRes{
-		if _, present := coursesFoundPrereqs[val.CourseName]; !present {
-			course := model.Course{}
-			db.First(&course, val.CourseID)
-			prereqs := course.FindCoursePrerequisites(db)
-			coursesFoundPrereqs[val.CourseName] = prereqs
-			queryRes[qIndex].Prerequisites = prereqs
-			println("Adding prereqs for: " + course.CourseName)
-			for _,c := range val.Prerequisites{
-				println("-prereq::" + c.CourseName)
-			}
-		} else {
-			queryRes[qIndex].Prerequisites = coursesFoundPrereqs[val.CourseName]
-		}
-	}
-	//
-	//
-	//for _,c := range queryRes{
-	//	println("Sent to template: course-" + c.CourseName + ", Prereqs:")
-	//	for _,p := range c.Prerequisites{
-	//		println(p.CourseName)
-	//	}
-	//}
-
-	//chosenDep := model.Department{}
-	//db.First(&chosenDep, depID)
-	searchParams := map[string]string{
-		//"Department": chosenDep.DepartmentName,
-		"Professor": professor,
-		"CourseName": courseName,
-		"CourseNum": courseNum,
-	}
-
-	data :=  map[string]interface{}{
-		"Results": queryRes,
-		"Departments": allDepartments,
-		"Params": searchParams,
-	}
-
-	global.Tpl.ExecuteTemplate(w, "studentRegisterCourse", data)
-
-}
+//
+//func StudentSearchCourseResults(w http.ResponseWriter, r *http.Request){
+//	println("Inside searchMasterSchedule")
+//
+//	println("Inside searchMasterSchedule")
+//
+//	queryVals := r.URL.Query()
+//
+//	departmentQuery,_ := queryVals["department"]
+//	courseNameQuery,_ := queryVals["course-name"]
+//	courseNumQuery := queryVals["course-number"]
+//	professorQuery := queryVals["instructor"]
+//	day := queryVals["day"]
+//
+//	depID := departmentQuery[0]
+//	courseName := courseNameQuery[0]
+//	courseNum  := courseNumQuery[0]
+//	professor := professorQuery[0]
+//	dayID := day[0]
+//
+//	whereMap := make(map[string]interface{})
+//
+//	whereStuff := "WHERE "
+//
+//	numQueries := 0
+//
+//	if depID != "" {
+//		println("Department query present: " + depID)
+//		//depID, _ := strconv.ParseUint(departmentQuery[0], 10, 64)
+//		whereMap["department_id"] = depID
+//		whereStuff += "department_id = " + depID
+//		numQueries++
+//	}
+//	if courseName != "" {
+//		whereMap["course_name"] = courseName
+//		if numQueries == 0 {
+//			whereStuff += " course_name = '" + courseName + "'"
+//
+//		}else {
+//			whereStuff += " AND course_name = '" + courseName + "'"
+//
+//		}
+//		numQueries++
+//	}
+//
+//	if dayID != ""{
+//		if numQueries == 0 {
+//			whereStuff += " day.day_id = " + dayID
+//		} else {
+//			whereStuff += " AND day.day_id = " + dayID
+//		}
+//		numQueries++
+//	}
+//
+//	if courseNum != "" {
+//
+//		if numQueries == 0 {
+//			whereStuff += " course_num = " + courseNum
+//		}else {
+//			whereStuff += " AND course_num = " + courseNum
+//		}
+//		numQueries++
+//
+//	}
+//	if professor != "" {
+//		prof := strings.Split(professor, " ")
+//		if numQueries == 0 {
+//			whereStuff += " first_name = '" + prof[0] + "'"
+//			whereStuff += " AND last_name = '" + prof[1] + "'"
+//
+//		}else {
+//			whereStuff += " AND first_name = '" + prof[0] + "'"
+//			whereStuff += " AND last_name = '" + prof[1] + "'"
+//		}
+//		numQueries++
+//
+//	}
+//
+//	//registering for next semester
+//	if numQueries == 0 {
+//		whereStuff += " semester.year = 2018 AND semester.season = 'Spring'"
+//	}else {
+//		whereStuff += " AND semester.year = 2018 AND semester.season = 'Spring'"
+//	}
+//
+//	type CourseData struct {
+//		CourseName string
+//		CourseCredits int
+//		CourseDescription string
+//		DepartmentID uint
+//		SectionID uint
+//		CourseSectionNumber int
+//		CourseID uint
+//		FacultyID uint
+//		FirstName string
+//		LastName string
+//		TimeSlotID uint
+//		LocationID uint
+//		DayID uint
+//		MeetingDay string
+//		RoomID uint
+//		RoomNumber string
+//		RoomType string
+//		BuildingID uint
+//		BuildingName string
+//		Time string
+//		Capacity uint
+//		Prerequisites []model.Course
+//	}
+//
+//	//coursesFound := []model.Course{}
+//	//db.Where(model.Course{CourseName: courseName}).Or(model.Course{DepartmentID: uint(depID)}).Or(model.Course{CourseName: courseName}).Find(&coursesFound)
+//
+//	queryRes := []CourseData{}
+//
+//
+//	//rows, err := db.Joins("JOIN course ON course.course_id = section.course_id").Where(whereMap).Rows()
+//	sql := `SELECT course.course_name, course.course_credits, course.course_description, course.department_id, section.section_id, section.course_section_number,
+//	section.course_id, section.faculty_id, section.time_slot_id, section.location_id, section.course_section_number,
+//	main_user.first_name, main_user.last_name,
+//	day.meeting_day, day.day_id,
+//	building.building_name,time,
+//	room.room_number, room.room_type, capacity
+//
+//	FROM section
+//	JOIN course ON course.course_id = section.course_id
+//	JOIN main_user ON main_user.user_id = section.faculty_id
+//	JOIN location ON section.location_id = location.location_id
+//	JOIN building ON building.building_id = location.building_id
+//	JOIN room ON room.room_id = location.room_id
+//	JOIN time_slot ON time_slot.time_slot_id = section.time_slot_id
+//	JOIN semester ON time_slot.semester_id = semester.semester_id
+//	JOIN day ON time_slot.day_id = day.day_id
+//	JOIN period ON period.period_id = time_slot.period_id `
+//
+//	sql += whereStuff
+//
+//	if strings.Contains(whereStuff,";&"){
+//		fmt.Println("escape")
+//	}
+//	fmt.Println("QUery to be run is", sql)
+//	db.Raw(sql).Scan(&queryRes)
+//
+//	//if err == nil{
+//	//	//rows.Scan(&queryRes)
+//	//
+//	//} else {
+//	//	println(err.Error())
+//	//}
+//	/*
+//	for _, val := range queryRes{
+//		println(val.CourseName)
+//	}
+//	*/
+//	fmt.Println(queryRes)
+//	allDepartments := []model.Department{}
+//
+//	db.Find(&allDepartments)
+//
+//	coursesFoundPrereqs := make(map[string][]model.Course)
+//
+//	// get prereqs for every unique course in queryRes
+//	for qIndex, val := range queryRes{
+//		if _, present := coursesFoundPrereqs[val.CourseName]; !present {
+//			course := model.Course{}
+//			db.First(&course, val.CourseID)
+//			prereqs := course.FindCoursePrerequisites(db)
+//			coursesFoundPrereqs[val.CourseName] = prereqs
+//			queryRes[qIndex].Prerequisites = prereqs
+//			println("Adding prereqs for: " + course.CourseName)
+//			for _,c := range val.Prerequisites{
+//				println("-prereq::" + c.CourseName)
+//			}
+//		} else {
+//			queryRes[qIndex].Prerequisites = coursesFoundPrereqs[val.CourseName]
+//		}
+//	}
+//	//
+//	//
+//	//for _,c := range queryRes{
+//	//	println("Sent to template: course-" + c.CourseName + ", Prereqs:")
+//	//	for _,p := range c.Prerequisites{
+//	//		println(p.CourseName)
+//	//	}
+//	//}
+//
+//	//chosenDep := model.Department{}
+//	//db.First(&chosenDep, depID)
+//	searchParams := map[string]string{
+//		//"Department": chosenDep.DepartmentName,
+//		"Professor": professor,
+//		"CourseName": courseName,
+//		"CourseNum": courseNum,
+//	}
+//
+//	data :=  map[string]interface{}{
+//		"Results": queryRes,
+//		"Departments": allDepartments,
+//		"Params": searchParams,
+//	}
+//
+//	global.Tpl.ExecuteTemplate(w, "studentRegisterCourse", data)
+//
+//}
 
 func RegisterForSection(w http.ResponseWriter, r *http.Request){
 	section := r.FormValue("section")
@@ -457,6 +516,7 @@ func RegisterForSection(w http.ResponseWriter, r *http.Request){
 		CourseCredits int
 		MeetingDay string
 		Time string
+		Capacity int
 	}
 
 
@@ -466,7 +526,7 @@ func RegisterForSection(w http.ResponseWriter, r *http.Request){
 	totalCredits := 0
 
 	db.Raw(`
-		SELECT section.section_id, course.course_id, course_credits, meeting_day,time
+		SELECT section.section_id, course.course_id, course_credits,meeting_day,time,capacity
 		FROM section
 		JOIN course on course.course_id = section.course_id
 		JOIN time_slot ON time_slot.time_slot_id = section.time_slot_id
@@ -477,11 +537,25 @@ func RegisterForSection(w http.ResponseWriter, r *http.Request){
 
 	`,section).Scan(&courseRegistering)
 
-	splitSlot := strings.Split(courseRegistering.Time,"-")
-	stripWhite := strings.Split(splitSlot[1]," ")
-	fullSecondHalfofRegisteringCourse := stripWhite[1]+ " "+stripWhite[2]
+	fmt.Println("Course registering is", courseRegistering)
+
+	//splitSlot := strings.Split(courseRegistering.Time,"-")
+	//stripWhite := strings.Split(splitSlot[1]," ")
+	//fullSecondHalfofRegisteringCourse := stripWhite[1]+ " "+stripWhite[2]
 
 
+
+	//TODO course capacity check , do this by checking the count of enrollments for that section then compare it against the section capacity
+
+	count := 0
+
+	db.Table("enrollment").Select("*").Where("section_id = ?",section).Count(&count)
+
+	if count == courseRegistering.Capacity {
+		fmt.Println("Course enrollment has reached capacity")
+		global.Tpl.ExecuteTemplate(w, "studentSuccess", "The section has reached the maximum capacity")
+		return
+	}
 
 	type RegistrationCheck struct {
 		SectionID uint
@@ -494,9 +568,11 @@ func RegisterForSection(w http.ResponseWriter, r *http.Request){
 	}
 
 	registrationCheck := []RegistrationCheck{}
+
+	fmt.Println("Attempting to query users already enrolled courses")
 	//already enrolled courses
 	db.Raw(`
-			SELECT section.section_id,section.course_id,course_credits, meeting_day,time, grade, status
+			SELECT section.section_id,section.course_id,course.course_credits, meeting_day,time, grade, status
 			FROM section
 			JOIN course ON course.course_id = section.course_id
 			JOIN  enrollment ON enrollment.section_id = section.section_id
@@ -506,14 +582,15 @@ func RegisterForSection(w http.ResponseWriter, r *http.Request){
 			JOIN period ON time_slot.period_id = period.period_id
 			JOIN day ON time_slot.day_id = day.day_id
 			WHERE enrollment.student_id = ? AND status = ?
+
 	`,user.UserID,"Registered").Scan(&registrationCheck)
 
 	fmt.Println("Registered courses are" , registrationCheck)
 
 	//check course attempting to register vs courses already registered
 	for i := 0; i < len(registrationCheck); i++{
-		overlapTime := registrationCheck[i].Time
-		overlapTimeFirstHalf := strings.Split(overlapTime,"-")
+		//overlapTime := registrationCheck[i].Time
+		//overlapTimeFirstHalf := strings.Split(overlapTime,"-")
 
 		totalCredits += registrationCheck[i].CourseCredits
 		if totalCredits >= maxCredits { //check max credits
@@ -525,7 +602,7 @@ func RegisterForSection(w http.ResponseWriter, r *http.Request){
 		//check if student is already registered for that course this semester
 		if courseRegistering.CourseID == registrationCheck[i].CourseID {
 			fmt.Println("Error, you are already registered for that same course")
-			global.Tpl.ExecuteTemplate(w, "studentSuccess" , "Error, you are already registered for that same courseß")
+			global.Tpl.ExecuteTemplate(w, "studentSuccess" , "Error, you are already registered for that same course")
 			return
 		}
 
@@ -536,13 +613,19 @@ func RegisterForSection(w http.ResponseWriter, r *http.Request){
 			global.Tpl.ExecuteTemplate(w, "studentSuccess", "Error you are already registrered for that time slot at that day " )
 			return
 		}
+
+		/*
 		//TODO overlapping time strings would not be equal i.e 12:30PM -> 4:50PM != 12:30PM -> 2:00PM but would pass test
-		if strings.Compare(fullSecondHalfofRegisteringCourse,overlapTimeFirstHalf[0]) == 1 {
+		//TODO this is not working correctly 11:30 PM >  3:50 PM is returning false
+		//TODO try just converting to military value and an integer and comparing the times
+		if strings.Compare(fullSecondHalfofRegisteringCourse,overlapTimeFirstHalf[0]) == 1  &&
+		strings.Compare(courseRegistering.MeetingDay,registrationCheck[i].MeetingDay) == 0
+		{
 			fmt.Println("Error, you are attempting to register for overlapping time slots")
 			global.Tpl.ExecuteTemplate(w, "studentSuccess", "Error, you are attempting to register for overlapping time slots" )
 			return
 		}
-
+		*/
 
 	}
 
@@ -618,3 +701,4 @@ func RegisterForSection(w http.ResponseWriter, r *http.Request){
 //TODO add class size to section, check this size before student registers because class capacity could be smaller than room capactiy
 
 
+//TODO add capacity to section in form

@@ -9,7 +9,7 @@
 
     {{if .}}
     <h3>Transcript For {{.User.FirstName}} {{.User.LastName}}</h3>
-
+    <h3>Current GPA is: {{.GPA.StudentGPA}}</h3>
     {{range .Transcript}}
     <div class="course_details">
         <p>Course Name: {{.CourseName}}</p>
