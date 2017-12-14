@@ -3,9 +3,16 @@
 
 {{$isAd := .User.IsAdmin}}
 
+{{$isStudent := .Student.IsStudent}}
+
 {{if .User.IsAdmin}}
     <h1>Admin is Logged in.</h1>
     {{template "admin-navbar"}}
+{{end}}
+
+{{if .Student.IsStudent}}
+    <h1>Student is Logged in.</h1>
+    {{template "student-navbar"}}
 {{end}}
 
 <div class="contact-w3-agileits" id="contact" >
@@ -96,6 +103,9 @@
                             <h4>
                                 Credits: {{ .CourseCredits }}
                             </h4>
+                            <h4>
+                                Section Capacity: {{ .Capacity }}
+                            </h4>
                             <h4>Day: {{ .MeetingDay }} </h4>
                             <h4>Time: {{ .Time }} </h4>
 
@@ -103,9 +113,16 @@
                             <h4>Building: {{ .BuildingName }}</h4>
 
                             {{if $isAd}}
-                            <form action="/section/update" method="POST">
+                            <form action="/section/update" method="GET">
                                 <input type="text" hidden name="section" value="{{.SectionID}}">
                                 <input type="submit" value="Edit Section" class="btn btn-danger pull-right">
+                            </form>
+                            {{end}}
+
+                            {{if $isStudent}}
+                            <form action="/student/register" method="POST">
+                                <input type="text" value="{{.SectionID}}" name="section" hidden>
+                                <input type="submit" value="Register" class="btn btn-primary pull-right">
                             </form>
                             {{end}}
 

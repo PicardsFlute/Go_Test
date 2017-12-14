@@ -13,6 +13,7 @@ import (
 	"github.com/gorilla/mux"
 	"encoding/json"
 	"strings"
+	"math"
 )
 
 
@@ -53,25 +54,19 @@ func viewStudentTranscriptPage(w http.ResponseWriter, r *http.Request){
 
 
 func viewStudentTranscript(w http.ResponseWriter, r *http.Request){
-
 	user := model.MainUser{}
 
 	email := r.FormValue("email")
-	id := r.FormValue("id")
 	count := 0
 	//major := r.FormValue("major")
 
 	//db.Where("id = ?", id).Find(&model.Enrollment{})
-	intId, err := strconv.Atoi(id)
 	if err != nil {
 		err.Error()
 	}
 
 
 	//first check if they entered an ID
-	if id != "" {
-		db.Where(&model.MainUser{UserID: uint(intId)}).Find(&user).Count(&count)
-	}
 
 	if email != ""{
 		db.Where(&model.MainUser{UserEmail: email}).Find(&user).Count(&count)
@@ -99,6 +94,8 @@ func viewStudentTranscript(w http.ResponseWriter, r *http.Request){
 		CourseCredits int
 	}
 
+
+
 	st := []Transcript{}
 	db.Raw(`
  	 SELECT enrollment.student_id,grade,status,year,season,course_name,course_credits
@@ -110,10 +107,70 @@ func viewStudentTranscript(w http.ResponseWriter, r *http.Request){
 	 JOIN semester ON time_slot.semester_id = semester.semester_id
 	 WHERE enrollment.student_id = ?`,user.UserID).Scan(&st)
 	fmt.Println(st)
+
+	totalGrade := 0
+	var total float64 = 0
+
+
+	for i := 0 ; i < len(st); i++{
+		g := st[i].Grade
+
+		if strings.Compare(g,"-") != 0 { // if the grade is not 0
+			totalGrade++
+
+			if strings.Compare(g,"A") == 0{
+				total += 4
+
+			}else if strings.Compare(g,"B+") == 0{
+				total += 3.3
+
+			}else if strings.Compare(g,"B") == 0{
+				total += 3.0
+
+			}else if strings.Compare(g,"B-") == 0{
+				total += 2.7
+
+			}else if strings.Compare(g,"C") == 0{
+				total += 2.0
+
+			}else if strings.Compare(g,"C-") == 0{
+				total += 1.7
+
+			}else if strings.Compare(g,"C+") == 0{
+				total += 2.3
+
+			}else if strings.Compare(g,"D+") == 0{
+				total += 1.3
+
+			}else if strings.Compare(g,"D") == 0{
+				total += 1.0
+
+			}else if strings.Compare(g,"F") == 0{
+				total += 0.0
+			}
+
+		}
+
+	}
+
+	gpa := total/float64(totalGrade)
+
+	fmt.Println("GPA is ", Round(gpa, .5,2))
+	RoundedGpa := Round(gpa, .5, 2)
+
+	type GPA struct {
+		StudentGPA float64
+	}
+
+	studentGpa := GPA{StudentGPA:RoundedGpa}
+
 	m := map[string]interface{}{
 		"User":user,
 		"Transcript":st,
+		"GPA":studentGpa,
 	}
+
+
 
 	errTemp := global.Tpl.ExecuteTemplate(w, "adminViewStudentTranscriptDetails", m)
 	if errTemp != nil {
@@ -429,8 +486,7 @@ func AdminSearchCourse(w http.ResponseWriter, r *http.Request){
 	WHERE course.course_id =?`,id).Scan(&courseDetail)
 	fmt.Println(courseDetail)
 
-	//Todo:: must render view on client side if you send an ajax request
-	//TODO: just show the course with all the pre-requisits
+
 
 	m := map[string]interface{}{
 		"Course": courseDetail,
@@ -556,6 +612,13 @@ func AdminAddSection(w http.ResponseWriter, r *http.Request){
 	roomNum := r.FormValue("room")
 	semester := r.FormValue("semester")
 	day := r.FormValue("day")
+	capacity := r.FormValue("capacity")
+
+	fmt.Println("Capacity", capacity)
+
+
+	capacityInt,_ := strconv.Atoi(capacity)
+
 
 	fmt.Println("Section Num:",sectionNum)
 	fmt.Println("Course Name:",courseName)
@@ -595,7 +658,7 @@ func AdminAddSection(w http.ResponseWriter, r *http.Request){
 	courseInt, _ := strconv.Atoi(courseName)
 	//facultyID, _ := strconv.Atoi(faculty)
 
-	newCourseSection := model.Section{CourseSectionNumber:sectionInt,CourseID:uint(courseInt), FacultyID:fac.FacultyID,TimeSlotID:timeSlotID,LocationID:location.LocationID}
+	newCourseSection := model.Section{CourseSectionNumber:sectionInt,CourseID:uint(courseInt), FacultyID:fac.FacultyID,TimeSlotID:timeSlotID,Capacity:capacityInt, LocationID:location.LocationID}
 
 	//TODO: Complete, 1st series of test passed
 	type RoomCheck struct{
@@ -699,7 +762,7 @@ func AdminAddSection(w http.ResponseWriter, r *http.Request){
 
 	fmt.Println("Course section", newCourseSection)
 	db.Create(&newCourseSection)
-	global.Tpl.ExecuteTemplate(w, "admin", "Section successfully added")
+	global.Tpl.ExecuteTemplate(w, "adminSuccess", "Section successfully added")
 }
 
 func addSectionTime(w http.ResponseWriter, r *http.Request){
@@ -820,6 +883,7 @@ func AdminUpdateSectionForm(w http.ResponseWriter, r *http.Request){
 		RoomCapacity int
 		BuildingID uint
 		BuildingName string
+		PeriodID int
 		Time string
 	}
 
@@ -829,8 +893,8 @@ func AdminUpdateSectionForm(w http.ResponseWriter, r *http.Request){
 		section.course_id, section.faculty_id, section.time_slot_id, section.location_id, section.course_section_number,
 		main_user.first_name, main_user.last_name,
 		day.meeting_day, day.day_id,
-		building.building_name,time,
-		room.room_number, room.room_type, room.room_capacity
+		building.building_id,building.building_name,period.period_id,time,
+		room.room_id,room.room_number, room.room_type, room.room_capacity
 
 		FROM section
 		JOIN course ON course.course_id = section.course_id
@@ -843,7 +907,7 @@ func AdminUpdateSectionForm(w http.ResponseWriter, r *http.Request){
 		JOIN day ON time_slot.day_id = day.day_id
 		JOIN period ON period.period_id = time_slot.period_id
 		WHERE section.section_id = ?`, sec).Scan(&sectionData)
-
+	fmt.Println(sectionData)
 	buildings := []model.Building{}
 
 	db.Table("building").Select("*").Scan(&buildings)
@@ -854,7 +918,10 @@ func AdminUpdateSectionForm(w http.ResponseWriter, r *http.Request){
 	}
 
 
-	global.Tpl.ExecuteTemplate(w,"adminUpdateSection", info)
+	err := global.Tpl.ExecuteTemplate(w,"adminUpdateSection", info)
+	if err != nil {
+		fmt.Print(err.Error())
+	}
 }
 
 
@@ -864,27 +931,84 @@ func AdminUpdateSection(w http.ResponseWriter, r *http.Request){
 	newRoom := r.FormValue("new-room")
 	currentRoom := r.FormValue("current-room")
 	section := r.FormValue("section-info")
+	timeID := r.FormValue("time-id")
+	day := r.FormValue("day-id")
 
-	//TODO make sure room isn't already occupied, check for the room at the current time for the current semester
+
+	fmt.Println("New building", newBuilding)
+	fmt.Println("Current BUilding", currentBuilding)
+	fmt.Println("New Room", newRoom)
+	fmt.Println("Current Room", currentRoom)
+	fmt.Println("Section", section)
+	fmt.Println("Time", timeID)
+	fmt.Println("Day", day)
+
+
 
 	currentLocation := model.Location{}
-	db.Select("*").Table("location").Where("room_id = ?  AND building_id =? ",currentRoom,currentBuilding).Scan(&currentLocation)
+	db.Select("*").Table("location").Where("room_id = ?  AND building_id = ? ",currentRoom,currentBuilding).Scan(&currentLocation)
 
 	newLocation := model.Location{}
-	db.Select("*").Table("location").Where("room_id = ?  AND building_id =? ",newRoom,newBuilding).Scan(&newLocation)
+	db.Select("*").Table("location").Where("room_id = ?  AND building_id = ? ",newRoom,newBuilding).Scan(&newLocation)
 
+	fmt.Println("new Location ", newLocation)
 	type Err struct {
 		error string
 	}
 
 	e := Err{}
 
+	type RoomCheck struct{
+		Section_id int
+		Location_id int
+		Building_id int
+		Building_name string
+		Room_id int
+		Room_number string
+	}
+	rc := []RoomCheck{}
+
 	db.Raw(`
-		UPDATE section SET location_id = ? WHERE section_id = ?;
+		 SELECT section.section_id, location.location_id,season,year, building.building_id,room.room_id,room_number,building_name,period.period_id,time,day.day_id,meeting_day
+		 FROM section
+		 JOIN location ON section.location_id = location.location_id
+		 JOIN building ON building.building_id = location.building_id
+		 JOIN room ON room.room_id = location.room_id
+		 JOIN time_slot ON time_slot.time_slot_id = section.time_slot_id
+		 JOIN day ON time_slot.day_id = day.day_id
+		 JOIN semester ON time_slot.semester_id = semester.semester_id
+		 JOIN period ON period.period_id = time_slot.period_id
+		 WHERE location.room_id = ? AND building.building_id = ? AND period.period_id = ?
+	 	 AND day.day_id = ? AND season = ? AND year = ?`,newLocation.RoomID, newLocation.BuildingID,timeID,day,"Spring", 2018).Scan(&rc)
+
+	if len(rc) > 0 {
+		global.Tpl.ExecuteTemplate(w, "adminSuccess", "Can't update to this room because the room is already ocupied at this time")
+		fmt.Println("Cant add room, because is already ocupied at this time, please try a different room")
+		return
+	}
+
+	db.Raw(`
+		UPDATE section SET location_id = ? WHERE section_id = ?
 	`,newLocation.LocationID, section).Scan(&e)
 
 	fmt.Println(e)
 
+	global.Tpl.ExecuteTemplate(w, "adminSuccess", "Room updated successfully")
+
 	//TODO test this
 
+}
+
+func Round(val float64, roundOn float64, places int ) (newVal float64) {
+	var round float64
+	pow := math.Pow(10, float64(places))
+	digit := pow * val
+	_, div := math.Modf(digit)
+	if div >= roundOn {
+		round = math.Ceil(digit)
+	} else {
+		round = math.Floor(digit)
+	}
+	newVal = round / pow
+	return
 }

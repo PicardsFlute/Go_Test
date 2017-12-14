@@ -257,6 +257,7 @@ type Section struct {
 	FacultyID uint `gorm:"not null"`
 	TimeSlotID uint `gorm:"not null"`
 	LocationID uint `gorm:"not null"`
+	Capacity int `gorm:"type:integer"`
 	Course Course `gorm:"ForeignKey:CourseID; AssociationForeignKey:CourseID"`
 	TimeSlot TimeSlot `gorm:"ForeignKey:TimeSlotID; AssociationForeignKey:TimeSlotID"`
 	Faculty Faculty `gorm:"ForeignKey:FacultyID; AssociationForeignKey:FacultyID"`

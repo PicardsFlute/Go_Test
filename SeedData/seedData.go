@@ -167,12 +167,12 @@ func main() {
 	db.Model(&model.Reports{}).AddForeignKey("researcher_id", "researcher(researcher_id)", "RESTRICT", "RESTRICT")
 
 	user1 := model.MainUser{FirstName: "Pat", LastName: "Lagat", UserEmail: "plagat@yahoo.com", UserPassword: "pl12345", UserType: 1}
-	user2 := model.MainUser{FirstName: "Irish", LastName: "James", UserEmail: "jirish@yahoo.com", UserPassword: "ij12345", UserType: 1}
+	user2 := model.MainUser{FirstName: "Irman", LastName: "James", UserEmail: "jirish@yahoo.com", UserPassword: "ij12345", UserType: 1}
 	user3 := model.MainUser{FirstName: "Trey", LastName: "Gorkin", UserEmail: "gork@yahoo.com", UserPassword: "tg12345", UserType: 1}
 	user4 := model.MainUser{FirstName: "Testy", LastName: "McTest", UserEmail: "test@test.test", UserPassword: "testPW", UserType: 1}
 
 
-	user10 := model.MainUser{FirstName: "Lesdo", LastName: "SomeResearch", UserEmail: "research@starfleet.edu", UserPassword: "testPW", UserType: 4}
+	user10 := model.MainUser{FirstName: "Lester", LastName: "Somrofrom", UserEmail: "research@starfleet.edu", UserPassword: "testPW", UserType: 4}
 	user11 := model.MainUser{FirstName: "Dwayne", LastName: "Johnson", UserEmail: "Djohn@starfleet.edu", UserPassword: "6yhdf", UserType: 1}
 	user12 := model.MainUser{FirstName: "Mike", LastName: "Wayne", UserEmail: "Mwayne@starfleet.edu", UserPassword: "hrer2r", UserType: 1}
 	user13 := model.MainUser{FirstName: "Brook", LastName: "Gordon", UserEmail: "Bgordon@starfleet.edu", UserPassword: "cbtdPW", UserType: 1}
@@ -188,9 +188,9 @@ func main() {
 	user23 := model.MainUser{FirstName: "Pam", LastName: "Pen", UserEmail: "Ppen@starfleet.edu", UserPassword: "4htuug", UserType: 1}
 	user24 := model.MainUser{FirstName: "Helen", LastName: "Keller", UserEmail: "Hkel@starfleet.edu", UserPassword: "wrg3td", UserType: 1}
 	user25 := model.MainUser{FirstName: "Kelly", LastName: "Nevers", UserEmail: "Knevers@starfleet.edu", UserPassword: "h5645s", UserType: 1}
-	user26 := model.MainUser{FirstName: "Jill", LastName: "Jack", UserEmail: "Jjack@starfleet.edu", UserPassword: "gwf345h", UserType: 1}
-	user27 := model.MainUser{FirstName: "Rell", LastName: "Kell", UserEmail: "Rkell@starfleet.edu", UserPassword: "4h6y54", UserType: 1}
-	user28 := model.MainUser{FirstName: "Bell", LastName: "Bank", UserEmail: "Bbank@starfleet.edu", UserPassword: "0swwjv", UserType: 1}
+	user26 := model.MainUser{FirstName: "Jill", LastName: "Jackson", UserEmail: "Jjack@starfleet.edu", UserPassword: "gwf345h", UserType: 1}
+	user27 := model.MainUser{FirstName: "Riley", LastName: "Kelly", UserEmail: "Rkell@starfleet.edu", UserPassword: "4h6y54", UserType: 1}
+	user28 := model.MainUser{FirstName: "Bella", LastName: "Banks", UserEmail: "Bbank@starfleet.edu", UserPassword: "0swwjv", UserType: 1}
 	user29 := model.MainUser{FirstName: "Lola", LastName: "Hank", UserEmail: "Lhank@starfleet.edu", UserPassword: "29whe44", UserType: 1}
 	user30 := model.MainUser{FirstName: "Manny", LastName: "Pell", UserEmail: "Mpell@starfleet.edu", UserPassword: "9sgu9g", UserType: 1}
 	user31 := model.MainUser{FirstName: "Kenny", LastName: "Ford", UserEmail: "Kford@starfleet.edu", UserPassword: "nkxjnw", UserType: 1}
@@ -198,10 +198,10 @@ func main() {
 	user33 := model.MainUser{FirstName: "Frank", LastName: "Brick", UserEmail: "Fmignon@starfleet.edu", UserPassword: "jelly", UserType: 1}
 	user34 := model.MainUser{FirstName: "Jonathan", LastName: "Poke", UserEmail: "Bcheese@starfleet.edu", UserPassword: "kwodss", UserType: 1}
 	user35 := model.MainUser{FirstName: "Ken", LastName: "Will", UserEmail: "Kwill@starfleet.edu", UserPassword: "svrww", UserType: 1}
-	user36 := model.MainUser{FirstName: "Ill", LastName: "Dill", UserEmail: "Illdill@starfleet.edu", UserPassword: "snviuwwwj", UserType: 1}
+	user36 := model.MainUser{FirstName: "Phil", LastName: "Dillard", UserEmail: "Illdill@starfleet.edu", UserPassword: "snviuwwwj", UserType: 1}
 	user37 := model.MainUser{FirstName: "Kayton", LastName: "Booking", UserEmail: "Kbooking@starfleet.edu", UserPassword: "89jsvnjk", UserType: 1}
 	user38 := model.MainUser{FirstName: "Jaleel", LastName: "Neal", UserEmail: "Jneal@starfleet.edu", UserPassword: "kjnwkjnw", UserType: 1}
-	user39 := model.MainUser{FirstName: "Wendy", LastName: "Gem", UserEmail: "Wgem@starfleet.edu", UserPassword: "o2ifjwe", UserType: 1}
+	user39 := model.MainUser{FirstName: "Wendy", LastName: "Gemston", UserEmail: "Wgem@starfleet.edu", UserPassword: "o2ifjwe", UserType: 1}
 	user40 := model.MainUser{FirstName: "Sally", LastName: "Mae", UserEmail: "Smae@starfleet.edu", UserPassword: "knswlwe", UserType: 1}
 	user41 := model.MainUser{FirstName: "Trey", LastName: "Valley", UserEmail: "Tvalley@starfleet.edu", UserPassword: "sjoi2jw", UserType: 1}
 	user42 := model.MainUser{FirstName: "Krystal", LastName: "Clear", UserEmail: "Kclear@starfleet.edu", UserPassword: "jwjknwejk", UserType: 1}
@@ -209,38 +209,38 @@ func main() {
 	user44 := model.MainUser{FirstName: "Rich", LastName: "Man", UserEmail: "Rmsn@starfleet.edu", UserPassword: "opakve", UserType: 1}
 	user45 := model.MainUser{FirstName: "Kay", LastName: "Winn", UserEmail: "Kwinn@starfleet.edu", UserPassword: "slsjios", UserType: 1}
 	user46 := model.MainUser{FirstName: "Lens", LastName: "Wilson", UserEmail: "Lwil@starfleet.edu", UserPassword: "niji2o", UserType: 1}
-	user47 := model.MainUser{FirstName: "Gong", LastName: "Ho", UserEmail: "Gho@starfleet.edu", UserPassword: "93u94fhiu34", UserType: 1}
-	user48 := model.MainUser{FirstName: "Pal", LastName: "Cakes", UserEmail: "Pcakes@starfleet.edu", UserPassword: "9fhewjkwe", UserType: 1}
+	user47 := model.MainUser{FirstName: "Gong", LastName: "Honton", UserEmail: "Gho@starfleet.edu", UserPassword: "93u94fhiu34", UserType: 1}
+	user48 := model.MainUser{FirstName: "Pal", LastName: "Colston", UserEmail: "Pcakes@starfleet.edu", UserPassword: "9fhewjkwe", UserType: 1}
 	user49 := model.MainUser{FirstName: "Pat", LastName: "Megan", UserEmail: "Pmegan@starfleet.edu", UserPassword: "wiuhfui2", UserType: 1}
-	user50 := model.MainUser{FirstName: "Nana", LastName: "Yaw", UserEmail: "Nyaw@starfleet.edu", UserPassword: "kjecnjn2", UserType: 1}
+	user50 := model.MainUser{FirstName: "Nana", LastName: "Ashiton", UserEmail: "Nyaw@starfleet.edu", UserPassword: "kjecnjn2", UserType: 1}
 
 	facultyUser1 := model.MainUser{FirstName: "Brandon", LastName: "Sanderson", UserEmail: "sanderson@gmail.com", UserPassword: "testPW", UserType: 2}
-	facultyUser2 := model.MainUser{FirstName: "Mike", LastName: "Tyson", UserEmail: "tyson@gmail.com", UserPassword: "j76755", UserType: 2}
+	facultyUser2 := model.MainUser{FirstName: "Mikael", LastName: "Tyson", UserEmail: "tyson@gmail.com", UserPassword: "j76755", UserType: 2}
 	facultyUser3 := model.MainUser{FirstName: "Eddard", LastName: "Stark", UserEmail: "estark@winterfell.com", UserPassword: "65745", UserType: 2}
 	facultyUser4 := model.MainUser{FirstName: "Angela", LastName: "Gordon", UserEmail: "Agordon@winterfell.com", UserPassword: "fr643d", UserType: 2}
-	facultyUser5 := model.MainUser{FirstName: "Blue", LastName: "West", UserEmail: "Bwestk@winterfell.com", UserPassword: "jtyt656", UserType: 2}
-	facultyUser6 := model.MainUser{FirstName: "Jada", LastName: "Los", UserEmail: "Jlos@winterfell.com", UserPassword: "e45bd56", UserType: 2}
-	facultyUser7 := model.MainUser{FirstName: "Prince", LastName: "King", UserEmail: "Pking@winterfell.com", UserPassword: "85894j", UserType: 2}
-	facultyUser8 := model.MainUser{FirstName: "Princess", LastName: "June", UserEmail: "Pjune@winterfell.com", UserPassword: "9ehve", UserType: 2}
-	facultyUser9 := model.MainUser{FirstName: "Gifty", LastName: "Boateng", UserEmail: "Pboa@winterfell.com", UserPassword: "isjv39", UserType: 2}
-	facultyUser10 := model.MainUser{FirstName: "Puff", LastName: "Dad", UserEmail: "Pdad@winterfell.com", UserPassword: "93hjiw", UserType: 2}
-	facultyUser11 := model.MainUser{FirstName: "Mase", LastName: "Cam", UserEmail: "Mcam@winterfell.com", UserPassword: "ewweke", UserType: 2}
+	facultyUser5 := model.MainUser{FirstName: "Blake", LastName: "Weller", UserEmail: "Bwestk@winterfell.com", UserPassword: "jtyt656", UserType: 2}
+	facultyUser6 := model.MainUser{FirstName: "Jada", LastName: "Campbell", UserEmail: "Jlos@winterfell.com", UserPassword: "e45bd56", UserType: 2}
+	facultyUser7 := model.MainUser{FirstName: "Prince", LastName: "Drako", UserEmail: "Pking@winterfell.com", UserPassword: "85894j", UserType: 2}
+	facultyUser8 := model.MainUser{FirstName: "Patrick", LastName: "Allen", UserEmail: "Pjune@winterfell.com", UserPassword: "9ehve", UserType: 2}
+	facultyUser9 := model.MainUser{FirstName: "Garrett", LastName: "Boateng", UserEmail: "Pboa@winterfell.com", UserPassword: "isjv39", UserType: 2}
+	facultyUser10 := model.MainUser{FirstName: "Payton", LastName: "Dacres", UserEmail: "Pdad@winterfell.com", UserPassword: "93hjiw", UserType: 2}
+	facultyUser11 := model.MainUser{FirstName: "Martin", LastName: "McStevenson", UserEmail: "Mcam@winterfell.com", UserPassword: "ewweke", UserType: 2}
 	facultyUser12 := model.MainUser{FirstName: "Curtis", LastName: "Jackson", UserEmail: "Cjack@winterfell.com", UserPassword: "ofjewk", UserType: 2}
-	facultyUser13 := model.MainUser{FirstName: "Jim", LastName: "Slimmy", UserEmail: "Jslim@winterfell.com", UserPassword: "93ifje", UserType: 2}
+	facultyUser13 := model.MainUser{FirstName: "Jim", LastName: "McNeil", UserEmail: "Jslim@winterfell.com", UserPassword: "93ifje", UserType: 2}
 	facultyUser14 := model.MainUser{FirstName: "Gordon", LastName: "Paul", UserEmail: "Gpaul@winterfell.com", UserPassword: "woj2io2", UserType: 2}
-	facultyUser15 := model.MainUser{FirstName: "Missy", LastName: "Elliot", UserEmail: "Melliot@winterfell.com", UserPassword: "odjco22", UserType: 2}
-	facultyUser16 := model.MainUser{FirstName: "Cardi", LastName: "Kim", UserEmail: "Ckim@winterfell.com", UserPassword: "oij20fwe", UserType: 2}
-	facultyUser17 := model.MainUser{FirstName: "Layla", LastName: "Ali", UserEmail: "Lali@winterfell.com", UserPassword: "ooo2jnfk2", UserType: 2}
+	facultyUser15 := model.MainUser{FirstName: "Margaret", LastName: "Elliot", UserEmail: "Melliot@winterfell.com", UserPassword: "odjco22", UserType: 2}
+	facultyUser16 := model.MainUser{FirstName: "Janette", LastName: "Craig", UserEmail: "Ckim@winterfell.com", UserPassword: "oij20fwe", UserType: 2}
+	facultyUser17 := model.MainUser{FirstName: "Layla", LastName: "Allston", UserEmail: "Lali@winterfell.com", UserPassword: "ooo2jnfk2", UserType: 2}
 	facultyUser18 := model.MainUser{FirstName: "Tyreke", LastName: "Evans", UserEmail: "Tevans@winterfell.com", UserPassword: "owkop2k22", UserType: 2}
 	facultyUser19 := model.MainUser{FirstName: "Jenna", LastName: "Dame", UserEmail: "Jdame@winterfell.com", UserPassword: "02i3joe", UserType: 2}
 	facultyUser20 := model.MainUser{FirstName: "Eric", LastName: "Iverson", UserEmail: "Eiverson@winterfell.com", UserPassword: "mckmpo2k3", UserType: 2}
 
-	user5 := model.MainUser{FirstName: "Faculty", LastName: "McFaculton", UserEmail: "faculty@test.test", UserPassword: "testPW", UserType: 2}
+	user5 := model.MainUser{FirstName: "Fredrick", LastName: "Foster", UserEmail: "faculty@test.test", UserPassword: "testPW", UserType: 2}
 	user6 := model.MainUser{FirstName: "Aymen", LastName: "Johnson", UserEmail: "ifaculty@starfleet.edu", UserPassword: "testPW", UserType: 2}
 	user7 := model.MainUser{FirstName: "Jordi", LastName: "LaForge", UserEmail: "laforge@starfleet.edu", UserPassword: "testPW", UserType: 2}
 
-	adminUser2 := model.MainUser{FirstName: "Admin", LastName: "McAdminton", UserEmail: "admin@test.test", UserPassword: "testPW", UserType: 3}
-	adminUser1 := model.MainUser{FirstName: "George", LastName: "Admintonson", UserEmail: "adminson@starfleet.edu", UserPassword: "testPW", UserType: 3}
+	adminUser2 := model.MainUser{FirstName: "Arnold", LastName: "Armstrong", UserEmail: "admin@test.test", UserPassword: "testPW", UserType: 3}
+	adminUser1 := model.MainUser{FirstName: "Ben", LastName: "Xerri", UserEmail: "adminson@starfleet.edu", UserPassword: "testPW", UserType: 3}
 
 	/*
 	facultyUser4 := model.MainUser{FirstName: "Brandon", LastName: "Sanderson", UserEmail: "sanderson@gmail.com", UserPassword: "testPW", UserType: 2}
@@ -694,11 +694,27 @@ func main() {
 	advisor2 := model.Advises{FacultyID:faculty1.FacultyID,StudentID:student2.StudentID}
 	advisor3 := model.Advises{FacultyID:faculty3.FacultyID,StudentID:student3.StudentID}
 	advisor4 := model.Advises{FacultyID:faculty4.FacultyID,StudentID:student4.StudentID}
+	advisor5 := model.Advises{FacultyID:faculty5.FacultyID,StudentID:student10.StudentID}
+	advisor6 := model.Advises{FacultyID:faculty6.FacultyID,StudentID:student11.StudentID}
+	advisor7 := model.Advises{FacultyID:faculty7.FacultyID,StudentID:student12.StudentID}
+	advisor8 := model.Advises{FacultyID:faculty8.FacultyID,StudentID:student13.StudentID}
+	advisor9 := model.Advises{FacultyID:faculty9.FacultyID,StudentID:student14.StudentID}
+	advisor10 := model.Advises{FacultyID:faculty10.FacultyID,StudentID:student15.StudentID}
+	advisor11:= model.Advises{FacultyID:faculty11.FacultyID,StudentID:student16.StudentID}
+	advisor12 := model.Advises{FacultyID:faculty12.FacultyID,StudentID:student17.StudentID}
 
 	db.Create(&advisor1)
 	db.Create(&advisor2)
 	db.Create(&advisor3)
 	db.Create(&advisor4)
+	db.Create(&advisor5)
+	db.Create(&advisor6)
+	db.Create(&advisor7)
+	db.Create(&advisor8)
+	db.Create(&advisor9)
+	db.Create(&advisor10)
+	db.Create(&advisor11)
+	db.Create(&advisor12)
 
 	major1 := model.Major{DepartmentID: department1.DepartmentID, MajorName: "Math"}
 	major2 := model.Major{DepartmentID: department1.DepartmentID, MajorName: "Physics"}
@@ -1215,17 +1231,16 @@ func main() {
 	db.Create(&timeslotc3)
 
 
-	//Spring 2018 Sections //These are wrong all these enrollments are for spring 2018, should not be in progress until the next semester
-	section1 := model.Section{CourseSectionNumber:001, CourseID:course21.CourseID, FacultyID:faculty1.FacultyID, TimeSlotID:timeslot1.TimeSlotID, LocationID:location1.LocationID}
-	section2 := model.Section{CourseSectionNumber:002, CourseID:course22.CourseID, FacultyID:faculty1.FacultyID, TimeSlotID:timeslot2.TimeSlotID, LocationID:location4.LocationID}
-	section3 := model.Section{CourseSectionNumber:001, CourseID:course23.CourseID, FacultyID:faculty2.FacultyID, TimeSlotID:timeslota.TimeSlotID, LocationID:location5.LocationID}
-	section4 := model.Section{CourseSectionNumber:002, CourseID:course24.CourseID, FacultyID:faculty2.FacultyID, TimeSlotID:timeslotb.TimeSlotID, LocationID:location8.LocationID}
-	section5 := model.Section{CourseSectionNumber:001, CourseID:course25.CourseID, FacultyID:faculty1.FacultyID, TimeSlotID:timeslotc.TimeSlotID, LocationID:location12.LocationID}
-	section6 := model.Section{CourseSectionNumber:001, CourseID:course26.CourseID, FacultyID:faculty3.FacultyID, TimeSlotID:timeslot11.TimeSlotID, LocationID:location16.LocationID}
-	section7 := model.Section{CourseSectionNumber:002, CourseID:course27.CourseID, FacultyID:faculty1.FacultyID, TimeSlotID:timeslot21.TimeSlotID, LocationID:location17.LocationID}
-	section8 := model.Section{CourseSectionNumber:001, CourseID:course28.CourseID, FacultyID:faculty3.FacultyID, TimeSlotID:timeslota1.TimeSlotID, LocationID:location23.LocationID}
-	section9 := model.Section{CourseSectionNumber:001, CourseID:course41.CourseID, FacultyID:faculty5.FacultyID, TimeSlotID:timeslotb2.TimeSlotID, LocationID:location16.LocationID}
-	section10 := model.Section{CourseSectionNumber:001, CourseID:course42.CourseID, FacultyID:faculty5.FacultyID, TimeSlotID:timeslot1.TimeSlotID, LocationID:location2.LocationID}
+	section1 := model.Section{CourseSectionNumber:001, CourseID:course21.CourseID, FacultyID:faculty1.FacultyID,Capacity:30, TimeSlotID:timeslot1.TimeSlotID, LocationID:location1.LocationID}
+	section2 := model.Section{CourseSectionNumber:002, CourseID:course22.CourseID, FacultyID:faculty1.FacultyID,Capacity:50, TimeSlotID:timeslot2.TimeSlotID, LocationID:location4.LocationID}
+	section3 := model.Section{CourseSectionNumber:001, CourseID:course23.CourseID, FacultyID:faculty2.FacultyID,Capacity:20, TimeSlotID:timeslota.TimeSlotID, LocationID:location5.LocationID}
+	section4 := model.Section{CourseSectionNumber:002, CourseID:course24.CourseID, FacultyID:faculty2.FacultyID,Capacity:40, TimeSlotID:timeslotb.TimeSlotID, LocationID:location8.LocationID}
+	section5 := model.Section{CourseSectionNumber:001, CourseID:course25.CourseID, FacultyID:faculty1.FacultyID,Capacity:30, TimeSlotID:timeslotc.TimeSlotID, LocationID:location12.LocationID}
+	section6 := model.Section{CourseSectionNumber:001, CourseID:course26.CourseID, FacultyID:faculty3.FacultyID,Capacity:30, TimeSlotID:timeslot11.TimeSlotID, LocationID:location16.LocationID}
+	section7 := model.Section{CourseSectionNumber:002, CourseID:course27.CourseID, FacultyID:faculty1.FacultyID,Capacity:20, TimeSlotID:timeslot21.TimeSlotID, LocationID:location17.LocationID}
+	section8 := model.Section{CourseSectionNumber:001, CourseID:course28.CourseID, FacultyID:faculty3.FacultyID,Capacity:20, TimeSlotID:timeslota1.TimeSlotID, LocationID:location23.LocationID}
+	section9 := model.Section{CourseSectionNumber:001, CourseID:course41.CourseID, FacultyID:faculty5.FacultyID,Capacity:30, TimeSlotID:timeslotb2.TimeSlotID, LocationID:location16.LocationID}
+	section10 := model.Section{CourseSectionNumber:001, CourseID:course42.CourseID, FacultyID:faculty5.FacultyID,Capacity:30, TimeSlotID:timeslot1.TimeSlotID, LocationID:location2.LocationID}
 
 	db.Create(&section1)
 	db.Create(&section2)
@@ -1337,6 +1352,8 @@ func main() {
 	history12 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enroll12.EnrollmentID, Status:"Registered", Grade:"-"}
 	history1222 := model.StudentHistory{StudentID:student3.StudentID, EnrollmentID:enroll1011.EnrollmentID, Status:"Registered", Grade:"-"}
 	history1221 := model.StudentHistory{StudentID:student4.StudentID, EnrollmentID:enroll1012.EnrollmentID, Status:"Registered", Grade:"-"}
+
+	//TODO BEFORE INTEGRATING KWAMES SEED DATA, ADD STATUS REGISTERED TO HISTORY STATUS
 
 	db.Create(&history1)
 	db.Create(&history2)

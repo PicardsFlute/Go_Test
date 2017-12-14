@@ -13,11 +13,17 @@
         <h1>Editing Section</h1>
         <hr>
         <h2>Course Name: {{.Section.CourseName}}</h2>
-        <label class="form-group">Faculty</label>
-        <input type="text" readonly value="{{.Section.SectionID}}" name="section-info" placeholder="{{.Section.FirstName}} {{.Section.LastName}}"><br>
+        <h3>Current Building: {{.Section.BuildingName}}</h3>
+        <h3>Current Room: {{.Section.RoomNumber}}</h3>
+        <h3>Current Faculty: {{.Section.FirstName}} {{.Section.LastName}}</h3>
 
-        <label class="form-group">Current Bulding</label>
-        <input type="text" readonly name="old-building" value="{{.Section.BuildingID}}" placeholder="{{.Section.BuildingName}}">
+
+        <input type="text" hidden value="{{.Section.SectionID}}" name="section-info" >
+        <input type="text" hidden readonly name="old-building" value="{{.Section.BuildingID}}">
+        <input type="text" readonly hidden name="current-room" value="{{.Section.RoomID}}">
+        <input type="text" readonly hidden name="day-id" value="{{.Section.DayID}}">
+        <input type="text" readonly hidden name="time-id" value="{{.Section.PeriodID}}">
+
 
         <label class="form-group">New Bulding</label>
         <select name="new-building" id="building-select">
@@ -27,8 +33,7 @@
             {{end}}
         </select><br>
 
-        <label class="form-group">Current Room Number</label>
-        <input type="text" readonly name="current-room" value={{.Section.RoomID}} placeholder="Number: {{.Section.RoomNumber}} -- Capacity: {{.Section.RoomCapacity}}"><br>
+
 
         <label class="form-group">New Room Number</label>
         <select name="new-room" id="room-results">
@@ -42,4 +47,6 @@
   </div>
 {{template "end"}}
 {{end}}
+
+
 
