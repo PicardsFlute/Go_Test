@@ -17,30 +17,34 @@
 <script type="text/javascript" src="../../../public/Scripts/js/easing.js"></script>
 <div class="container">
 
-    <!--
-    <ul class="nav nav-pills center-nav">
-        <li role="presentation" class="active"><a href="index.html">Add Course</a></li>
-        <li role="presentation"><a href="#">View Schedule</a></li>
-        <li role="presentation"><a href="#">View Holds</a></li>
-        <li role="presentation"><a href="#">View Transcript</a></li>
-        <li role="presentation"><a href="#">View Advisor</a></li>
-    </ul>
-    -->
 
     {{template "admin-navbar"}}
 
     {{if .}}
-    <div class="course_details">
-        {{range .PreReqs}}
-            <p>Course Pre-Reqs {{.CourseName}}</p>
-        {{end}}
-        <hr>
-        <p>Course Name: {{.Course.CourseName}}</p>
-        <p>Course Credits: {{.Course.CourseCredits}}</p>
-        <p>Course Description: {{.Course.CourseDescription}}</p>
+    <form action="/course/update" method="POST">
+        <div class="course_details">
+            {{range .PreReqs}}
+                <p>Course Pre-Reqs {{.CourseName}}</p>
+            {{end}}
+            <hr>
+            <label class="form-group">Course Name</label>
+            <input type="text" class="form-control" name="new-course-name" placeholder="{{.Course.CourseName}}"><br>
+
+            <input type="text" hidden name="old-course-name" value="{{.Course.CourseName}}">
+            <input type="text" hidden name="old-course-description" value="{{.Course.CourseDescription}}">
+            <input type="text" hidden name="old-course-credits" value="{{.Course.CourseCredits}}">
 
 
-    </div>
+            <input type="text" hidden name="course" value="{{.Course.CourseID}}">
+
+            <label class="form-group">Course Credits</label>
+            <input type="text" class="form-control" name="new-course-credits" placeholder="{{.Course.CourseCredits}}"><br>
+
+            <label class="form-group">Course Description</label>
+            <input type="text" class="form-control" name="new-course-description" style="width: 600px;height: 300px" placeholder="{{.Course.CourseDescription}}">
+        </div>
+        <input type="submit" value="Update Course" class="btn btn-danger pull-right">
+    </form>
     <hr>
     {{else}}
     <h1>No data available</h1>

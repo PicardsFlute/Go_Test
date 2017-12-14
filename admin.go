@@ -438,9 +438,6 @@ func AddCoursePreRequisit(w http.ResponseWriter, r *http.Request){
 		fmt.Println("Course added", prereq)
 	}
 
-	//TODO: JUst add success page, must change view with js after ajax call
-	//TODO other options involve using a form instead of ajax
-
 	global.Tpl.ExecuteTemplate(w, "adminSuccess", nil)
 
 }
@@ -454,13 +451,6 @@ func AdminSearchCoursePage(w http.ResponseWriter, r *http.Request){
 		global.Tpl.ExecuteTemplate(w, "searchCourseAdmin", departments)
 	//}
 }
-/*
-type AdminViewSection struct {
-	Name string
-	Description string
-
-}
-*/
 
 
 func AdminSearchCourse(w http.ResponseWriter, r *http.Request){
@@ -481,7 +471,7 @@ func AdminSearchCourse(w http.ResponseWriter, r *http.Request){
 
 
 	courseDetail := model.Course{}
-	db.Raw(`SELECT course_name,course_credits,course_description
+	db.Raw(`SELECT course_id, course_name,course_credits,course_description
 	FROM course
 	WHERE course.course_id =?`,id).Scan(&courseDetail)
 	fmt.Println(courseDetail)
@@ -498,6 +488,63 @@ func AdminSearchCourse(w http.ResponseWriter, r *http.Request){
 		fmt.Println(err.Error())
 	}
 	//return
+}
+
+func UpdateCourse(w http.ResponseWriter, r *http.Request){
+	fmt.Println("insude update course")
+
+	 name := r.FormValue("new-course-name")
+	 description := r.FormValue("new-course-description")
+	 credits := r.FormValue("new-course-credits")
+	 course := r.FormValue("course")
+
+	oldCourse := r.FormValue("old-course-name")
+	oldDescription := r.FormValue("old-course-description")
+	oldCredits := r.FormValue("old-course-credits")
+
+	fmt.Println("Course name", name)
+	fmt.Println("Course desc", description)
+	fmt.Println("Course cred", credits)
+	fmt.Println("Course id", course)
+
+	fmt.Println("Old Course desc", oldDescription)
+	fmt.Println("Old Course cred", oldCredits)
+	fmt.Println("Old Course name", oldCourse)
+
+
+	if strings.Compare(name,"") == 0{
+		name = oldCourse
+	}
+
+	if strings.Compare(description,"") == 0{
+		description = oldDescription
+	}
+
+	if strings.Compare(credits,"") == 0 {
+		credits = oldCredits
+	}
+
+
+	fmt.Println("Course is", course)
+
+	type QueryRes struct {
+		QueryRes string
+	}
+
+	qr := QueryRes{}
+
+	db.Raw(`
+	   UPDATE course SET course_name = ?, course_credits = ?,
+	   course_description = ? WHERE course_id = ?
+	`, name, credits, description, course).Scan(&qr)
+
+	if qr.QueryRes != "" {
+		fmt.Println(qr)
+	}
+
+	fmt.Println(qr)
+
+	global.Tpl.ExecuteTemplate(w,"adminSuccess", "Course updated.")
 }
 
 
