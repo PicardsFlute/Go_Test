@@ -177,7 +177,7 @@ func main() {
 	user8 := model.MainUser{FirstName: "Ashok", LastName: "Basawapatna", UserEmail: "ashok @gmail.com", UserPassword: "565rt", UserType: 1}
 	user9 := model.MainUser{FirstName: "Josh", LastName: "Sand", UserEmail: "jsanders@gmail.com", UserPassword: "tth666", UserType: 1}
 
-	user10 := model.MainUser{FirstName: "Lester", LastName: "Somrofrom", UserEmail: "research@starfleet.edu", UserPassword: "testPW", UserType: 4}
+	user10 := model.MainUser{FirstName: "Lester", LastName: "Somrofrom", UserEmail: "research@starfleet.edu", UserPassword: "testPW", UserType: 1}
 	user11 := model.MainUser{FirstName: "Dwayne", LastName: "Johnson", UserEmail: "Djohn@starfleet.edu", UserPassword: "6yhdf", UserType: 1}
 	user12 := model.MainUser{FirstName: "Mike", LastName: "Wayne", UserEmail: "Mwayne@starfleet.edu", UserPassword: "hrer2r", UserType: 1}
 	user13 := model.MainUser{FirstName: "Brook", LastName: "Gordon", UserEmail: "Bgordon@starfleet.edu", UserPassword: "cbtdPW", UserType: 1}
@@ -247,6 +247,8 @@ func main() {
 	adminUser2 := model.MainUser{FirstName: "Arnold", LastName: "Armstrong", UserEmail: "admin@test.test", UserPassword: "testPW", UserType: 3}
 	adminUser1 := model.MainUser{FirstName: "Ben", LastName: "Xerri", UserEmail: "adminson@starfleet.edu", UserPassword: "testPW", UserType: 3}
 
+	researcher1 := model.MainUser{FirstName: "Mike", LastName:"Restingson", UserEmail:"mrest@starfleet.edu", UserPassword: "testPW", UserType:4}
+	db.Create(&researcher1)
 	/*
 	facultyUser4 := model.MainUser{FirstName: "Brandon", LastName: "Sanderson", UserEmail: "sanderson@gmail.com", UserPassword: "testPW", UserType: 2}
 	facultyUser5 := model.MainUser{FirstName: "Mike", LastName: "Tyson", UserEmail: "tyson@gmail.com", UserPassword: "testPW", UserType: 2}
@@ -710,8 +712,9 @@ func main() {
 	db.Create(&admin1)
 	db.Create(&admin2)
 
-	researcher1 := model.Researcher{ResearcherID: user10.UserID}
-	db.Create(&researcher1)
+	researcher := model.Researcher{ResearcherID: researcher1.UserID}
+	db.Create(&researcher)
+
 
 
 	advisor1 := model.Advises{FacultyID:faculty1.FacultyID,StudentID:student1.StudentID}
