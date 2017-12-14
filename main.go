@@ -116,8 +116,8 @@ func main() {
 	routes.Handle("/researcher", checkSessionWrapper(displayResearcher)).Methods("GET")
 
 	/* Master schedule searching*/
-	routes.HandleFunc("/course/search", searchMasterScheduleForm).Methods("GET")
-	routes.HandleFunc("/course/searchResult", searchMasterSchedule).Methods("GET")
+	routes.HandleFunc("/course", searchMasterScheduleForm).Methods("GET")
+	routes.HandleFunc("/course/", searchMasterSchedule).Methods("GET")
 
 
 	/*Admin routes */
@@ -141,9 +141,12 @@ func main() {
 
 	routes.HandleFunc("/admin/course/search", AdminSearchCoursePage).Methods("GET")
 	routes.HandleFunc("/admin/course/search/{course}", AdminSearchCourse).Methods("GET")
-
+	routes.HandleFunc("/course/update", UpdateCourse).Methods("POST")
 	//routes.HandleFunc("/admin/course/", AdminDeleteCourse)
 	routes.HandleFunc("/admin/section", AdminAddSectionPage)
+	routes.HandleFunc("/section/update", AdminUpdateSectionForm).Methods("GET")
+	routes.HandleFunc("/section/update", AdminUpdateSection).Methods("POST")
+
 	routes.HandleFunc("/admin/section/{section}", AdminAddSection)
 	routes.HandleFunc("/admin/section/room/{id}", GetRoomsForBuilding)
 	routes.HandleFunc("/admin/section/department/{id}", GetDepartmentsForSections).Methods("GET")
@@ -155,16 +158,22 @@ func main() {
 	routes.Handle("/admin/user/{userID}/delete", checkSessionWrapper(deleteUser)).Methods("POST")
 	routes.HandleFunc("/admin/semester" , changeSemesterStatusForm).Methods("GET")
 	routes.HandleFunc("/admin/semester" , changeSemesterStatus).Methods("POST")
+	routes.HandleFunc("/admin/time", addSectionTime).Methods("POST")
 
 
 	/* Student Routes*/
 	routes.Handle("/student",  checkSessionWrapper(displayStudent)).Methods("GET")
 	routes.HandleFunc("/student/schedule", ViewSchedule).Methods("GET")
+	routes.HandleFunc("/student/registered", ViewRegisteredCourses).Methods("GET")
+	routes.HandleFunc("/student/registered", DropRegisteredCourse).Methods("POST")
 	routes.HandleFunc("/student/holds", ViewHolds).Methods("GET")
 	routes.HandleFunc("/student/advisor", ViewAdvisor).Methods("GET")
 	routes.HandleFunc("/student/transcript", ViewTranscript).Methods("GET")
-	routes.HandleFunc("/student/register", AddCoursePage).Methods("GET")
-	routes.HandleFunc("/student/register", AddCoursePage).Methods("POST")
+	routes.HandleFunc("/student/search", AddCoursePage).Methods("GET")
+	//routes.HandleFunc("/student/register", StudentSearchCourseResults).Methods("GET")
+	routes.HandleFunc("/student/register", RegisterForSection).Methods("POST")
+
+
 
 
 	//TODO: Custom auth middlewear for each user type
@@ -207,13 +216,16 @@ func index(w http.ResponseWriter, r *http.Request){
 
 }
 
-func unauthorized(w http.ResponseWriter, r *http.Request){
-	global.Tpl.ExecuteTemplate(w, "index" , "You can not view this page")
-}
-
 func loginPage(w http.ResponseWriter, r *http.Request){
 	//TODO if they are logged in, just redirect them to their correct navbar
-	global.Tpl.ExecuteTemplate(w,"login",nil)
+
+	logged, u := CheckLoginStatus(w, r)
+
+	if logged{
+		checkUserType(u,w,r)
+	}else {
+		global.Tpl.ExecuteTemplate(w, "login", nil)
+	}
 }
 
 func redirectPost(w http.ResponseWriter, r *http.Request){
@@ -363,6 +375,68 @@ func checkSessionWrapper(handle http.HandlerFunc) http.Handler {
 	})
 }
 
+func checkStudent(handle http.HandlerFunc) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("Executing middlewware for student")
+		isLogged, user := CheckLoginStatus(w, r)
+		if isLogged && user.UserType ==1 { //if check user is true, execute the handle that's inside
+			handle.ServeHTTP(w,r)
+		} else{ //otherwise deny request
+			//Tpl.ExecuteTemplate(w,"index", "You can't access that page")
+			http.Redirect(w, r, "/login", http.StatusUnauthorized)           // redirects route and gives unauthorized link
+			global.Tpl.ExecuteTemplate(w,"login", "You must login first.") //this renders the index template right under it
+		}
+
+	})
+}
+
+func checkFaculty(handle http.HandlerFunc) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("Executing middlewware for faculty")
+		isLogged, user := CheckLoginStatus(w, r)
+		if isLogged && user.UserType == 2 { //if check user is true, execute the handle that's inside
+			handle.ServeHTTP(w,r)
+		} else{ //otherwise deny request
+			//Tpl.ExecuteTemplate(w,"index", "You can't access that page")
+			http.Redirect(w, r, "/login", http.StatusUnauthorized)           // redirects route and gives unauthorized link
+			global.Tpl.ExecuteTemplate(w,"login", "You must login first.") //this renders the index template right under it
+		}
+
+	})
+}
+
+func checkAdmin(handle http.HandlerFunc) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("Executing middlewware for admin")
+		isLogged, user := CheckLoginStatus(w, r)
+		if isLogged && user.UserType == 3 { //if check user is true, execute the handle that's inside
+			handle.ServeHTTP(w,r)
+		} else{ //otherwise deny request
+			//Tpl.ExecuteTemplate(w,"index", "You can't access that page")
+			http.Redirect(w, r, "/login", http.StatusUnauthorized)           // redirects route and gives unauthorized link
+			global.Tpl.ExecuteTemplate(w,"login", "You must login first.") //this renders the index template right under it
+		}
+
+	})
+}
+
+func checkResearcher(handle http.HandlerFunc) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("Executing middlewware for researcher")
+		isLogged, user := CheckLoginStatus(w, r)
+		if isLogged && user.UserType == 5 { //if check user is true, execute the handle that's inside
+			handle.ServeHTTP(w,r)
+		} else{ //otherwise deny request
+			//Tpl.ExecuteTemplate(w,"index", "You can't access that page")
+			http.Redirect(w, r, "/login", http.StatusUnauthorized)           // redirects route and gives unauthorized link
+			global.Tpl.ExecuteTemplate(w,"login", "You must login first.") //this renders the index template right under it
+		}
+
+	})
+}
+
+
+
 
 
 func displayStudent(w http.ResponseWriter, r *http.Request){
@@ -416,30 +490,6 @@ func displayResearcher(w http.ResponseWriter, r *http.Request){
 		index(w,r)
 	}
 }
-
-
-
-/*
-func about(w http.ResponseWriter, r *http.Request){
-	vars := mux.Vars(r) //returns a mapping responses
-	personId := vars["number"] //get map with key id number
-	if num, _ := strconv.Atoi(personId); num > 3 {
-		p := Person{"Bob", 4}
-		Tpl.ExecuteTemplate(w, "index.html", p)
-	}else {
-		p := Person{"Steve", 2}
-		Tpl.ExecuteTemplate(w, "index.html", p)
-	}
-}
-func generateHTML(writer http.ResponseWriter, data interface{}, filenames ...string) {
-	var files []string
-	for _, file := range filenames {
-		files = append(files, fmt.Sprintf("templates/%s.public", file))
-	}
-	templates := template.Must(template.ParseFiles(files...))
-	templates.ExecuteTemplate(writer, "layout", data)
-}
-*/
 
 
 func logout(w http.ResponseWriter, r *http.Request){
@@ -762,37 +812,83 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 	courseNameQuery,_ := queryVals["course-name"]
 	courseNumQuery := queryVals["course-number"]
 	professorQuery := queryVals["instructor"]
+	day := queryVals["day"]
 
 	depID := departmentQuery[0]
 	courseName := courseNameQuery[0]
 	courseNum  := courseNumQuery[0]
 	professor := professorQuery[0]
+	dayID := day[0]
 
 	whereMap := make(map[string]interface{})
 
 	whereStuff := "WHERE "
+
+	numQueries := 0
 
 	if depID != "" {
 		println("Department query present: " + depID)
 		//depID, _ := strconv.ParseUint(departmentQuery[0], 10, 64)
 		whereMap["department_id"] = depID
 		whereStuff += "department_id = " + depID
+		numQueries++
 	}
 	if courseName != "" {
 		whereMap["course_name"] = courseName
-		whereStuff += " AND course_name = '" + courseName + "'"
+		if numQueries == 0 {
+			whereStuff += " course_name = '" + courseName + "'"
+
+		}else {
+			whereStuff += " AND course_name = '" + courseName + "'"
+
+		}
+		numQueries++
 	}
+
+	if dayID != ""{
+		if numQueries == 0 {
+			whereStuff += " day.day_id = " + dayID
+		} else {
+			whereStuff += " AND day.day_id = " + dayID
+		}
+		numQueries++
+	}
+
 	if courseNum != "" {
-		whereStuff += " AND course_num = " + courseNum
+
+		if numQueries == 0 {
+			whereStuff += " course_num = " + courseNum
+		}else {
+			whereStuff += " AND course_num = " + courseNum
+		}
+		numQueries++
+
 	}
 	if professor != "" {
 		prof := strings.Split(professor, " ")
-		whereStuff += " AND first_name = '" + prof[0] + "'"
-		whereStuff += " AND last_name = '" + prof[1] + "'"
+		if numQueries == 0 {
+			whereStuff += " first_name = '" + prof[0] + "'"
+			whereStuff += " AND last_name = '" + prof[1] + "'"
+
+		}else {
+			whereStuff += " AND first_name = '" + prof[0] + "'"
+			whereStuff += " AND last_name = '" + prof[1] + "'"
+		}
+		numQueries++
+
 	}
 
 	//registering for next semester
-	whereStuff += " AND semester.year = 2018 AND semester.season = 'Spring'"
+	if numQueries == 0 {
+		whereStuff += " semester.year = 2018 AND semester.season = 'Spring'"
+	}else {
+		whereStuff += " AND semester.year = 2018 AND semester.season = 'Spring'"
+	}
+
+	type IsAdmin struct {
+		IsAdmin bool
+		User model.MainUser
+	}
 
 		type CourseData struct {
 			CourseName string
@@ -814,8 +910,10 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 			RoomType string
 			BuildingID uint
 			BuildingName string
+			Capacity uint
 			Time string
 			Prerequisites []model.Course
+			User IsAdmin
 		}
 
 	//coursesFound := []model.Course{}
@@ -823,16 +921,15 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 
 	queryRes := []CourseData{}
 
-	//TODO: Phil add prerequisits to query and display the rest of the data in MS search
 
 	//rows, err := db.Joins("JOIN course ON course.course_id = section.course_id").Where(whereMap).Rows()
 	sql := `SELECT course.course_name, course.course_credits, course.course_description, course.department_id, section.section_id, section.course_section_number,
 	section.course_id, section.faculty_id, section.time_slot_id, section.location_id, section.course_section_number,
 	main_user.first_name, main_user.last_name,
 	day.meeting_day, day.day_id,
+	building.building_name,time,
+	room.room_number, room.room_type,capacity
 
-	building.building_name,
-	room.room_number, room.room_type
 	FROM section
 	JOIN course ON course.course_id = section.course_id
 	JOIN main_user ON main_user.user_id = section.faculty_id
@@ -846,8 +943,12 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 
 	sql += whereStuff
 
+	if strings.Contains(whereStuff,";&"){
+		fmt.Println("escape")
+	}
 	fmt.Println("QUery to be run is", sql)
 	db.Raw(sql).Scan(&queryRes)
+
 
 		//if err == nil{
 		//	//rows.Scan(&queryRes)
@@ -883,31 +984,57 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 			queryRes[qIndex].Prerequisites = coursesFoundPrereqs[val.CourseName]
 		}
 	}
-	//
-	//
-	//for _,c := range queryRes{
-	//	println("Sent to template: course-" + c.CourseName + ", Prereqs:")
-	//	for _,p := range c.Prerequisites{
-	//		println(p.CourseName)
-	//	}
-	//}
 
-	chosenDep := model.Department{}
-	db.First(&chosenDep, depID)
+	//chosenDep := model.Department{}
+	//db.First(&chosenDep, depID)
 	searchParams := map[string]string{
-		"Department": chosenDep.DepartmentName,
+		//"Department": chosenDep.DepartmentName,
 		"Professor": professor,
 		"CourseName": courseName,
 		"CourseNum": courseNum,
 	}
 
+	_,user := CheckLoginStatus(w,r)
+
+
+
+	admin := IsAdmin{}
+
+	if user.UserType == 3 {
+		admin.IsAdmin = true
+		admin.User = user
+	}else{
+		admin.IsAdmin = false
+	}
+
+	type IsStudent struct {
+		IsStudent bool
+		User model.MainUser
+	}
+
+	student := IsStudent{}
+
+	if user.UserType == 1 {
+		student.IsStudent = true
+		student.User = user
+	}else {
+		student.IsStudent = false
+	}
+
+
 	data :=  map[string]interface{}{
 		"Results": queryRes,
 		"Departments": allDepartments,
 		"Params": searchParams,
+		"User":admin,
+		"Student": student,
 	}
 
-	global.Tpl.ExecuteTemplate(w, "masterScheduleSearch", data)
+	err := global.Tpl.ExecuteTemplate(w, "masterScheduleSearch", data)
+
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 
 }
 

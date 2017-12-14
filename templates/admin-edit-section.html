@@ -1,0 +1,52 @@
+{{define "adminUpdateSection"}}
+{{template "head"}}
+
+
+
+  <div class="container">
+
+
+    {{template "admin-navbar"}}
+
+    <form action="/section/update" method="POST">
+
+        <h1>Editing Section</h1>
+        <hr>
+        <h2>Course Name: {{.Section.CourseName}}</h2>
+        <h3>Current Building: {{.Section.BuildingName}}</h3>
+        <h3>Current Room: {{.Section.RoomNumber}}</h3>
+        <h3>Current Faculty: {{.Section.FirstName}} {{.Section.LastName}}</h3>
+
+
+        <input type="text" hidden value="{{.Section.SectionID}}" name="section-info" >
+        <input type="text" hidden readonly name="old-building" value="{{.Section.BuildingID}}">
+        <input type="text" readonly hidden name="current-room" value="{{.Section.RoomID}}">
+        <input type="text" readonly hidden name="day-id" value="{{.Section.DayID}}">
+        <input type="text" readonly hidden name="time-id" value="{{.Section.PeriodID}}">
+
+
+        <label class="form-group">New Bulding</label>
+        <select name="new-building" id="building-select">
+            <option disabled selected value="{{.Section.BuildingID}}">{{.Section.BuildingName}}</option>
+            {{range .Buildings}}
+            <option value="{{.BuildingID}}">{{.BuildingName}}</option>
+            {{end}}
+        </select><br>
+
+
+
+        <label class="form-group">New Room Number</label>
+        <select name="new-room" id="room-results">
+            <option disabled selected value="{{.Section.RoomID}}">Number: {{.Section.RoomNumber}} -- Capacity: {{.Section.RoomCapacity}}</option>
+
+        </select>
+
+        <input type="submit" class="btn btn-danger pull-right">
+
+    </form>
+  </div>
+{{template "end"}}
+{{end}}
+
+
+

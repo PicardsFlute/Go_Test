@@ -1,0 +1,40 @@
+{{define "ViewStudentRegistered"}}
+{{template "head"}}
+
+
+
+<div class="container">
+
+    <h1>Your registered courses</h1>
+
+    {{template "student-navbar"}}
+    &nbsp;&nbsp;
+    {{if .}}
+    {{range .}}
+    <div class="course_details">
+        <p>Course Name: {{.CourseName}}</p>
+        <p>Course Credits: {{.CourseCredits}}</p>
+        <p>Room Number: {{.RoomNumber}}</p>
+        <p>Building Name: {{.BuildingName}}</p>
+        <p>Time: {{.Time}}</p>
+        <p>Meeting Days: {{.MeetingDay}}</p>
+        <p>Professor: {{.FirstName}} {{.LastName}}</p>
+    </div>
+    <form action="/student/registered" method="POST">
+        <input type="text" hidden name="section" value="{{.SectionID}}">
+        <input type="text" hidden name="student" value="{{.StudentID}}">
+        <input type="submit" value="Drop Course" class="btn btn-primary pull-right">
+    </form>
+    <hr>
+    {{end}}
+    {{else}}
+    <h1>Error loading course details</h1>
+    {{end}}
+
+
+
+</div>
+
+{{template "end"}}
+{{end}}
+
