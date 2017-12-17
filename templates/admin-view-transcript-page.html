@@ -4,49 +4,9 @@
 
     <h1>Welcome {{ .FirstName}}</h1>
 
-    <!--
-    <ul class="nav nav-pills center-nav">
-        <li role="presentation" class="active"><a href="index.html">Add Course</a></li>
-        <li role="presentation"><a href="#">View Schedule</a></li>
-        <li role="presentation"><a href="#">View Holds</a></li>
-        <li role="presentation"><a href="#">View Transcript</a></li>
-        <li role="presentation"><a href="#">View Advisor</a></li>
-    </ul>
-    -->
-
     {{template "admin-navbar"}}
 
     <h1>View Student Transcript</h1>
-    <!--
-        <form action="/admin/student/{student}" id="requestData" class="form-horizontal" method="GET">
-
-            <div class="form-group">
-                <label class="control-label col-sm-1" for="name">Student Name</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" placeholder="Name" id="name" name="name">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="control-label col-sm-1" for="car">Student ID</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" placeholder="Student ID" id="id" name="id">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="control-label col-sm-1" for="car">Major</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" placeholder="Major" id="car" name="major">
-                </div>
-            </div>
-
-            <input type="submit" value="submit" id="submit" class="btn btn-default pull-right">
-
-        </form>
-    -->
-
-
 
     <div class="contact-w3-agileits" id="contact" >
         <div class="col-md-12 contact-left-w3l" >
@@ -55,8 +15,6 @@
 
                 <div class="clearfix"></div>
             </div>
-
-
 
             <div class="col-md-8 contact-left-w3l">
 
@@ -81,15 +39,5 @@
     <br/>
 
 </div>
-
-<!--
-<div class="footer-w3l">
-    <p> &copy; 2017 Starfleet . All Rights Reserved </a></p>
-</div>
-
--->
-
-
-
 {{template "end"}}
 {{end}}

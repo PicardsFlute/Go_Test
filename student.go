@@ -95,7 +95,6 @@ func DropRegisteredCourse(w http.ResponseWriter, r *http.Request){
 	sec := r.FormValue("section")
 	stud := r.FormValue("student")
 
-	//TODO first check if its an open registration period otherwise its too late to drop
 
 	fmt.Println("sec id", sec)
 	fmt.Println("stud id", stud)
