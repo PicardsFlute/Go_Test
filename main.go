@@ -45,7 +45,6 @@ func init() {
 	//dbPassword := os.Getenv("PG_DATABASE_PW")
 	//db, err = gorm.Open("postgres", "host=127.0.0.1 dbname=Starfleet sslmode=disable password="+dbPassword)
 
-	//for migration of data
 	//for heroku
 	db, err = gorm.Open("postgres", os.Getenv("DATABASE_URL"))
 
