@@ -2,9 +2,16 @@
 {{template "head"}}
 <div class="container">
 
-    <h1>Welcome {{ .FirstName}}</h1>
 
+    {{if .Admin.IsAdmin}}
+    <h1>Admin is Logged in.</h1>
     {{template "admin-navbar"}}
+    {{end}}
+
+    {{if .Faculty.IsFaculty}}
+    <h1>Faculty is Logged in.</h1>
+    {{template "faculty-navbar"}}
+    {{end}}
 
     <h1>View Student Transcript</h1>
 

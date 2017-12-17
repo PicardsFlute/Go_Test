@@ -542,10 +542,6 @@ func RegisterForSection(w http.ResponseWriter, r *http.Request){
 	//stripWhite := strings.Split(splitSlot[1]," ")
 	//fullSecondHalfofRegisteringCourse := stripWhite[1]+ " "+stripWhite[2]
 
-
-
-	//TODO course capacity check , do this by checking the count of enrollments for that section then compare it against the section capacity
-
 	count := 0
 
 	db.Table("enrollment").Select("*").Where("section_id = ?",section).Count(&count)
@@ -700,4 +696,3 @@ func RegisterForSection(w http.ResponseWriter, r *http.Request){
 //TODO add class size to section, check this size before student registers because class capacity could be smaller than room capactiy
 
 
-//TODO add capacity to section in form

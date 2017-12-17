@@ -21,16 +21,54 @@ import (
 /* Student Actions */
 
 func ViewStudentSchedulePage(w http.ResponseWriter, r *http.Request){
-	//isLogged, user := CheckLoginStatus(w,r)
-	//if isLogged && user.UserType == 3 {
-	//	m := map[string]interface{}{
-	//		"User":user,
-	//	}
-		err := global.Tpl.ExecuteTemplate(w, "viewStudentScheduleAdmin", nil)
-		//err := global.Tpl.ExecuteTemplate(w, "viewStudentScheduleAdmin", user)
+	isLogged, user := CheckLoginStatus(w,r)
+
+	type IsAdmin struct {
+		IsAdmin bool
+		User model.MainUser
+	}
+
+	admin := IsAdmin{}
+
+	if user.UserType == 3 {
+		admin.IsAdmin = true
+		admin.User = user
+	}else{
+		admin.IsAdmin = false
+	}
+
+	type IsFaculty struct {
+		IsFaculty bool
+		User model.MainUser
+	}
+
+	faculty := IsFaculty{}
+
+	if user.UserType == 2 {
+		faculty.IsFaculty = true
+		faculty.User = user
+	}else {
+		faculty.IsFaculty = false
+	}
+
+	if (isLogged && user.UserType == 3) || (isLogged && user.UserType == 2)  {
+		m := map[string]interface{}{
+			"Admin": admin,
+			"Faculty":faculty,
+
+		}
+
+		err := global.Tpl.ExecuteTemplate(w, "viewStudentScheduleAdmin", m)
 		if err != nil {
 			fmt.Println(err.Error())
 		}
+	}else {
+		http.Redirect(w,r,"/",http.StatusForbidden)
+		global.Tpl.ExecuteTemplate(w,"login", "You must login first.") //this renders the index template right under it
+	}
+
+
+
 }
 
 
@@ -42,13 +80,52 @@ type NoUser struct {
 }
 
 func viewStudentTranscriptPage(w http.ResponseWriter, r *http.Request){
-	//isLogged, user := CheckLoginStatus(w,r)
-	//
-	//if isLogged && user.UserType == 3 {
-		global.Tpl.ExecuteTemplate(w, "viewStudentTranscriptAdmin", nil)
-	//}else {
-	//	http.Redirect(w,r,"/",http.StatusForbidden)
-	//}
+	isLogged, user := CheckLoginStatus(w,r)
+
+	type IsAdmin struct {
+		IsAdmin bool
+		User model.MainUser
+	}
+
+	admin := IsAdmin{}
+
+	if user.UserType == 3 {
+		admin.IsAdmin = true
+		admin.User = user
+	}else{
+		admin.IsAdmin = false
+	}
+
+	type IsFaculty struct {
+		IsFaculty bool
+		User model.MainUser
+	}
+
+	faculty := IsFaculty{}
+
+	if user.UserType == 2 {
+		faculty.IsFaculty = true
+		faculty.User = user
+	}else {
+		faculty.IsFaculty = false
+	}
+
+	if (isLogged && user.UserType == 3) || (isLogged && user.UserType == 2)  {
+		m := map[string]interface{}{
+			"Admin": admin,
+			"Faculty":faculty,
+
+		}
+
+		err := global.Tpl.ExecuteTemplate(w, "viewStudentTranscriptAdmin", m)
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+	}else {
+		http.Redirect(w,r,"/",http.StatusForbidden)
+		global.Tpl.ExecuteTemplate(w,"login", "You must login first.") //this renders the index template right under it
+	}
+
 }
 
 

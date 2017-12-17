@@ -42,11 +42,11 @@ func init() {
 	go globalSessions.GC()
 
 
-	//dbPassword := os.Getenv("PG_DATABASE_PW")
-	//db, err = gorm.Open("postgres", "host=127.0.0.1 dbname=Starfleet sslmode=disable password="+dbPassword)
+	dbPassword := os.Getenv("PG_DATABASE_PW")
+	db, err = gorm.Open("postgres", "host=127.0.0.1 dbname=Starfleet sslmode=disable password="+dbPassword)
 
 	//for heroku
-	db, err = gorm.Open("postgres", os.Getenv("DATABASE_URL"))
+	//db, err = gorm.Open("postgres", os.Getenv("DATABASE_URL"))
 
 
 	//dbPassword := os.Getenv("PG_DATABASE_PW")
@@ -196,8 +196,8 @@ func main() {
 
 
 	// USED FOR HEROKU
-	http.ListenAndServe(":" + os.Getenv("PORT"),handlers.LoggingHandler(os.Stdout,routes))
-	//http.ListenAndServe(":8080", handlers.LoggingHandler(os.Stdout,routes))
+	//http.ListenAndServe(":" + os.Getenv("PORT"),handlers.LoggingHandler(os.Stdout,routes))
+	http.ListenAndServe(":8080", handlers.LoggingHandler(os.Stdout,routes))
 
 	//defer db.Close(), want to keep db connectioT"), routes)
 
@@ -912,6 +912,7 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 			Time string
 			Prerequisites []model.Course
 			User IsAdmin
+			NumEnrolled int
 		}
 
 	//coursesFound := []model.Course{}
@@ -994,6 +995,14 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 
 	_,user := CheckLoginStatus(w,r)
 
+
+
+	//courseEnrollment := make(map[int]int)
+	for k, _ := range queryRes {
+		count := 0
+		db.Table("enrollment").Select("*").Where("section_id = ?", queryRes[k].SectionID).Count(&count)
+		queryRes[k].NumEnrolled = count
+	}
 
 
 	admin := IsAdmin{}

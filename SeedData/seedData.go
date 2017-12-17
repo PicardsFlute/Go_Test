@@ -173,9 +173,9 @@ func main() {
 	user5 := model.MainUser{FirstName: "Forest", LastName: "Traub", UserEmail: "forest@test.test", UserPassword: "tcvvg", UserType: 1}
 	user6 := model.MainUser{FirstName: "Lilli", LastName: "Hai", UserEmail: "llili@starfleet.edu", UserPassword: "sdvbW", UserType: 1}
 	user7 := model.MainUser{FirstName: "Naresh", LastName: "Gupta", UserEmail: "ngupta@starfleet.edu", UserPassword: "t35hW", UserType: 1}
-	user8 := model.MainUser{FirstName: "Ashok", LastName: "Basawapatna", UserEmail: "ashok @gmail.com", UserPassword: "565rt", UserType: 1}
+	user8 := model.MainUser{FirstName: "Ashok", LastName: "Basawapatna", UserEmail: "ashok@gmail.com", UserPassword: "565rt", UserType: 1}
 	user9 := model.MainUser{FirstName: "Josh", LastName: "Sand", UserEmail: "jsanders@gmail.com", UserPassword: "tth666", UserType: 1}
-	user10 := model.MainUser{FirstName: "Lester", LastName: "Somrofrom", UserEmail: "research@starfleet.edu", UserPassword: "testPW", UserType: 1}
+	user10 := model.MainUser{FirstName: "Lester", LastName: "Somrofrom", UserEmail: "lsom@starfleet.edu", UserPassword: "testPW", UserType: 1}
 
 	user11 := model.MainUser{FirstName: "Dwayne", LastName: "Johnson", UserEmail: "Djohn@starfleet.edu", UserPassword: "6yhdf", UserType: 1}
 	user12 := model.MainUser{FirstName: "Mike", LastName: "Wayne", UserEmail: "Mwayne@starfleet.edu", UserPassword: "hrer2r", UserType: 1}
