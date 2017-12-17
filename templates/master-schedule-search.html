@@ -39,9 +39,11 @@
 
                         {{ end }}
                     </select><br/>
+
+                    <!--
                     <label class="form-group">Course Number</label>
                     <input type="text" class="form-control" name="course-number" placeholder="" >
-
+                    -->
                     <br />
 
                     <label class="form-group">Course Name</label>
@@ -126,8 +128,8 @@
                             </form>
                             {{end}}
 
-                            <h4>Prerequisites:</h4>
                             <hr>
+                            <h4>Prerequisites:</h4>
                             <ul>
                                 {{ range .Prerequisites }}
                                     <li>

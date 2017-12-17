@@ -75,7 +75,6 @@ func giveStudentGradesPage(w http.ResponseWriter, r *http.Request){
 	JOIN room ON location.room_id = room.room_id
 	WHERE section.faculty_id = ? AND semester.year = ? AND semester.season = ?`, user.UserID,2017,"Fall").Scan(&facultySchedule)
 	fmt.Println(facultySchedule)
-	//TODO: these are hardcoded for current semester, fix these at some point
 	err := global.Tpl.ExecuteTemplate(w, "FacultyGiveGrades", facultySchedule)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -104,7 +103,7 @@ func giveStudentGradesForm(w http.ResponseWriter, r *http.Request) {
 		WHERE section.section_id = ?
 	`, sectionIDint).Scan(&gp)
 
-	if strings.Compare(gp.SemesterStatus,"Grading") != 0 || strings.Compare(gp.SemesterStatus,"Open") != 0{
+	if strings.Compare(gp.SemesterStatus,"Grading") != 0 {
 		fmt.Println("Error it is not currently a grading period")
 		global.Tpl.ExecuteTemplate(w, "facultySuccess", "Error it is not currently a grading period")
 		return
@@ -126,6 +125,7 @@ func giveStudentGradesForm(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Course Detail is", courseDetail)
 
 	type GradingForm struct{
+		SectionID uint
 		StudentID uint
 		FirstName string
 		LastName string
@@ -135,14 +135,14 @@ func giveStudentGradesForm(w http.ResponseWriter, r *http.Request) {
 	gradeForm := []GradingForm{}
 
 	db.Raw(`
-	SELECT student_history.student_id,first_name,last_name,student_history.status
+	SELECT student_history.student_id,section.section_id,first_name,last_name,student_history.status
 	FROM student_history
 	JOIN enrollment ON student_history.enrollment_id = enrollment.enrollment_id
 	JOIN section ON enrollment.section_id = section.section_id
 	JOIN student ON enrollment.student_id = student.student_id
 	JOIN main_user ON main_user.user_id = student.student_id
 	WHERE section.section_id = ? AND student_history.status = 'In progress'`,sectionIDint).Scan(&gradeForm)
-
+	
 	fmt.Println(gradeForm)
 
 	m := map[string]interface{}{
