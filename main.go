@@ -808,13 +808,11 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 
 	departmentQuery,_ := queryVals["department"]
 	courseNameQuery,_ := queryVals["course-name"]
-	//courseNumQuery := queryVals["course-number"]
 	professorQuery := queryVals["instructor"]
 	day := queryVals["day"]
 
 	depID := departmentQuery[0]
 	courseName := courseNameQuery[0]
-	//courseNum  := courseNumQuery[0]
 	professor := professorQuery[0]
 	dayID := day[0]
 
@@ -851,17 +849,7 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 		}
 		numQueries++
 	}
-	//
-	//if courseNum != "" {
-	//
-	//	if numQueries == 0 {
-	//		whereStuff += " course_num = " + courseNum
-	//	}else {
-	//		whereStuff += " AND course_num = " + courseNum
-	//	}
-	//	numQueries++
-	//
-	//}
+
 	if professor != "" {
 		prof := strings.Split(professor, " ")
 		if numQueries == 0 {
