@@ -68,21 +68,7 @@
 
                     <br />
 
-
                     <h3>Additional Filters:</h3>
-                    <label class="form-group">Student Major</label>
-                    <input type="checkbox" name="filter-options" value="major">
-                    <select name="major" class="form-control">
-
-                        {{ range .Departments }}
-
-                        <option
-                                value="{{ .DepartmentID }}">
-                            {{ .DepartmentName }}
-                        </option>
-
-                        {{ end }}
-                    </select><br/>
 
                     <label class="form-group">Full / Part Time</label>
                     <input type="checkbox" name="filter-options" value="student-type">

@@ -217,10 +217,9 @@ func index(w http.ResponseWriter, r *http.Request){
 }
 
 func loginPage(w http.ResponseWriter, r *http.Request){
-	//TODO if they are logged in, just redirect them to their correct navbar
-
+	// use session information to determine the user, and if they are already logged in
 	logged, u := CheckLoginStatus(w, r)
-
+	// a user already logged in will be sent to the page of their respective role
 	if logged{
 		checkUserType(u,w,r)
 	}else {
@@ -251,6 +250,7 @@ func redirectPost(w http.ResponseWriter, r *http.Request){
 func loginUser(w http.ResponseWriter, r *http.Request) {
 	sess := globalSessions.SessionStart(w, r)
 	r.ParseForm()
+
 	if r.Method == "GET" {
 		t, _ := template.ParseFiles("login.gtpl")
 		w.Header().Set("Content-Type", "text/html")
@@ -262,8 +262,6 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 		// Try to find user in DB
 		user := model.MainUser{}
 		db.Where(&model.MainUser{UserEmail: formEmail}).First(&user)
-
-
 
 		if user.UserEmail != "" {
 			dbPassword := user.UserPassword
@@ -277,29 +275,18 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 				//Tpl.ExecuteTemplate(w,"user",user)
 				checkUserType(user, w, r)
 			} else {
-
 				global.Tpl.ExecuteTemplate(w,"login","Error, username or password does not match.")
-
 			}
-
 
 		} else {
 			fmt.Println()
 			global.Tpl.ExecuteTemplate(w,"login","User not found")
 		}
-
 	}
-
-
 }
 
-func checkUserType(user model.MainUser, w http.ResponseWriter, r *http.Request){
 
-	//cont := context.Get(r,"user")
-	//TODO: 1. user visits /login (GET)
-	//2. user submits login form (POST)
-	//3. app validates request, logs in, if happy, redirects (302) to /student
-	//4. user is redirected to /student, app gets the data it needs, passes to template and renders the student template
+func checkUserType(user model.MainUser, w http.ResponseWriter, r *http.Request){
 
 	switch user.UserType {
 
@@ -333,7 +320,6 @@ func checkUserType(user model.MainUser, w http.ResponseWriter, r *http.Request){
 		//return user,user.UserType
 	}
 
-
 }
 
 
@@ -355,6 +341,7 @@ func CheckLoginStatus(w http.ResponseWriter, r *http.Request) (bool,model.MainUs
 		return true, u
 	}
 }
+
 /*
 In this snippet we're placing our handler logic in an anonymous function
  and closing-over the message variable to form a closure.
@@ -517,7 +504,6 @@ func createUser (w http.ResponseWriter, r *http.Request) {
 	userDB := model.MainUser{}
 	userDB.UserEmail = formEmail
 
-		//db.Where(&model.MainUser{UserEmail: formEmail}).First(&userDB)
 	count := 1
 	db.Model(&model.MainUser{}).Where("user_email = ?", formEmail).Count(&count)
 	if count == 0 {
@@ -554,14 +540,11 @@ func createUser (w http.ResponseWriter, r *http.Request) {
 					"faculty": faculty,
 				}
 				global.Tpl.ExecuteTemplate(w, "viewNewUserAdmin", m)
-				//return
-
 
 			case 3:
 				fmt.Println("Youre an admin")
 				admin := model.Admin{AdminID: userDB.UserID}
 				db.Create(&admin)
-					//global.Tpl.ExecuteTemplate(w, "admin-new-user-generic", userDB)
 				http.Redirect(w, r, "/admin", http.StatusFound)
 				displayAdmin(w, r)
 
@@ -584,7 +567,6 @@ func createUser (w http.ResponseWriter, r *http.Request) {
 				"error": err,
 			}
 			global.Tpl.ExecuteTemplate(w, "viewNewUserAdmin", m)
-			//return
 		}
 
 
@@ -596,9 +578,8 @@ func createUser (w http.ResponseWriter, r *http.Request) {
 		global.Tpl.ExecuteTemplate(w, "viewNewUserAdmin", m)
 		//return
 	}
-
-
 }
+
 
 func createStudent(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
@@ -1053,7 +1034,6 @@ func getStudentsReportByGrade(w http.ResponseWriter, r *http.Request){
 
 func genReportStudentsByGrade(w http.ResponseWriter, r *http.Request){
 	r.ParseForm()
-
 	formGradeLow := r.FormValue("letter-grade-boundlow")
 	formGradeHigh := r.FormValue("letter-grade-boundhigh")
 	courseNum := r.FormValue("department")
@@ -1091,7 +1071,6 @@ func genReportStudentsByGrade(w http.ResponseWriter, r *http.Request){
 
 	productsSelected := r.Form["filter-options"]
 
-
 	sql := `SELECT student_history.grade, main_user.first_name, main_user.last_name
 	FROM student_history
 	JOIN enrollment ON student_history.enrollment_id = enrollment.enrollment_id
@@ -1103,15 +1082,15 @@ func genReportStudentsByGrade(w http.ResponseWriter, r *http.Request){
 	AND student_history.status = ?
 	AND section.course_id = ? `
 
-	if contains(productsSelected, "major"){
-		major := r.FormValue("major")
-		sqlDepartmentFilter := ` AND student.student_id IN
-		(SELECT student_id FROM student_major
-		JOIN major ON student_major.major_id = major.major_id
-		WHERE major.department_id = `+ major + " )"
-
-		sql += sqlDepartmentFilter
-	}
+	//if contains(productsSelected, "major"){
+	//	major := r.FormValue("major")
+	//	sqlDepartmentFilter := ` AND student.student_id IN
+	//	(SELECT student_id FROM student_major
+	//	JOIN major ON student_major.major_id = major.major_id
+	//	WHERE major.department_id = `+ major + " )"
+	//
+	//	sql += sqlDepartmentFilter
+	//}
 
 	if contains(productsSelected, "student-type"){
 		stuType := r.FormValue("full-or-part")
@@ -1126,12 +1105,7 @@ func genReportStudentsByGrade(w http.ResponseWriter, r *http.Request){
 		Grade string
 	}
 	records := []StudentData{}
-	//db.Where("grade >= ?",formGradeLow).Where("grade <= ?",formGradeHigh).Find(&histories)
 	db.Raw(sql, gradeSlice, "Complete", courseNum).Scan(&records)
-
-
-
-
 
 	modtime := time.Now()
 	filepath := "Record" + strconv.Itoa(modtime.Nanosecond()) + ".csv"
@@ -1143,16 +1117,11 @@ func genReportStudentsByGrade(w http.ResponseWriter, r *http.Request){
 	defer outfile.Close()
 	writer := struct2csv.NewWriter(outfile)
 
-
 	for _, record := range records {
-		studentDataString := make([]string,3)
-		studentDataString[0] = record.FirstName
-		studentDataString[1] = record.LastName
-		studentDataString[2] = record.Grade
 		if err := writer.WriteStruct(record); err != nil {
 			log.Fatalln("error writing record to csv:", err)
 		} else {
-			println("FNAME: " + studentDataString[0] + ", LNAME: " + studentDataString[1] + ", GRADE: " + studentDataString[2])
+			println("FNAME: " + record.FirstName + ", LNAME: " + record.LastName + ", GRADE: " + record.Grade)
 		}
 	}
 
@@ -1162,10 +1131,7 @@ func genReportStudentsByGrade(w http.ResponseWriter, r *http.Request){
 	path := "./"+filepath
 	w.Header().Set("Content-Disposition", "attachment; filename="+filepath)
 
-	//http.ServeContent(w, r, "report.csv", modtime, b.Bytes())
-
 	http.ServeFile(w,r,path)
 	global.Tpl.ExecuteTemplate(w, "researchStudentsByGrade", nil)
-	//io.Copy(w, b)
 	os.Remove(path)
 }

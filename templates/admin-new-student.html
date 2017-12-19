@@ -4,31 +4,18 @@
     <form action="/admin/user/student" id="requestData" class="form-horizontal" method="POST">
 
         <label class="form-group">Email</label>
-        <input  contenteditable="false" type="email" class="form-control" name="email" placeholder="{{.User.UserEmail}}"  value="{{.User.UserEmail}}" readonly ><br />
-
-        <!--<label class="form-group">Password</label>-->
-        <!--<input contenteditable="false" type="email" class="form-control" name="id" placeholder="" required=""><br />-->
+        <input  contenteditable="false" type="email" class="form-control" name="email"
+                placeholder="{{.User.UserEmail}}" value="{{.User.UserEmail}}" readonly ><br />
 
         <label class="form-group">First Name</label>
-        <input contenteditable="false" type="text" class="form-control" name="first-name" placeholder="{{.User.FirstName }}" value="{{.User.FirstName }}" readonly><br />
+        <input contenteditable="false" type="text" class="form-control" name="first-name"
+               placeholder="{{.User.FirstName }}" value="{{.User.FirstName }}" readonly><br />
 
         <label class="form-group">Last Name</label>
-        <input contenteditable="false" type="text" class="form-control" name="last-name" placeholder="{{.User.LastName }}" value="{{.User.LastName }}" readonly><br />
-
-        <!--<label class="form-group">User Type</label>-->
-        <!--<input type="text" class="form-control" name="major" placeholder=""><br />-->
-        <!--<select contenteditable="false" name="user-type" required="true">-->
-            <!--<option value="1">Student</option>-->
-            <!--<option value="2">Faculty</option>-->
-            <!--<option value="3">Admin</option>-->
-            <!--<option value="4">Researcher</option>-->
-        <!--</select>-->
+        <input contenteditable="false" type="text" class="form-control" name="last-name"
+               placeholder="{{.User.LastName }}" value="{{.User.LastName }}" readonly><br />
 
         <div class="dropdown-divider"></div>
-
-
-
-
         <label class="form-group">Credits</label>
         <input  contenteditable="false" type="number" class="form-control" name="credits" placeholder="" required=""><br />
 
@@ -44,7 +31,6 @@
         <input type="submit" value="submit" id="submit" class="btn btn-default pull-right">
 
     </form>
-
 </div>
 
 {{ end }}
