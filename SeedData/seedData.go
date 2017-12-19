@@ -247,6 +247,7 @@ func main() {
 	adminUser1 := model.MainUser{FirstName: "Ben", LastName: "Xerri", UserEmail: "adminson@starfleet.edu", UserPassword: "testPW", UserType: 3}
 
 	researcher1 := model.MainUser{FirstName: "Mike", LastName:"Restingson", UserEmail:"mrest@starfleet.edu", UserPassword: "testPW", UserType:4}
+
 	db.Create(&researcher1)
 	/*
 	facultyUser4 := model.MainUser{FirstName: "Brandon", LastName: "Sanderson", UserEmail: "sanderson@gmail.com", UserPassword: "testPW", UserType: 2}
