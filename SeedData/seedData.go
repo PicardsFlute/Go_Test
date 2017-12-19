@@ -169,7 +169,7 @@ func main() {
 	user1 := model.MainUser{FirstName: "Pat", LastName: "Lagat", UserEmail: "plagat@yahoo.com", UserPassword: "pl12345", UserType: 1}
 	user2 := model.MainUser{FirstName: "Irman", LastName: "James", UserEmail: "jirish@yahoo.com", UserPassword: "ij12345", UserType: 1}
 	user3 := model.MainUser{FirstName: "Trey", LastName: "Gorkin", UserEmail: "gork@yahoo.com", UserPassword: "tg12345", UserType: 1}
-	user4 := model.MainUser{FirstName: "Testy", LastName: "McTest", UserEmail: "test@test.test", UserPassword: "testPW", UserType: 1}
+	user4 := model.MainUser{FirstName: "Daniel", LastName: "Assemba", UserEmail: "dassemba@test.test", UserPassword: "testPW", UserType: 1}
 	user5 := model.MainUser{FirstName: "Forest", LastName: "Traub", UserEmail: "forest@test.test", UserPassword: "tcvvg", UserType: 1}
 	user6 := model.MainUser{FirstName: "Lilli", LastName: "Hai", UserEmail: "llili@starfleet.edu", UserPassword: "sdvbW", UserType: 1}
 	user7 := model.MainUser{FirstName: "Naresh", LastName: "Gupta", UserEmail: "ngupta@starfleet.edu", UserPassword: "t35hW", UserType: 1}
@@ -821,7 +821,7 @@ func main() {
 
 	course1 := model.Course{CourseName: "Warp Field Mechanics", CourseCredits: 4, DepartmentID: department1.DepartmentID, CourseDescription: "An introduction to the theory behind faster than light space travel."}
 	course2 := model.Course{CourseName: "History of Space Travel", CourseCredits: 4, DepartmentID: department3.DepartmentID, CourseDescription: "A survey of humanity's entry into the age of space exploration, from the first artificial satellite to first contact with the Vulcans. "}
-	course3 := model.Course{CourseName: "Contemporary Holography", CourseCredits: 4, DepartmentID: department4.DepartmentID, CourseDescription: "An introduction to Holography."}
+	course3 := model.Course{CourseName: "Contemporary Holography", CourseCredits: 4, DepartmentID: department8.DepartmentID, CourseDescription: "An introduction to Holography."}
 	course4 := model.Course{CourseName: "Chemistry I", CourseCredits: 4, DepartmentID: department7.DepartmentID, CourseDescription: "Basic principles to be covered include atomic structure, chemical properties, chemical reactions, the nature of organic and inorganic compounds and novel materials."}
 	course5 := model.Course{CourseName: "Accounting I", CourseCredits: 4, DepartmentID: department5.DepartmentID, CourseDescription: "Inroduction to financial accounting with focus on how financial statements are structured and used by proprietorships and cooperations."}
 	course6 := model.Course{CourseName: "Microeconomics", CourseCredits: 4, DepartmentID: department5.DepartmentID, CourseDescription: "An introduction to conventional macroeconomic theory, including the determination of national income, government taxing and spending policy, money and banking, unemployment, inflation, economic growth and international trade."}
@@ -1366,7 +1366,7 @@ func main() {
 
 
 	//Spring 2017 sections
-	sectionSpring2017a := model.Section{CourseSectionNumber:001, CourseID:course1.CourseID, FacultyID:faculty1.FacultyID,TimeSlotID:timeslotSpring2017.TimeSlotID, LocationID:location4.LocationID}
+	sectionSpring2017a := model.Section{CourseSectionNumber:001, CourseID:course44.CourseID, FacultyID:faculty1.FacultyID,TimeSlotID:timeslotSpring2017.TimeSlotID, LocationID:location4.LocationID}
 	sectionSpring2017b := model.Section{CourseSectionNumber:002, CourseID:course2.CourseID, FacultyID:faculty2.FacultyID,TimeSlotID:timeslotSpring12017.TimeSlotID, LocationID:location5.LocationID}
 	sectionSpring2017c := model.Section{CourseSectionNumber:001, CourseID:course3.CourseID, FacultyID:faculty3.FacultyID,TimeSlotID:timeslotSpring22017.TimeSlotID, LocationID:location6.LocationID}
 	sectionSpring2017d := model.Section{CourseSectionNumber:002, CourseID:course4.CourseID, FacultyID:faculty4.FacultyID,TimeSlotID:timeslotSpring32017.TimeSlotID, LocationID:location7.LocationID}
@@ -1522,6 +1522,9 @@ func main() {
 	section8spring2018 := model.Section{CourseSectionNumber:001, CourseID:course18.CourseID, FacultyID:faculty12.FacultyID,Capacity:20, TimeSlotID:timeslotc3.TimeSlotID, LocationID:location21.LocationID}
 	section9spring2018 := model.Section{CourseSectionNumber:001, CourseID:course35.CourseID, FacultyID:faculty17.FacultyID,Capacity:30, TimeSlotID:timeslota1.TimeSlotID, LocationID:location25.LocationID}
 	section10spring2018 := model.Section{CourseSectionNumber:001, CourseID:course36.CourseID, FacultyID:faculty18.FacultyID,Capacity:20, TimeSlotID:timeslot11.TimeSlotID, LocationID:location26.LocationID}
+	section11spring2018 := model.Section{CourseSectionNumber:001, CourseID:course7.CourseID, FacultyID:faculty10.FacultyID,Capacity:20, TimeSlotID:timeslotc.TimeSlotID, LocationID:location26.LocationID}
+	section12spring2018 := model.Section{CourseSectionNumber:001, CourseID:course17.CourseID, FacultyID:faculty10.FacultyID,Capacity:20, TimeSlotID:timeslotb.TimeSlotID, LocationID:location26.LocationID}
+
 
 	db.Create(&section1)
 	db.Create(&section2)
@@ -1543,6 +1546,8 @@ func main() {
 	db.Create(&section8spring2018)
 	db.Create(&section9spring2018)
 	db.Create(&section10spring2018)
+	db.Create(&section11spring2018)
+	db.Create(&section12spring2018)
 
 
 
