@@ -299,3 +299,4 @@ type Reports struct {
 	ResearcherID uint `gorm:"not null"`
 	Researcher Researcher `gorm:"ForeignKey:ResearcherID; AssociationForeignKey:ResearcherID"`
 }
+

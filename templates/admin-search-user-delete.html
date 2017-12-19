@@ -2,14 +2,9 @@
 {{template "head"}}
 <div class="container">
 
-    <!--<h1>Welcome {{.FirstName}}</h1>-->
-
-
     {{template "admin-navbar"}}
 
     <h1>Select User</h1>
-
-
 
     <div class="contact-w3-agileits" id="contact" >
         <div class="col-md-12 contact-left-w3l" >
@@ -43,17 +38,16 @@
                                 <h4>Email: {{ .UserEmail }} </h4>
                                 <span>First Name: {{ .FirstName }},  Last Name: {{ .LastName }}</span>
 
-                                <button id="delete-{{ .UserID }}" UserEmail="{{ .UserEmail }}" UserID="{{ .UserID }}" btnAction="delete"> Delete User
+                                <button id="delete-{{ .UserID }}" UserEmail="{{ .UserEmail }}"
+                                        UserID="{{ .UserID }}" btnAction="delete"> Delete User
                                     <form action="/admin/user/{{ .UserID }}/delete" method="POST" id="{{.UserID}}">
-                                        <input type="submit" value="Remove User"
-                                               class="btn btn-default pull-right">
+                                        <input type="submit" value="Remove User" class="btn btn-default pull-right">
                                     </form>
 
                                 </button>
 
                                 <br/>
                             </div>
-
                         </li>
                         <br/>
                     {{ end }}
@@ -65,40 +59,14 @@
                     {{ end }}
                 {{ end }}
             </ul>
-            <!--<script>-->
-                <!--var buttons = $("button[btnAction='delete']")-->
-                <!--buttons.each( function(idx){-->
-                    <!--var email = $(this).attr("UserEmail")-->
-                    <!--var uID= $(this).attr("UserID")-->
-                    <!--$(this).click( function(){-->
-                        <!--console.log("Button clicked for " + email)-->
-                        <!--$.ajax({-->
-                            <!--url: '/admin/user',-->
-                            <!--type: 'DELETE',-->
-                            <!--data: {-->
-                                <!--UserID: uID,-->
-                                <!--email: email-->
-                            <!--},-->
-                            <!--success: function(result) {-->
-
-                            <!--}-->
-                        <!--});-->
-                    <!--})-->
-                <!--})-->
-
-            <!--</script>-->
         </div>
     <br/>
-
 
     <div class="clearfix"></div>
 </div>
 <div class="footer-w3l">
     <p> &copy; 2017 Starfleet . All Rights Reserved </a></p>
 </div>
-
-
-
 
 
 {{template "end"}}

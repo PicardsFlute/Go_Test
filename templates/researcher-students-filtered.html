@@ -1,0 +1,95 @@
+{{ define "researchStudentsByGrade" }}
+{{ template "head" }}
+
+<div class="contact-w3-agileits" id="contact" >
+    <div class="container">
+        <div class="col-md-12 contact-left-w3l" >
+            <h3>Student Report by Grade</h3>
+            <div class="visit">
+
+                <div class="clearfix"></div>
+            </div>
+
+            {{ template "researcher-navbar" }}
+
+            <div class="col-md-8 contact-left-w3l">
+                <h3>Grade Criteria</h3>
+                <form action="/researcher/students/grades" id="requestData" class="form-horizontal" method="POST">
+                    <label class="form-group">Find all students with a grade at least</label>
+                    <select name="letter-grade-boundlow" class="form-control">
+                        <option value="A">A</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B">B</option>
+                        <option value="B-">B-</option>
+                        <option value="C+">C+</option>
+                        <option value="C">C</option>
+                        <option value="C-">C-</option>
+                        <option value="F">F</option>
+                    </select>
+
+                    <label class="form-group">but not greater than</label>
+                    <select name="letter-grade-boundhigh" class="form-control">
+                        <option value="A">A</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B">B</option>
+                        <option value="B-">B-</option>
+                        <option value="C+">C+</option>
+                        <option value="C">C</option>
+                        <option value="C-">C-</option>
+                        <option value="F">F</option>
+                    </select>
+                    <br/>
+
+
+
+                    <label class="form-group">Course</label>
+                    <select name="department" class="form-control">
+
+                        {{ range .Courses }}
+
+                        <option
+                                value="{{ .CourseID }}">
+                            {{ .CourseName }}
+                        </option>
+
+                        {{ end }}
+                    </select><br/>
+                    <!--<label class="form-group">Course Number</label>-->
+                    <!--<input type="text" class="form-control" name="course-number" placeholder="" >-->
+
+                    <!--<br />-->
+
+                    <!--<label class="form-group">Course Name</label>-->
+                    <!--<input type="text" class="form-control" name="course-name" placeholder="" >-->
+                    <!--<br />-->
+
+
+                    <br />
+
+                    <h3>Additional Filters:</h3>
+
+                    <label class="form-group">Full / Part Time</label>
+                    <input type="checkbox" name="filter-options" value="student-type">
+                    <select name="full-or-part" required="true">
+                        <option value="1">Full Time</option>
+                        <option value="2">Part Time</option>
+                    </select>
+                    <br />
+
+
+                    <input type="submit" class="btn-success"  value="Generate Report">
+                    <!--<form>-->
+                    <!---->
+                    <!--</form>-->
+                    <!--<input type="button" class="btn-success" value="Reset">-->
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{template "end"}}
+
+{{end}}

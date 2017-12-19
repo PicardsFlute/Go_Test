@@ -417,6 +417,7 @@ func main() {
 	db.Create(&student24)
 	db.Create(&student25)
 	db.Create(&student26)
+	db.Create(&student34)
 	db.Create(&student27)
 	db.Create(&student28)
 	db.Create(&student29)
@@ -424,7 +425,6 @@ func main() {
 	db.Create(&student31)
 	db.Create(&student32)
 	db.Create(&student33)
-	db.Create(&student34)
 	db.Create(&student35)
 	db.Create(&student36)
 	db.Create(&student37)
@@ -744,17 +744,17 @@ func main() {
 	db.Create(&advisor12)
 
 	major1 := model.Major{DepartmentID: department1.DepartmentID, MajorName: "Math"}
-	major2 := model.Major{DepartmentID: department1.DepartmentID, MajorName: "Physics"}
+	major2 := model.Major{DepartmentID: department8.DepartmentID, MajorName: "Physics"}
 	major3 := model.Major{DepartmentID: department6.DepartmentID, MajorName: "Biological Sciences"}
 	major4 := model.Major{DepartmentID: department10.DepartmentID, MajorName: "English"}
 	major5 := model.Major{DepartmentID: department3.DepartmentID, MajorName: "History"}
 	major6 := model.Major{DepartmentID: department14.DepartmentID, MajorName: "Sociology"}
 	major7 := model.Major{DepartmentID: department13.DepartmentID, MajorName: "Psychology"}
-	major8 := model.Major{DepartmentID: department2.DepartmentID, MajorName: "Accounting"}
+	major8 := model.Major{DepartmentID: department5.DepartmentID, MajorName: "Accounting"}
 	major9 := model.Major{DepartmentID: department7.DepartmentID, MajorName: "Chemistry"}
 	major10 := model.Major{DepartmentID: department2.DepartmentID, MajorName: "Computer Science"}
 	major11 := model.Major{DepartmentID: department9.DepartmentID, MajorName: "Criminology"}
-	major12 := model.Major{DepartmentID: department15.DepartmentID, MajorName: "Philosophy"}
+	major12 := model.Major{DepartmentID: department4.DepartmentID, MajorName: "Philosophy"}
 	major13 := model.Major{DepartmentID: department4.DepartmentID, MajorName: "Spanish"}
 	major14 := model.Major{DepartmentID: department4.DepartmentID, MajorName: "French"}
 	major15 := model.Major{DepartmentID: department4.DepartmentID, MajorName: "liberal Arts"}
@@ -780,7 +780,7 @@ func main() {
 	minor2 := model.Minor{DepartmentID: department1.DepartmentID, MinorName: "MINOR MATH"}
 	minor3 := model.Minor{DepartmentID: department2.DepartmentID, MinorName: "LITTLE COMPUTERS"}
 	minor4 := model.Minor{DepartmentID: department2.DepartmentID, MinorName: "COMPUTER STUFF"}
-	minor5 := model.Minor{DepartmentID: department2.DepartmentID, MinorName: "Finance"}
+	minor5 := model.Minor{DepartmentID: department5.DepartmentID, MinorName: "Finance"}
 	db.Create(&minor1)
 	db.Create(&minor2)
 	db.Create(&minor3)
@@ -2172,6 +2172,38 @@ func main() {
 	db.Create(&history49s2016)
 
 	//TODO make seed data make sense i.e prerequs make sense, jirish can take data mining but pat can't
+
+
+	studentMajor1 := model.StudentMajor{StudentID:student1.StudentID, MajorID:major1.MajorID}
+	studentMajor2 := model.StudentMajor{StudentID:student2.StudentID, MajorID:major1.MajorID}
+	studentMajor3 := model.StudentMajor{StudentID:student3.StudentID, MajorID:major2.MajorID}
+	studentMajor4 := model.StudentMajor{StudentID:student4.StudentID, MajorID:major2.MajorID}
+	studentMajor5 := model.StudentMajor{StudentID:student5.StudentID, MajorID:major3.MajorID}
+	studentMajor6 := model.StudentMajor{StudentID:student6.StudentID, MajorID:major1.MajorID}
+
+	db.Create(&studentMajor1)
+	db.Create(&studentMajor2)
+	db.Create(&studentMajor3)
+	db.Create(&studentMajor4)
+	db.Create(&studentMajor5)
+	db.Create(&studentMajor6)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }
