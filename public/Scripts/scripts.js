@@ -25,4 +25,3 @@ $('#building-select').on('change',function(){
     })
 });
 
-console.log("Got script");

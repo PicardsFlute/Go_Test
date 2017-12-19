@@ -21,16 +21,54 @@ import (
 /* Student Actions */
 
 func ViewStudentSchedulePage(w http.ResponseWriter, r *http.Request){
-	//isLogged, user := CheckLoginStatus(w,r)
-	//if isLogged && user.UserType == 3 {
-	//	m := map[string]interface{}{
-	//		"User":user,
-	//	}
-		err := global.Tpl.ExecuteTemplate(w, "viewStudentScheduleAdmin", nil)
-		//err := global.Tpl.ExecuteTemplate(w, "viewStudentScheduleAdmin", user)
+	isLogged, user := CheckLoginStatus(w,r)
+
+	type IsAdmin struct {
+		IsAdmin bool
+		User model.MainUser
+	}
+
+	admin := IsAdmin{}
+
+	if user.UserType == 3 {
+		admin.IsAdmin = true
+		admin.User = user
+	}else{
+		admin.IsAdmin = false
+	}
+
+	type IsFaculty struct {
+		IsFaculty bool
+		User model.MainUser
+	}
+
+	faculty := IsFaculty{}
+
+	if user.UserType == 2 {
+		faculty.IsFaculty = true
+		faculty.User = user
+	}else {
+		faculty.IsFaculty = false
+	}
+
+	if (isLogged && user.UserType == 3) || (isLogged && user.UserType == 2)  {
+		m := map[string]interface{}{
+			"Admin": admin,
+			"Faculty":faculty,
+
+		}
+
+		err := global.Tpl.ExecuteTemplate(w, "viewStudentScheduleAdmin", m)
 		if err != nil {
 			fmt.Println(err.Error())
 		}
+	}else {
+		http.Redirect(w,r,"/",http.StatusForbidden)
+		global.Tpl.ExecuteTemplate(w,"login", "You must login first.") //this renders the index template right under it
+	}
+
+
+
 }
 
 
@@ -42,13 +80,52 @@ type NoUser struct {
 }
 
 func viewStudentTranscriptPage(w http.ResponseWriter, r *http.Request){
-	//isLogged, user := CheckLoginStatus(w,r)
-	//
-	//if isLogged && user.UserType == 3 {
-		global.Tpl.ExecuteTemplate(w, "viewStudentTranscriptAdmin", nil)
-	//}else {
-	//	http.Redirect(w,r,"/",http.StatusForbidden)
-	//}
+	isLogged, user := CheckLoginStatus(w,r)
+
+	type IsAdmin struct {
+		IsAdmin bool
+		User model.MainUser
+	}
+
+	admin := IsAdmin{}
+
+	if user.UserType == 3 {
+		admin.IsAdmin = true
+		admin.User = user
+	}else{
+		admin.IsAdmin = false
+	}
+
+	type IsFaculty struct {
+		IsFaculty bool
+		User model.MainUser
+	}
+
+	faculty := IsFaculty{}
+
+	if user.UserType == 2 {
+		faculty.IsFaculty = true
+		faculty.User = user
+	}else {
+		faculty.IsFaculty = false
+	}
+
+	if (isLogged && user.UserType == 3) || (isLogged && user.UserType == 2)  {
+		m := map[string]interface{}{
+			"Admin": admin,
+			"Faculty":faculty,
+
+		}
+
+		err := global.Tpl.ExecuteTemplate(w, "viewStudentTranscriptAdmin", m)
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+	}else {
+		http.Redirect(w,r,"/",http.StatusForbidden)
+		global.Tpl.ExecuteTemplate(w,"login", "You must login first.") //this renders the index template right under it
+	}
+
 }
 
 
@@ -58,20 +135,16 @@ func viewStudentTranscript(w http.ResponseWriter, r *http.Request){
 
 	email := r.FormValue("email")
 	count := 0
-	//major := r.FormValue("major")
 
-	//db.Where("id = ?", id).Find(&model.Enrollment{})
 	if err != nil {
 		err.Error()
 	}
 
 
-	//first check if they entered an ID
-
+	//first check if the email is not blank
 	if email != ""{
 		db.Where(&model.MainUser{UserEmail: email}).Find(&user).Count(&count)
 	}
-	//nu := NoUser{"Nobody found"}
 	if count > 0 {
 		fmt.Println("You have a user", user.FirstName)
 	} else {
@@ -93,8 +166,6 @@ func viewStudentTranscript(w http.ResponseWriter, r *http.Request){
 		CourseName string
 		CourseCredits int
 	}
-
-
 
 	st := []Transcript{}
 	db.Raw(`
@@ -181,27 +252,11 @@ func viewStudentTranscript(w http.ResponseWriter, r *http.Request){
 
 func ViewStudentSchedule(w http.ResponseWriter, r *http.Request){
 
-	//vars := mux.Vars(r) //returns a mapping responses
-	//personId := vars["student"] //get map with key id number
-
 	user := model.MainUser{}
 
 	email := r.FormValue("email")
-	id := r.FormValue("id")
+
 	count := 0
-	//major := r.FormValue("major")
-
-	//db.Where("id = ?", id).Find(&model.Enrollment{})
-	intId, err := strconv.Atoi(id)
-	if err != nil {
-		err.Error()
-	}
-
-
-	//first check if they entered an ID
-	if id != "" {
-		db.Where(&model.MainUser{UserID: uint(intId)}).Find(&user).Count(&count)
-	}
 
 	if email != ""{
 		db.Where(&model.MainUser{UserEmail: email}).Find(&user).Count(&count)
@@ -232,7 +287,8 @@ func ViewStudentSchedule(w http.ResponseWriter, r *http.Request){
 	}
 
 	ss := []StudentSchedule{}
-	db.Raw(`SELECT student_history.student_id,course_name,course_credits,building_name,room_number,meeting_day, first_name, last_name, time,student_history.status
+	db.Raw(`SELECT student_history.student_id,course_name,course_credits,building_name,
+	room.room_number,meeting_day, first_name, last_name, time,student_history.status
 	FROM student_history
 	JOIN enrollment ON student_history.enrollment_id = enrollment.enrollment_id
 	JOIN section ON enrollment.section_id = section.section_id
@@ -270,21 +326,9 @@ func ViewStudentHolds (w http.ResponseWriter,r *http.Request) {
 	user := model.MainUser{}
 
 	email := r.FormValue("email")
-	//id := r.FormValue("id")
 
 	count := 0
 
-	//db.Where("id = ?", id).Find(&model.Enrollment{})
-	//intId, err := strconv.Atoi(id)
-	//if err != nil {
-	//	err.Error()
-	//}
-
-
-	//first check if they entered an ID
-	//if id != "" {
-	//	db.Where(&model.MainUser{UserID: uint(intId)}).Find(&user).Count(&count)
-	//}
 	if email != "" {
 		db.Where(&model.MainUser{UserEmail: email}).Find(&user).Count(&count)
 	}else{
@@ -313,8 +357,6 @@ func ViewStudentHolds (w http.ResponseWriter,r *http.Request) {
 	if errTpl != nil {
 		fmt.Println(errTpl.Error())
 	}
-
-
 }
 
 
@@ -334,13 +376,12 @@ func AdminDeleteHold(w http.ResponseWriter, r *http.Request){
 
 		fmt.Println("StudentID =", userInt, "HoldID =", holdInt, "User =", user)
 	studentHold := model.StudentHolds{}
-	//db.Where("student_id = ? AND hold_id = ?", userInt,holdInt).First(&studentHold)
-	//db.Delete(&hold)
+
 	db.Raw("SELECT * FROM student_holds WHERE student_id = ? AND hold_id = ?", userInt,holdInt).Scan(&studentHold)
 	fmt.Println("Hold found", studentHold)
 	db.Delete(&studentHold)
 	global.Tpl.ExecuteTemplate(w, "adminSuccess", "Hold removed.")
-	//fmt.Println("Hold deleted sucessfully")
+	//http.Redirect(w, r, "admin/holds/" +user,http.StatusOK)
 
 
 }
@@ -717,19 +758,7 @@ func AdminAddSection(w http.ResponseWriter, r *http.Request){
 		Room_number string
 	}
 	rc := []RoomCheck{}
-	/*
-	db.Raw(`
-		 SELECT section.section_id, location.location_id, building.building_id,room.room_id,room_number,building_name,period.period_id,time,day.day_id,meeting_day
-		 FROM section
-		 JOIN location ON section.location_id = location.location_id
-		 JOIN building ON building.building_id = location.building_id
-		 JOIN room ON room.room_id = location.room_id
-		 JOIN time_slot ON time_slot.time_slot_id = section.time_slot_id
-		 JOIN day ON time_slot.day_id = day.day_id
-		 JOIN period ON period.period_id = time_slot.period_id
-	 	 WHERE location.room_id = ? AND building.building_id = ? AND period.period_id = ?
-	 	 AND day.day_id = ?`,location.RoomID, location.BuildingID,timeInt,dayInt).Scan(&rc)
-	*/
+
 
 	db.Raw(`
 		 SELECT section.section_id, location.location_id,season,year, building.building_id,room.room_id,room_number,building_name,period.period_id,time,day.day_id,meeting_day
@@ -763,17 +792,6 @@ func AdminAddSection(w http.ResponseWriter, r *http.Request){
 
 	cc := []ProfessorCheck{}
 	//TODO: Complete, 1st series of test passed
-	/*
-	db.Raw(`
-		SELECT user_id,user_email,first_name,section_id,period.period_id,time,day.day_id,meeting_day
-		 FROM main_user
-		 JOIN faculty ON main_user.user_id = faculty.faculty_id
-		 JOIN section ON faculty.faculty_id = section.section_id
-		 JOIN time_slot ON time_slot.time_slot_id = section.time_slot_id
-		 JOIN day ON time_slot.day_id = day.day_id
-		 JOIN period ON period.period_id = time_slot.period_id
-		 WHERE period.period_id = ? AND day.day_id = ? AND user_id = ?`, time,day,facultyInt).Scan(&cc)
-	*/
 
 	//TODO Now working, keep testing
 	db.Raw(`

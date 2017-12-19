@@ -2,19 +2,15 @@
 {{template "head"}}
 <div class="container">
 
-          <h1>Welcome {{ .FirstName}}</h1>
-
-    <!--
-    <ul class="nav nav-pills center-nav">
-        <li role="presentation" class="active"><a href="index.html">Add Course</a></li>
-        <li role="presentation"><a href="#">View Schedule</a></li>
-        <li role="presentation"><a href="#">View Holds</a></li>
-        <li role="presentation"><a href="#">View Transcript</a></li>
-        <li role="presentation"><a href="#">View Advisor</a></li>
-    </ul>
-    -->
-
+    {{if .Admin.IsAdmin}}
+    <h1>Admin is Logged in.</h1>
     {{template "admin-navbar"}}
+    {{end}}
+
+    {{if .Faculty.IsFaculty}}
+    <h1>Faculty is Logged in.</h1>
+    {{template "faculty-navbar"}}
+    {{end}}
 
     <h1>View Student Schedule</h1>
 
@@ -26,13 +22,9 @@
                     <div class="clearfix"></div>
                 </div>
 
-
-
                 <div class="col-md-8 contact-left-w3l">
 
                     <form action="/admin/student/{student}" id="requestData" class="form-horizontal" method="GET">
-
-
 
                         <label class="form-group">Email</label>
                         <input type="email" class="form-control" name="email"><br />
@@ -52,12 +44,6 @@
             <h2>Try searching for a user</h2>
         {{end}}
         <br/>
-
 </div>
-
-
-
-
-
 {{template "end"}}
 {{end}}

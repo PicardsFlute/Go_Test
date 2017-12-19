@@ -1,30 +1,9 @@
 {{define "adminViewStudentScheduleDetails"}}
 {{template "head"}}
 
-<!--
-<link href="../style/popup-box.css" rel="stylesheet" type="text/css" media="all" />
-
-<link rel="stylesheet" href="../../style/style.css" type="text/css" media="all" />
-<link rel="stylesheet" 	href="../../style/chocolat.css" type="text/css" media="all">
-<link href='//fonts.googleapis.com/css?family=Josefin+Sans:400,100,100italic,300,300italic,400italic,600,600italic,700,700italic' rel='stylesheet' type='text/css'>
-<link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
-
-<script type="text/javascript" src="../../public/Scripts/js/move-top.js"></script>
-<script type="text/javascript" src="../../public/Scripts/js/easing.js"></script>
--->
 <div class="container">
 
-    <!--
-    <ul class="nav nav-pills center-nav">
-        <li role="presentation" class="active"><a href="index.html">Add Course</a></li>
-        <li role="presentation"><a href="#">View Schedule</a></li>
-        <li role="presentation"><a href="#">View Holds</a></li>
-        <li role="presentation"><a href="#">View Transcript</a></li>
-        <li role="presentation"><a href="#">View Advisor</a></li>
-    </ul>
-    -->
 
-    {{template "admin-navbar"}}
 
     {{if .}}
         {{range .}}

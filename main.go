@@ -50,9 +50,18 @@ func init() {
 	globalSessions, _ = session.NewManager("memory", "gosessionid", 3600)
 	go globalSessions.GC()
 
+
 	dbPassword := os.Getenv("PG_DATABASE_PW")
-	//dbConnectString := os.Getenv("DATABASE_URL")
 	db, err = gorm.Open("postgres", "host=127.0.0.1 dbname=Starfleet sslmode=disable password="+dbPassword)
+
+	//for heroku
+	//db, err = gorm.Open("postgres", os.Getenv("DATABASE_URL"))
+
+
+	//dbPassword := os.Getenv("PG_DATABASE_PW")
+	//dbConnectString := os.Getenv("DATABASE_URL")
+	//db, err = gorm.Open("postgres", "host=127.0.0.1 dbname=Starfleet sslmode=disable password="+dbPassword)
+
 
 
 	if err != nil {
@@ -791,13 +800,11 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 
 	departmentQuery,_ := queryVals["department"]
 	courseNameQuery,_ := queryVals["course-name"]
-	courseNumQuery := queryVals["course-number"]
 	professorQuery := queryVals["instructor"]
 	day := queryVals["day"]
 
 	depID := departmentQuery[0]
 	courseName := courseNameQuery[0]
-	courseNum  := courseNumQuery[0]
 	professor := professorQuery[0]
 	dayID := day[0]
 
@@ -835,16 +842,6 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 		numQueries++
 	}
 
-	if courseNum != "" {
-
-		if numQueries == 0 {
-			whereStuff += " course_num = " + courseNum
-		}else {
-			whereStuff += " AND course_num = " + courseNum
-		}
-		numQueries++
-
-	}
 	if professor != "" {
 		prof := strings.Split(professor, " ")
 		if numQueries == 0 {
@@ -895,6 +892,7 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 			Time string
 			Prerequisites []model.Course
 			User IsAdmin
+			NumEnrolled int
 		}
 
 	//coursesFound := []model.Course{}
@@ -972,11 +970,19 @@ func searchMasterSchedule(w http.ResponseWriter, r *http.Request){
 		//"Department": chosenDep.DepartmentName,
 		"Professor": professor,
 		"CourseName": courseName,
-		"CourseNum": courseNum,
+		//"CourseNum": courseNum,
 	}
 
 	_,user := CheckLoginStatus(w,r)
 
+
+
+	//courseEnrollment := make(map[int]int)
+	for k, _ := range queryRes {
+		count := 0
+		db.Table("enrollment").Select("*").Where("section_id = ?", queryRes[k].SectionID).Count(&count)
+		queryRes[k].NumEnrolled = count
+	}
 
 
 	admin := IsAdmin{}
