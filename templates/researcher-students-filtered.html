@@ -11,7 +11,7 @@
             </div>
 
             {{ template "researcher-navbar" }}
-
+            &nbsp;&nbsp;
             <div class="col-md-8 contact-left-w3l">
                 <h3>Grade Criteria</h3>
                 <form action="/researcher/students/grades" id="requestData" class="form-horizontal" method="POST">
@@ -70,7 +70,7 @@
 
                     <h3>Additional Filters:</h3>
 
-                    <label class="form-group">Full / Part Time</label>
+                    <label class="form-group">Full / Part Time</label><br>
                     <input type="checkbox" name="filter-options" value="student-type">
                     <select name="full-or-part" required="true">
                         <option value="1">Full Time</option>
@@ -79,7 +79,7 @@
                     <br />
 
 
-                    <input type="submit" class="btn-success"  value="Generate Report">
+                    <input type="submit" class="btn btn-success pull-right"  value="Generate Report">
                     <!--<form>-->
                     <!---->
                     <!--</form>-->
