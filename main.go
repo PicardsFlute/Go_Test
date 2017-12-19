@@ -599,16 +599,19 @@ func createStudent(w http.ResponseWriter, r *http.Request) {
 	db.Where(&model.MainUser{UserEmail: formEmail}).First(&mu)
 	stu := model.Student{StudentID:mu.UserID, StudentType:studentType}
 	db.Create(&stu)
-
+	message := "User Created Sucessfully. Email: " + formEmail + " \n "
 	if studentType == 1{
 		stuFT := model.FullTimeStudent{FullTimeStudentID: stu.StudentID, NumCredits:credits}
 		db.Create(&stuFT)
+		message += "As a Full Time Student"
 	} else {
 		stuPT := model.PartTimeStudent{PartTimeStudentID: stu.StudentID, NumCredits:credits}
 		db.Create(&stuPT)
+		message += "As a Part Time Student"
 	}
-	http.Redirect(w,r,"/admin", http.StatusFound)
-	displayAdmin(w,r)
+	//http.Redirect(w,r,"/admin", http.StatusFound)
+	//displayAdmin(w,r)
+	global.Tpl.ExecuteTemplate(w, "adminSuccess", message)
 }
 
 func createFaculty(w http.ResponseWriter, r *http.Request) {
@@ -621,16 +624,19 @@ func createFaculty(w http.ResponseWriter, r *http.Request) {
 	department, _ := strconv.ParseUint(r.FormValue("department"), 10, 64)
 	faculty := model.Faculty{FacultyID: mu.UserID, FacultyType: facultyType, DepartmentID: uint(department)}
 	db.Create(&faculty)
+	message := "User Created Sucessfully. Email: " + formEmail +" \n "
 	if (facultyType == 1) {
 		facultyFT := model.FullTimeFaculty{FullTimeFacultyID: faculty.FacultyID}
 		db.Create(&facultyFT)
+		message += "As a Full Time Faculty"
 	} else if (facultyType == 2) {
 		facultyPT := model.PartTimeStudent{PartTimeStudentID: faculty.FacultyID}
 		db.Create(&facultyPT)
+		message += "As a Full Time Faculty"
 	}
-	http.Redirect(w, r, "/admin", http.StatusFound)
-	displayAdmin(w, r)
-
+	//http.Redirect(w, r, "/admin", http.StatusFound)
+	//displayAdmin(w, r)
+	global.Tpl.ExecuteTemplate(w, "adminSuccess", message)
 }
 
 func searchUser(w http.ResponseWriter, r *http.Request) {
@@ -1057,6 +1063,11 @@ func genReportStudentsByGrade(w http.ResponseWriter, r *http.Request){
 
 	indexLow := getIndex(grades, formGradeLow)
 	indexHigh := getIndex(grades, formGradeHigh)
+	if indexLow > indexHigh {
+		temp := indexHigh
+		indexHigh = indexLow
+		indexLow = temp
+	}
 	println("gradeLow:" + formGradeLow + ", gradeHigh: " + formGradeHigh)
 	println("IndexLow:" + strconv.Itoa(indexLow) + ", indexHigh: " + strconv.Itoa(indexHigh))
 	gradeSlice := grades[indexLow:indexHigh+1]
