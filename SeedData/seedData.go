@@ -2103,6 +2103,25 @@ func main() {
 	enrollr := model.Enrollment{StudentID:student5.StudentID, SectionID:section22.SectionID}
 	enrolls := model.Enrollment{StudentID:student5.StudentID, SectionID:section23.SectionID}
 	enrollt := model.Enrollment{StudentID:student5.StudentID, SectionID:section24.SectionID}
+	enrollspring2016 := model.Enrollment{StudentID:student6.StudentID, SectionID:section21.SectionID}
+	enrollspring2016a := model.Enrollment{StudentID:student7.StudentID, SectionID:section21.SectionID}
+	enrollspring2016b := model.Enrollment{StudentID:student8.StudentID, SectionID:section21.SectionID}
+	enrollspring2016c := model.Enrollment{StudentID:student9.StudentID, SectionID:section21.SectionID}
+	enrollspring2016d := model.Enrollment{StudentID:student10.StudentID, SectionID:section21.SectionID}
+	enrollspring2016e := model.Enrollment{StudentID:student11.StudentID, SectionID:section21.SectionID}
+	enrollspring2016f := model.Enrollment{StudentID:student12.StudentID, SectionID:section21.SectionID}
+	enrollspring2016g := model.Enrollment{StudentID:student13.StudentID, SectionID:section21.SectionID}
+	enrollspring2016h := model.Enrollment{StudentID:student14.StudentID, SectionID:section21.SectionID}
+	enrollspring2016i := model.Enrollment{StudentID:student15.StudentID, SectionID:section21.SectionID}
+	enrollspring2016j := model.Enrollment{StudentID:student16.StudentID, SectionID:section21.SectionID}
+	enrollspring2016k := model.Enrollment{StudentID:student17.StudentID, SectionID:section21.SectionID}
+	enrollspring2016l := model.Enrollment{StudentID:student18.StudentID, SectionID:section21.SectionID}
+	enrollspring2016m := model.Enrollment{StudentID:student19.StudentID, SectionID:section21.SectionID}
+	enrollspring2016n := model.Enrollment{StudentID:student20.StudentID, SectionID:section21.SectionID}
+	enrollspring2016o := model.Enrollment{StudentID:student21.StudentID, SectionID:section21.SectionID}
+	enrollspring2016p := model.Enrollment{StudentID:student22.StudentID, SectionID:section21.SectionID}
+	enrollspring2016q := model.Enrollment{StudentID:student23.StudentID, SectionID:section21.SectionID}
+	enrollspring2016r := model.Enrollment{StudentID:student24.StudentID, SectionID:section21.SectionID}
 
 
 	db.Create(&enrolla)
@@ -2125,6 +2144,27 @@ func main() {
 	db.Create(&enrollr)
 	db.Create(&enrolls)
 	db.Create(&enrollt)
+	db.Create(&enrollspring2016)
+	db.Create(&enrollspring2016a)
+	db.Create(&enrollspring2016b)
+	db.Create(&enrollspring2016c)
+	db.Create(&enrollspring2016d)
+	db.Create(&enrollspring2016e)
+	db.Create(&enrollspring2016f)
+	db.Create(&enrollspring2016g)
+	db.Create(&enrollspring2016h)
+	db.Create(&enrollspring2016i)
+	db.Create(&enrollspring2016j)
+	db.Create(&enrollspring2016k)
+	db.Create(&enrollspring2016l)
+	db.Create(&enrollspring2016m)
+	db.Create(&enrollspring2016n)
+	db.Create(&enrollspring2016o)
+	db.Create(&enrollspring2016p)
+	db.Create(&enrollspring2016q)
+	db.Create(&enrollspring2016r)
+
+
 
 	//history Spring 2016
 	history37 := model.StudentHistory{StudentID:student1.StudentID, EnrollmentID:enrolla.EnrollmentID, Status:"Dropped", Grade:"-"}
@@ -2149,6 +2189,27 @@ func main() {
 	history48s2016 := model.StudentHistory{StudentID:student5.StudentID, EnrollmentID:enrolls.EnrollmentID, Status:"Complete", Grade:"A"}
 	history49s2016 := model.StudentHistory{StudentID:student5.StudentID, EnrollmentID:enrollt.EnrollmentID, Status:"Complete", Grade:"A"}
 
+	historySpring2016 := model.StudentHistory{StudentID:student6.StudentID, EnrollmentID:enrollspring2016.EnrollmentID, Status:"Complete", Grade:"A"}
+	historySpring2016a := model.StudentHistory{StudentID:student7.StudentID, EnrollmentID:enrollspring2016.EnrollmentID, Status:"Complete", Grade:"B"}
+	historySpring2016b := model.StudentHistory{StudentID:student8.StudentID, EnrollmentID:enrollspring2016.EnrollmentID, Status:"Complete", Grade:"C"}
+	historySpring2016c := model.StudentHistory{StudentID:student9.StudentID, EnrollmentID:enrollspring2016.EnrollmentID, Status:"Complete", Grade:"A"}
+	historySpring2016d := model.StudentHistory{StudentID:student10.StudentID, EnrollmentID:enrollspring2016.EnrollmentID, Status:"Complete", Grade:"B"}
+	historySpring2016e := model.StudentHistory{StudentID:student11.StudentID, EnrollmentID:enrollspring2016.EnrollmentID, Status:"Complete", Grade:"C"}
+	historySpring2016f := model.StudentHistory{StudentID:student12.StudentID, EnrollmentID:enrollspring2016.EnrollmentID, Status:"Complete", Grade:"A-"}
+	historySpring2016g := model.StudentHistory{StudentID:student13.StudentID, EnrollmentID:enrollspring2016.EnrollmentID, Status:"Complete", Grade:"B+"}
+	historySpring2016h := model.StudentHistory{StudentID:student14.StudentID, EnrollmentID:enrollspring2016.EnrollmentID, Status:"Complete", Grade:"C"}
+	historySpring2016i := model.StudentHistory{StudentID:student15.StudentID, EnrollmentID:enrollspring2016.EnrollmentID, Status:"Complete", Grade:"D"}
+	historySpring2016j := model.StudentHistory{StudentID:student16.StudentID, EnrollmentID:enrollspring2016.EnrollmentID, Status:"Complete", Grade:"B"}
+	historySpring2016k := model.StudentHistory{StudentID:student17.StudentID, EnrollmentID:enrollspring2016.EnrollmentID, Status:"Complete", Grade:"C"}
+	historySpring2016l := model.StudentHistory{StudentID:student18.StudentID, EnrollmentID:enrollspring2016.EnrollmentID, Status:"Complete", Grade:"A"}
+	historySpring2016m := model.StudentHistory{StudentID:student19.StudentID, EnrollmentID:enrollspring2016.EnrollmentID, Status:"Complete", Grade:"B"}
+	historySpring2016n := model.StudentHistory{StudentID:student20.StudentID, EnrollmentID:enrollspring2016.EnrollmentID, Status:"Complete", Grade:"C"}
+	historySpring2016o := model.StudentHistory{StudentID:student21.StudentID, EnrollmentID:enrollspring2016.EnrollmentID, Status:"Complete", Grade:"D"}
+	historySpring2016p := model.StudentHistory{StudentID:student22.StudentID, EnrollmentID:enrollspring2016.EnrollmentID, Status:"Complete", Grade:"A"}
+	historySpring2016q := model.StudentHistory{StudentID:student23.StudentID, EnrollmentID:enrollspring2016.EnrollmentID, Status:"Complete", Grade:"B"}
+	historySpring2016r := model.StudentHistory{StudentID:student24.StudentID, EnrollmentID:enrollspring2016.EnrollmentID, Status:"Complete", Grade:"C"}
+
+
 
 	db.Create(&history37)
 	db.Create(&history38)
@@ -2170,6 +2231,28 @@ func main() {
 	db.Create(&history47s2016)
 	db.Create(&history48s2016)
 	db.Create(&history49s2016)
+
+	db.Create(&historySpring2016)
+	db.Create(&historySpring2016a)
+	db.Create(&historySpring2016b)
+	db.Create(&historySpring2016c)
+	db.Create(&historySpring2016d)
+	db.Create(&historySpring2016e)
+	db.Create(&historySpring2016f)
+	db.Create(&historySpring2016g)
+	db.Create(&historySpring2016h)
+	db.Create(&historySpring2016i)
+	db.Create(&historySpring2016j)
+	db.Create(&historySpring2016k)
+	db.Create(&historySpring2016l)
+	db.Create(&historySpring2016m)
+	db.Create(&historySpring2016n)
+	db.Create(&historySpring2016o)
+	db.Create(&historySpring2016p)
+	db.Create(&historySpring2016q)
+	db.Create(&historySpring2016r)
+
+
 
 	//TODO make seed data make sense i.e prerequs make sense, jirish can take data mining but pat can't
 
