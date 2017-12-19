@@ -1085,8 +1085,6 @@ func AdminUpdateSection(w http.ResponseWriter, r *http.Request){
 
 	global.Tpl.ExecuteTemplate(w, "adminSuccess", "Section updated successfully")
 
-	//TODO test this
-
 }
 
 func Round(val float64, roundOn float64, places int ) (newVal float64) {
