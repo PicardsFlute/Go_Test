@@ -198,8 +198,8 @@ func main() {
 
 	//routes.Handle("/course/search", checkSessionWrapper(searchMasterScheduleForm)).Methods("GET")
 
-	routes.HandleFunc("/research/students/grades", getStudentsReportByGrade).Methods("GET")
-	routes.HandleFunc("/research/students/grades", genReportStudentsByGrade).Methods("POST")
+	routes.Handle("/researcher/students/grades", checkSessionWrapper(getStudentsReportByGrade)).Methods("GET")
+	routes.Handle("/researcher/students/grades", checkSessionWrapper(genReportStudentsByGrade)).Methods("POST")
 
 	routes.HandleFunc("/logout", logout)
 	//routes.HandleFunc("/student", AuthHandler(displayUser))
