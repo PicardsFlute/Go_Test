@@ -61,6 +61,12 @@
 			"revisionTime": "2017-03-24T20:46:54Z"
 		},
 		{
+			"checksumSHA1": "+cMYcY2iSecKQdwXDXqusTMjLrA=",
+			"path": "github.com/mohae/struct2csv",
+			"revision": "e72239694eae3a8398bb3b39050330333eb66c44",
+			"revisionTime": "2015-11-22T20:09:41Z"
+		},
+		{
 			"checksumSHA1": "UWjVYmoHlIfHzVIskELHiJQtMOI=",
 			"path": "golang.org/x/crypto/bcrypt",
 			"revision": "adbae1b6b6fb4b02448a0fc0dbbc9ba2b95b294d",
