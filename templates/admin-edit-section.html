@@ -16,6 +16,8 @@
         <h3>Current Building: {{.Section.BuildingName}}</h3>
         <h3>Current Room: {{.Section.RoomNumber}}</h3>
         <h3>Current Faculty: {{.Section.FirstName}} {{.Section.LastName}}</h3>
+        <h3>Current Capacity: {{.Section.Capacity}}</h3>
+
 
 
         <input type="text" hidden value="{{.Section.SectionID}}" name="section-info" >
@@ -23,7 +25,11 @@
         <input type="text" readonly hidden name="current-room" value="{{.Section.RoomID}}">
         <input type="text" readonly hidden name="day-id" value="{{.Section.DayID}}">
         <input type="text" readonly hidden name="time-id" value="{{.Section.PeriodID}}">
+        <input type ="text" readonly hidden name="old-capacity" value="{{.Section.Capacity}}">
 
+
+        <label class="form-group">New Capacity</label>
+        <input type="number" name="new-capacity" class="form-control">
 
         <label class="form-group">New Bulding</label>
         <select name="new-building" id="building-select">

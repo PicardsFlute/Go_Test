@@ -933,6 +933,7 @@ func AdminUpdateSectionForm(w http.ResponseWriter, r *http.Request){
 		CourseDescription string
 		DepartmentID uint
 		SectionID uint
+		Capacity int
 		CourseSectionNumber int
 		CourseID uint
 		FacultyID uint
@@ -954,7 +955,7 @@ func AdminUpdateSectionForm(w http.ResponseWriter, r *http.Request){
 
 	sectionData := CourseData{}
 	db.Raw(`
-		SELECT course.course_name, course.course_credits, course.course_description, course.department_id, section.section_id, section.course_section_number,
+		SELECT course.course_name, section.capacity, course.course_credits, course.course_description, course.department_id, section.section_id, section.course_section_number,
 		section.course_id, section.faculty_id, section.time_slot_id, section.location_id, section.course_section_number,
 		main_user.first_name, main_user.last_name,
 		day.meeting_day, day.day_id,
@@ -999,6 +1000,18 @@ func AdminUpdateSection(w http.ResponseWriter, r *http.Request){
 	timeID := r.FormValue("time-id")
 	day := r.FormValue("day-id")
 
+	currentCapacity := r.FormValue("old-capacity")
+	newCapacity := r.FormValue("new-capacity")
+
+	var capacity int
+
+	if newCapacity == "" {
+		currentCapacityInt, _ := strconv.Atoi(currentCapacity)
+		capacity = currentCapacityInt
+	}else {
+		newCapacityInt, _ := strconv.Atoi(newCapacity)
+		capacity = newCapacityInt
+	}
 
 	fmt.Println("New building", newBuilding)
 	fmt.Println("Current BUilding", currentBuilding)
@@ -1007,14 +1020,21 @@ func AdminUpdateSection(w http.ResponseWriter, r *http.Request){
 	fmt.Println("Section", section)
 	fmt.Println("Time", timeID)
 	fmt.Println("Day", day)
+	fmt.Println("Old Capacity", currentCapacity)
+	fmt.Println("New Capacity", newCapacity)
 
-
+	var isCurrent bool
 
 	currentLocation := model.Location{}
 	db.Select("*").Table("location").Where("room_id = ?  AND building_id = ? ",currentRoom,currentBuilding).Scan(&currentLocation)
 
 	newLocation := model.Location{}
 	db.Select("*").Table("location").Where("room_id = ?  AND building_id = ? ",newRoom,newBuilding).Scan(&newLocation)
+
+
+	if currentLocation == newLocation{
+		isCurrent = true
+	}
 
 	fmt.Println("new Location ", newLocation)
 	type Err struct {
@@ -1032,8 +1052,9 @@ func AdminUpdateSection(w http.ResponseWriter, r *http.Request){
 		Room_number string
 	}
 	rc := []RoomCheck{}
+	if !isCurrent { //if its not the current room, check if its occupied
 
-	db.Raw(`
+		db.Raw(`
 		 SELECT section.section_id, location.location_id,season,year, building.building_id,room.room_id,room_number,building_name,period.period_id,time,day.day_id,meeting_day
 		 FROM section
 		 JOIN location ON section.location_id = location.location_id
@@ -1046,19 +1067,23 @@ func AdminUpdateSection(w http.ResponseWriter, r *http.Request){
 		 WHERE location.room_id = ? AND building.building_id = ? AND period.period_id = ?
 	 	 AND day.day_id = ? AND season = ? AND year = ?`,newLocation.RoomID, newLocation.BuildingID,timeID,day,"Spring", 2018).Scan(&rc)
 
-	if len(rc) > 0 {
-		global.Tpl.ExecuteTemplate(w, "adminSuccess", "Can't update to this room because the room is already ocupied at this time")
-		fmt.Println("Cant add room, because is already ocupied at this time, please try a different room")
-		return
+
+		if len(rc) > 0 {
+			global.Tpl.ExecuteTemplate(w, "adminSuccess", "Can't update to this room because the room is already ocupied at this time")
+			fmt.Println("Cant add room, because is already ocupied at this time, please try a different room")
+			return
+		}
 	}
 
 	db.Raw(`
-		UPDATE section SET location_id = ? WHERE section_id = ?
-	`,newLocation.LocationID, section).Scan(&e)
+		UPDATE section SET location_id = ?,capacity = ? WHERE section_id = ?
+	`,newLocation.LocationID,capacity,section).Scan(&e)
 
 	fmt.Println(e)
 
-	global.Tpl.ExecuteTemplate(w, "adminSuccess", "Room updated successfully")
+
+
+	global.Tpl.ExecuteTemplate(w, "adminSuccess", "Section updated successfully")
 
 	//TODO test this
 

@@ -981,10 +981,10 @@ func main() {
 	b2room3 := model.Room{RoomNumber: "P180", RoomType: "Classroom", RoomCapacity: 30}
 	b2room4 := model.Room{RoomNumber: "H100", RoomType: "Lecture Hall", RoomCapacity: 125}
 	b2room5 := model.Room{RoomNumber: "P180", RoomType: "Classroom", RoomCapacity: 40}
-	b2room6 := model.Room{RoomNumber: "P180", RoomType: "Classroom", RoomCapacity: 40}
-	b2room7 := model.Room{RoomNumber: "P180", RoomType: "Classroom", RoomCapacity: 20}
-	b2room8 := model.Room{RoomNumber: "P180", RoomType: "Classroom", RoomCapacity: 20}
-	b2room9 := model.Room{RoomNumber: "P180", RoomType: "Classroom", RoomCapacity: 20}
+	b2room6 := model.Room{RoomNumber: "P181", RoomType: "Classroom", RoomCapacity: 40}
+	b2room7 := model.Room{RoomNumber: "P182", RoomType: "Classroom", RoomCapacity: 20}
+	b2room8 := model.Room{RoomNumber: "P183", RoomType: "Classroom", RoomCapacity: 20}
+	b2room9 := model.Room{RoomNumber: "P184", RoomType: "Classroom", RoomCapacity: 20}
 	b2room10 := model.Room{RoomNumber: "H190", RoomType: "Lecture Hall", RoomCapacity: 125}
 
 	//building 3
@@ -992,11 +992,11 @@ func main() {
 	b3room2 := model.Room{RoomNumber: "D150", RoomType: "Classroom", RoomCapacity: 25}
 	b3room3 := model.Room{RoomNumber: "D380", RoomType: "Classroom", RoomCapacity: 10}
 	b3room4 := model.Room{RoomNumber: "G100", RoomType: "Lecture Hall", RoomCapacity: 100}
-	b3room5 := model.Room{RoomNumber: "D180", RoomType: "Classroom", RoomCapacity: 25}
-	b3room6 := model.Room{RoomNumber: "D180", RoomType: "Classroom", RoomCapacity: 25}
-	b3room7 := model.Room{RoomNumber: "D180", RoomType: "Classroom", RoomCapacity: 30}
-	b3room8 := model.Room{RoomNumber: "D180", RoomType: "Classroom", RoomCapacity: 30}
-	b3room9 := model.Room{RoomNumber: "D180", RoomType: "Classroom", RoomCapacity: 35}
+	b3room5 := model.Room{RoomNumber: "D181", RoomType: "Classroom", RoomCapacity: 25}
+	b3room6 := model.Room{RoomNumber: "D182", RoomType: "Classroom", RoomCapacity: 25}
+	b3room7 := model.Room{RoomNumber: "D183", RoomType: "Classroom", RoomCapacity: 30}
+	b3room8 := model.Room{RoomNumber: "D184", RoomType: "Classroom", RoomCapacity: 30}
+	b3room9 := model.Room{RoomNumber: "D185", RoomType: "Classroom", RoomCapacity: 35}
 	b3room10 := model.Room{RoomNumber: "G190", RoomType: "Lecture Hall", RoomCapacity: 100}
 
 	db.Create(&b2room1)
