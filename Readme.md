@@ -15,3 +15,7 @@ To get the project running
     go run SeedData/seedData.go
 ```  
 
+
+##Project is hosted on Heroku at
+https://shrouded-scrubland-50647.herokuapp.com/
+
