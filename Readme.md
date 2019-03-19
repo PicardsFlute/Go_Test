@@ -2,7 +2,7 @@
 
 ## Senior Project For SUNY Old Westbury
 
-To get the project running
+To get the project running locally
 ```go 
     go get -u github.com/gorilla/mux
     go get -u github.com/gorilla/handlers
