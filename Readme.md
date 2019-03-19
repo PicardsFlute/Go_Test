@@ -16,6 +16,6 @@ To get the project running locally
 ```  
 
 
-##Project is hosted on Heroku at
+## Project is hosted on Heroku at
 https://shrouded-scrubland-50647.herokuapp.com/
 
